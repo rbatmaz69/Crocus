@@ -32,11 +32,17 @@ final class OverlayController {
         didSet { panels.values.forEach { $0.model.usesLargeSample = usesLargeSample } }
     }
 
+    /// Debug: force the pill outline for a light or dark wallpaper.
+    var pillOutlineOverride = PillOutlineOverride.automatic {
+        didSet { applyMenuBarAppearance() }
+    }
+
     @ObservationIgnored private var screens: [ScreenDescriptor] = []
     @ObservationIgnored private var panels: [CGDirectDisplayID: OverlayPanel] = [:]
     @ObservationIgnored private lazy var mouseTracker = MouseTracker { [unowned self] in Array(self.panels.values) }
     @ObservationIgnored private let detector = FullScreenVideoDetector()
     @ObservationIgnored private let windowList = SystemWindowList()
+    @ObservationIgnored private let menuBarAppearance = MenuBarAppearanceObserver()
     @ObservationIgnored private var observers: [(NotificationCenter, NSObjectProtocol)] = []
     @ObservationIgnored private var fullScreenTimer: Timer?
     @ObservationIgnored private var pointerDebounce = PointerScreenDebounce()
@@ -56,6 +62,7 @@ final class OverlayController {
         pointerDebounce.force(ScreenDescriptor.screen(containing: NSEvent.mouseLocation, in: ScreenDescriptor.current()))
         reconcile()
         mouseTracker.onPointerMove = { [weak self] location in self?.pointerMoved(to: location) }
+        menuBarAppearance.onChange = { [weak self] _ in self?.applyMenuBarAppearance() }
         mouseTracker.start()
 
         observe(NotificationCenter.default, NSApplication.didChangeScreenParametersNotification) {
@@ -109,6 +116,7 @@ final class OverlayController {
                 panel.model.showsDebugFrame = showsDebugFrame
                 panel.model.presentation = presentation
                 panel.model.usesLargeSample = usesLargeSample
+                panel.model.menuBarIsDark = menuBarIsDark
                 panels[screen.displayID] = panel
             }
         }
@@ -144,7 +152,22 @@ final class OverlayController {
             if acceptsKeyboard { applyKeyboardFocus() }
         }
         updateMenuBarClearance()
+        menuBarAppearance.attach()
         updateVisibility()
+    }
+
+    private var menuBarIsDark: Bool {
+        switch pillOutlineOverride {
+        case .automatic: menuBarAppearance.isDark
+        case .light: false
+        case .dark: true
+        }
+    }
+
+    private func applyMenuBarAppearance() {
+        let dark = menuBarIsDark
+        Self.screenLogger.info("Menu bar appearance: \(dark ? "dark" : "light", privacy: .public) (\(self.menuBarAppearance.source, privacy: .public), override \(self.pillOutlineOverride.rawValue, privacy: .public))")
+        panels.values.forEach { $0.model.menuBarIsDark = dark }
     }
 
     /// Shrinks the right wing where menu bar items need the space.

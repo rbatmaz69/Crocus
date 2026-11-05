@@ -7,8 +7,9 @@ struct NotchIslandView: View {
 
     var body: some View {
         if let parameters = model.notchShapeParameters, let notch = model.geometry.notchRect {
-            let centerX = model.notchCenterXInPanel
+            let centerX = model.islandCenterXInPanel
             let spring = model.transitionSpring.animation
+            let metrics = IslandLayoutMetrics.notch(notchSize: notch.size, rightWingReduced: model.rightWingReduced)
 
             ZStack(alignment: .topLeading) {
                 NotchIslandShape(parameters: parameters, centerX: centerX)
@@ -19,15 +20,15 @@ struct NotchIslandView: View {
                     case .idle:
                         EmptyView()
                     case .compact:
-                        compact(notch: notch.size)
+                        IslandCompactContent(model: model, metrics: metrics)
                             .frame(width: parameters.width, height: parameters.height)
                             .offset(x: centerX - parameters.leading)
                             .transition(.opacity)
                     case .expanded:
-                        expanded(notch: notch.size)
+                        IslandExpandedContent(model: model, metrics: metrics)
                             .frame(height: parameters.height, alignment: .top)
                             .clipped()
-                            .offset(x: centerX - CrocusMetrics.notch.expanded.width / 2)
+                            .offset(x: centerX - metrics.expandedWidth / 2)
                             .transition(.opacity)
                     }
                 }
@@ -40,43 +41,9 @@ struct NotchIslandView: View {
             }
         }
     }
-
-    @ViewBuilder
-    private func compact(notch: CGSize) -> some View {
-        let rightWing = model.rightWingReduced ? CrocusMetrics.Compact.reducedWingWidth : CrocusMetrics.notch.wingWidth
-        #if DEBUG
-        CompactLayout(notchWidth: notch.width, rightWingWidth: rightWing) {
-            DebugIslandSamples.compactLeading
-        } trailing: {
-            DebugIslandSamples.compactTrailing(reduced: model.rightWingReduced)
-        }
-        #else
-        CompactLayout(notchWidth: notch.width, rightWingWidth: rightWing) {
-            EmptyView()
-        } trailing: {
-            EmptyView()
-        }
-        #endif
-    }
-
-    @ViewBuilder
-    private func expanded(notch: CGSize) -> some View {
-        #if DEBUG
-        ExpandedLayout(notchSize: notch) { model.expandedContentHeight = $0 } source: {
-            Text("build.sh · Terminal")
-        } status: {
-            Text("2:14 ago")
-        } content: {
-            DebugIslandSamples.expandedContent(large: model.usesLargeSample)
-        }
-        #else
-        EmptyView()
-        #endif
-    }
 }
 
-/// Picks the island for the screen's mode. Pill mode keeps the placeholder
-/// until #6.
+/// Picks the island for the screen's mode.
 struct IslandRootView: View {
     let model: OverlayPanelModel
 
@@ -90,7 +57,7 @@ struct IslandRootView: View {
 
             switch model.geometry.mode {
             case .notch: NotchIslandView(model: model)
-            case .pill: IslandPlaceholderView(model: model)
+            case .pill: PillIslandView(model: model)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

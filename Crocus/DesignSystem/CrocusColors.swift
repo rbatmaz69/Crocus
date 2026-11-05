@@ -54,3 +54,20 @@ extension View {
         environment(\.colorScheme, .dark)
     }
 }
+
+/// Hairline outline around the floating pill so it stays defined on any
+/// wallpaper: a dark hint on light backgrounds, a light hint on dark ones.
+enum PillOutline {
+    static let width: CGFloat = 0.5
+    static let onLight = (token: CrocusColors.Spec.island, opacity: 0.12)
+    static let onDark = (token: CrocusColors.Spec.primary, opacity: 0.08)
+
+    static func spec(menuBarIsDark: Bool) -> (token: ColorToken, opacity: Double) {
+        menuBarIsDark ? onDark : onLight
+    }
+
+    static func color(menuBarIsDark: Bool) -> Color {
+        let spec = spec(menuBarIsDark: menuBarIsDark)
+        return spec.token.color.opacity(spec.opacity)
+    }
+}

@@ -23,14 +23,25 @@ final class OverlayPanelModel {
     var expandedContentHeight: CGFloat?
     /// Debug: show the taller expanded sample.
     var usesLargeSample = false
+    /// The menu bar (and so the wallpaper under the pill) is dark.
+    var menuBarIsDark = true
 
     init(geometry: ScreenGeometry) {
         self.geometry = geometry
     }
 
-    /// Horizontal centre of the notch in panel coordinates.
-    var notchCenterXInPanel: CGFloat {
+    /// Horizontal centre of the island (the notch, or the screen centre in
+    /// pill mode) in panel coordinates.
+    var islandCenterXInPanel: CGFloat {
         geometry.islandCenterX - OverlayLayout.panelFrame(for: geometry).minX
+    }
+
+    /// Horizontal centre of the panel itself.
+    var panelCenterX: CGFloat { OverlayLayout.panelSize.width / 2 }
+
+    /// Target shape of the pill.
+    var pillShapeParameters: PillShapeParameters {
+        PillIslandMetrics.parameters(for: presentation, expandedContentHeight: expandedContentHeight)
     }
 
     /// Target shape of the notch island, `nil` in pill mode.
