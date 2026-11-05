@@ -13,6 +13,11 @@ struct CrocusApp: App {
             }
             .keyboardShortcut(",")
 
+            #if DEBUG
+            Divider()
+            DebugMenu(overlay: appDelegate.overlay)
+            #endif
+
             Divider()
 
             Button("Quit Crocus") {
@@ -26,6 +31,17 @@ struct CrocusApp: App {
         }
     }
 }
+
+#if DEBUG
+private struct DebugMenu: View {
+    @Bindable var overlay: OverlayController
+
+    var body: some View {
+        Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
+        Toggle("Overlay Accepts Keyboard", isOn: $overlay.acceptsKeyboard)
+    }
+}
+#endif
 
 /// Placeholder until the real settings window lands (#27).
 private struct SettingsPlaceholderView: View {

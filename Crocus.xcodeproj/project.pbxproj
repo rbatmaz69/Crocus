@@ -9,14 +9,25 @@
 /* Begin PBXBuildFile section */
 		08B4355CB19DDE89F62F31FF /* CrocusColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BAC8129449A035E12A6DA3 /* CrocusColors.swift */; };
 		21C51CBBFACBB9F4BF73FF07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4FB41042672DEDA32A5E8E9 /* Assets.xcassets */; };
+		44880B93F2F40036A8E3475E /* OverlayLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */; };
 		484FFC474D8E1D44C7FE5191 /* URLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40741D43E26040909E116D85 /* URLRouter.swift */; };
 		53A8DFE84C0A7C1A2822B263 /* URLRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D621AC6461D881438F83EF25 /* URLRouterTests.swift */; };
+		606F10412C7BFDA746402F3A /* IslandPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720FC673855FA75FA49D271A /* IslandPlaceholderView.swift */; };
 		6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28589CB97835C5D738141A59 /* CrocusTypography.swift */; };
 		72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */; };
+		8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDCB7E68607BDB98E90DC64A /* OverlayController.swift */; };
+		8CB4BAC1AB2AF48ED2EA4D01 /* MouseTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6970B77DC856B96EB5EFB6B /* MouseTracker.swift */; };
+		A9B1A6DCDE000DFCDFED0BE7 /* OverlayLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */; };
+		ABCE5A4FA1EBD9E256940A7D /* FullScreenVideoDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458D83892EAA22D2278366B6 /* FullScreenVideoDetector.swift */; };
 		B939F90EC1E988660EFD67FD /* DesignTokensTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */; };
 		CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */; };
+		D1F62F8A2540EF5EE6E19647 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */; };
 		D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A16FF870167FB621B64308 /* CrocusSprings.swift */; };
+		DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */; };
+		E6236D1F409FF76415A9611A /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46E07BFA3A02A8FCD937363 /* OverlayPanel.swift */; };
+		EA6677A8B621FED5AFABED1F /* IslandHitRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */; };
 		EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */; };
+		F5D6A1CCD2ACA854354FB7F4 /* IslandHitRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,19 +44,30 @@
 		0373831257A6BDE3F2B3446B /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusMetrics.swift; sourceTree = "<group>"; };
 		28589CB97835C5D738141A59 /* CrocusTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusTypography.swift; sourceTree = "<group>"; };
+		2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHitRegion.swift; sourceTree = "<group>"; };
+		3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayout.swift; sourceTree = "<group>"; };
 		40741D43E26040909E116D85 /* URLRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRouter.swift; sourceTree = "<group>"; };
+		458D83892EAA22D2278366B6 /* FullScreenVideoDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetector.swift; sourceTree = "<group>"; };
 		4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusApp.swift; sourceTree = "<group>"; };
+		54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayoutTests.swift; sourceTree = "<group>"; };
 		6DC13E5727374621F7BF995C /* CrocusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrocusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		720FC673855FA75FA49D271A /* IslandPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandPlaceholderView.swift; sourceTree = "<group>"; };
 		78B7A9251EEC65564ECE9977 /* Crocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CB1AA2AEA9F1C008496B3CA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		91A16FF870167FB621B64308 /* CrocusSprings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusSprings.swift; sourceTree = "<group>"; };
+		971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHitRegionTests.swift; sourceTree = "<group>"; };
 		9E26CF80E597F28AAFE668A0 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		B1BAC8129449A035E12A6DA3 /* CrocusColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusColors.swift; sourceTree = "<group>"; };
+		B6970B77DC856B96EB5EFB6B /* MouseTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MouseTracker.swift; sourceTree = "<group>"; };
 		B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D46E07BFA3A02A8FCD937363 /* OverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPanel.swift; sourceTree = "<group>"; };
 		D621AC6461D881438F83EF25 /* URLRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRouterTests.swift; sourceTree = "<group>"; };
 		E73D9184B0EA34989C34EB50 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetectorTests.swift; sourceTree = "<group>"; };
 		ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokensTests.swift; sourceTree = "<group>"; };
+		EDCB7E68607BDB98E90DC64A /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
 		F4FB41042672DEDA32A5E8E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -56,6 +78,19 @@
 				7AF5FCB944A13A1CCC543B41 /* CrocusTests */,
 				97466B70483C0BC2941DFFAC /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		27CEA6E9C11F9EE497AFA394 /* Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				458D83892EAA22D2278366B6 /* FullScreenVideoDetector.swift */,
+				2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */,
+				B6970B77DC856B96EB5EFB6B /* MouseTracker.swift */,
+				EDCB7E68607BDB98E90DC64A /* OverlayController.swift */,
+				3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */,
+				D46E07BFA3A02A8FCD937363 /* OverlayPanel.swift */,
+			);
+			path = Overlay;
 			sourceTree = "<group>";
 		};
 		590BFFE7FFFBFAFB7DDF3704 /* Resources */ = {
@@ -70,6 +105,9 @@
 			isa = PBXGroup;
 			children = (
 				ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */,
+				ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */,
+				971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */,
+				54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */,
 				D621AC6461D881438F83EF25 /* URLRouterTests.swift */,
 			);
 			path = CrocusTests;
@@ -139,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				7CB1AA2AEA9F1C008496B3CA /* .gitkeep */,
+				720FC673855FA75FA49D271A /* IslandPlaceholderView.swift */,
 			);
 			path = Island;
 			sourceTree = "<group>";
@@ -146,7 +185,9 @@
 		FD78296A0443467EA86CBC01 /* Platform */ = {
 			isa = PBXGroup;
 			children = (
+				27CEA6E9C11F9EE497AFA394 /* Overlay */,
 				0373831257A6BDE3F2B3446B /* .gitkeep */,
+				F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */,
 			);
 			path = Platform;
 			sourceTree = "<group>";
@@ -246,6 +287,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B939F90EC1E988660EFD67FD /* DesignTokensTests.swift in Sources */,
+				DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */,
+				EA6677A8B621FED5AFABED1F /* IslandHitRegionTests.swift in Sources */,
+				A9B1A6DCDE000DFCDFED0BE7 /* OverlayLayoutTests.swift in Sources */,
 				53A8DFE84C0A7C1A2822B263 /* URLRouterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -255,11 +299,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */,
+				D1F62F8A2540EF5EE6E19647 /* AppSettings.swift in Sources */,
 				72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */,
 				08B4355CB19DDE89F62F31FF /* CrocusColors.swift in Sources */,
 				EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */,
 				D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */,
 				6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */,
+				ABCE5A4FA1EBD9E256940A7D /* FullScreenVideoDetector.swift in Sources */,
+				F5D6A1CCD2ACA854354FB7F4 /* IslandHitRegion.swift in Sources */,
+				606F10412C7BFDA746402F3A /* IslandPlaceholderView.swift in Sources */,
+				8CB4BAC1AB2AF48ED2EA4D01 /* MouseTracker.swift in Sources */,
+				8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */,
+				44880B93F2F40036A8E3475E /* OverlayLayout.swift in Sources */,
+				E6236D1F409FF76415A9611A /* OverlayPanel.swift in Sources */,
 				484FFC474D8E1D44C7FE5191 /* URLRouter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
