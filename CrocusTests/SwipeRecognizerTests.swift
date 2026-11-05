@@ -75,3 +75,16 @@ import Testing
         #expect(CardDrag.direction(translation: translation) == nil)
     }
 }
+
+@Suite struct CardNavigationTests {
+    @Test func arrowsFollowReadingOrder() {
+        #expect(CardNavigation.step(forArrow: .right) == 1)   // → next
+        #expect(CardNavigation.step(forArrow: .left) == -1)   // ← previous
+    }
+
+    @Test func swipesFollowTheContent() {
+        #expect(CardNavigation.step(forSwipe: .left) == 1)    // fingers left → next
+        #expect(CardNavigation.step(forSwipe: .right) == -1)
+        #expect(CardNavigation.step(forSwipe: .up) == 0)
+    }
+}

@@ -10,6 +10,8 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
     let anchor: UnitPoint
     /// Which shape this is; only the hovered one shows the hint.
     var part: IslandPart = .main
+    /// Visible width of the shape; small shapes get a stronger hover hint.
+    var width: CGFloat = 0
     /// What a click does; `nil` expands the main activity.
     var onTap: (() -> Void)?
 
@@ -23,7 +25,7 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
         let canExpand = presentation == .compact || presentation == .minimal
         let isHovered = model.hoveredPart == part
         let hoverScale = HoverHint.scale(
-            style: model.hoverStyle, isHovered: isHovered, presentation: presentation, breathPhase: false
+            style: model.hoverStyle, isHovered: isHovered, presentation: presentation, breathPhase: false, width: width
         )
         let breathes = HoverHint.breathes(style: model.hoverStyle, isHovered: isHovered, presentation: presentation)
 
@@ -34,7 +36,7 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
             .animation(CrocusSprings.hoverHint.animation, value: hoverScale)
             // Driven only by `breathPhase`, which is animated back with the hover
             // spring when the pointer leaves – so the breathing never jumps.
-            .scaleEffect(HoverHint.breathFactor(breathPhase: breathPhase), anchor: anchor)
+            .scaleEffect(HoverHint.breathFactor(breathPhase: breathPhase, width: width), anchor: anchor)
             .gesture(press, including: canExpand ? .all : .subviews)
             .simultaneousGesture(cardDrag, including: presentation == .expanded ? .all : .subviews)
             .contextMenu {
@@ -86,11 +88,9 @@ extension IslandInteractionModifier {
     private var cardDrag: some Gesture {
         DragGesture(minimumDistance: 10)
             .onEnded { value in
-                switch CardDrag.direction(translation: value.translation) {
-                case .left: model.store.showNextCard()
-                case .right: model.store.showPreviousCard()
-                default: break
-                }
+                guard let direction = CardDrag.direction(translation: value.translation) else { return }
+                let step = CardNavigation.step(forSwipe: direction)
+                if step > 0 { model.store.showNextCard() } else if step < 0 { model.store.showPreviousCard() }
             }
     }
 }
@@ -101,8 +101,9 @@ extension View {
         shape: some Shape,
         anchor: UnitPoint,
         part: IslandPart = .main,
+        width: CGFloat,
         onTap: (() -> Void)? = nil
     ) -> some View {
-        modifier(IslandInteractionModifier(model: model, shape: shape, anchor: anchor, part: part, onTap: onTap))
+        modifier(IslandInteractionModifier(model: model, shape: shape, anchor: anchor, part: part, width: width, onTap: onTap))
     }
 }

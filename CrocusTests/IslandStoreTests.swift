@@ -81,6 +81,29 @@ private final class TestActivity: IslandActivity {
         #expect(store.expandedContentActivity?.id == "music")
     }
 
+    @Test func cardPositionFollowsTheExpandedCard() {
+        let store = IslandStore(defaults: defaults)
+        store.upsert(TestActivity("timer", .timer))
+        store.upsert(TestActivity("music", .music))
+        store.upsert(TestActivity("build", .liveActivity))
+        #expect(store.cardPosition == nil)
+
+        store.expand()
+        #expect(store.cardPosition?.index == 0)
+        #expect(store.cardPosition?.count == 3)
+
+        store.showCard(at: 2)
+        #expect(store.expandedContentActivity?.id == "music")
+        store.showNextCard()            // already at the last card
+        #expect(store.cardPosition?.index == 2)
+        store.showPreviousCard()
+        #expect(store.cardPosition?.index == 1)
+
+        // Stays put while collapsing, so the header doesn't jump.
+        store.collapse()
+        #expect(store.cardPosition?.index == 1)
+    }
+
     @Test func eventContentAndLabel() {
         let store = IslandStore(defaults: defaults)
         store.upsert(TestActivity("timer", .timer))

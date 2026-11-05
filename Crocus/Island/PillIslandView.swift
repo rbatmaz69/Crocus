@@ -49,7 +49,7 @@ struct PillIslandView: View {
             .overlay {
                 shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
             }
-            .islandInteraction(model: model, shape: shape, anchor: .top)
+            .islandInteraction(model: model, shape: shape, anchor: .top, width: parameters.width)
     }
 
     @ViewBuilder

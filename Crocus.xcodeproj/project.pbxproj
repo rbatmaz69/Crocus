@@ -32,6 +32,7 @@
 		53A8DFE84C0A7C1A2822B263 /* URLRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D621AC6461D881438F83EF25 /* URLRouterTests.swift */; };
 		58E54A21642953CE438963D7 /* TargetScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6E4305ED985805356F2FEA /* TargetScreen.swift */; };
 		633CEA579F4346EA3B3D3CA5 /* ActivityKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F61E78CB8FEB388A42A37B5 /* ActivityKind.swift */; };
+		670707B29B641667BCF1563A /* PageDotsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ACE80280D8420E5B7470C0 /* PageDotsTests.swift */; };
 		6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28589CB97835C5D738141A59 /* CrocusTypography.swift */; };
 		72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */; };
 		8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDCB7E68607BDB98E90DC64A /* OverlayController.swift */; };
@@ -58,6 +59,7 @@
 		BF7A9F68482EC20D917550EE /* HoverHintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C774EA9BBFD919DAD9B0B116 /* HoverHintTests.swift */; };
 		BFE951271B502C1AA1186516 /* NotchIslandShapeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */; };
 		C675186A86E1049668BDFEE2 /* KeyboardShortcutSpecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6FB467FC32AB7084114205 /* KeyboardShortcutSpecTests.swift */; };
+		CC5AA71B96C9336FC1380125 /* PageDots.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D90424D26D12E41D7AD4D9 /* PageDots.swift */; };
 		CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */; };
 		CF4987BB3686E6879FA1E547 /* PointerScreenDebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */; };
 		CF77CE5857CD95E3AB7710F4 /* NotchIslandMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */; };
@@ -117,6 +119,7 @@
 		4BFA93759A19B996B0BF9BD2 /* IslandEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandEvent.swift; sourceTree = "<group>"; };
 		4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusApp.swift; sourceTree = "<group>"; };
 		50875E1DD2F25D283F389BF3 /* ExpandedLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandedLayout.swift; sourceTree = "<group>"; };
+		51ACE80280D8420E5B7470C0 /* PageDotsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageDotsTests.swift; sourceTree = "<group>"; };
 		54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayoutTests.swift; sourceTree = "<group>"; };
 		683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncer.swift; sourceTree = "<group>"; };
 		6DC13E5727374621F7BF995C /* CrocusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrocusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,6 +146,7 @@
 		B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityPriorityTests.swift; sourceTree = "<group>"; };
 		BAB8E7A24FAD9C2F4F37CB9F /* IslandDropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandDropView.swift; sourceTree = "<group>"; };
+		C0D90424D26D12E41D7AD4D9 /* PageDots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageDots.swift; sourceTree = "<group>"; };
 		C75EBAB7F8064E7C695CE90F /* MinimalLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalLayoutTests.swift; sourceTree = "<group>"; };
 		C774EA9BBFD919DAD9B0B116 /* HoverHintTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverHintTests.swift; sourceTree = "<group>"; };
 		D2FF04FE3F6FC0A23C110817 /* IslandActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandActivity.swift; sourceTree = "<group>"; };
@@ -226,6 +230,7 @@
 				F04A29424CB721E0E862C1C6 /* NotchIslandMetricsTests.swift */,
 				A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */,
 				54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */,
+				51ACE80280D8420E5B7470C0 /* PageDotsTests.swift */,
 				205D4022614CAA3BD99E6EDB /* PillIslandMetricsTests.swift */,
 				2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */,
 				203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */,
@@ -348,6 +353,7 @@
 				9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */,
 				957504076061D31A24E3A4ED /* NotchIslandShape.swift */,
 				341C6186C15EBD965BB7FEDF /* NotchIslandView.swift */,
+				C0D90424D26D12E41D7AD4D9 /* PageDots.swift */,
 				F258D47FC9594F3B539040CB /* PillIslandMetrics.swift */,
 				E908358244D5D9A297B65B1C /* PillIslandView.swift */,
 			);
@@ -474,6 +480,7 @@
 				A75843B0C4CFB6EE48B0B00F /* NotchIslandMetricsTests.swift in Sources */,
 				BFE951271B502C1AA1186516 /* NotchIslandShapeTests.swift in Sources */,
 				A9B1A6DCDE000DFCDFED0BE7 /* OverlayLayoutTests.swift in Sources */,
+				670707B29B641667BCF1563A /* PageDotsTests.swift in Sources */,
 				80971A2DD8EAE960F169983D /* PillIslandMetricsTests.swift in Sources */,
 				CF4987BB3686E6879FA1E547 /* PointerScreenDebouncerTests.swift in Sources */,
 				975C4B3F82C948E9B5C152B2 /* ScreenGeometryTests.swift in Sources */,
@@ -526,6 +533,7 @@
 				8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */,
 				44880B93F2F40036A8E3475E /* OverlayLayout.swift in Sources */,
 				E6236D1F409FF76415A9611A /* OverlayPanel.swift in Sources */,
+				CC5AA71B96C9336FC1380125 /* PageDots.swift in Sources */,
 				F32C57B837A2832E2299B341 /* PillIslandMetrics.swift in Sources */,
 				B2F4002C9C1EB81D2F93C9DD /* PillIslandView.swift in Sources */,
 				BAE57AE1A84343827F394101 /* PointerScreenDebouncer.swift in Sources */,

@@ -116,6 +116,20 @@ final class IslandStore {
         if presentation == .expanded { collapse() } else { expand() }
     }
 
+    func showCard(at index: Int) {
+        update { $0.showCard(at: index) }
+    }
+
+    /// Position of the card shown in the expanded layout and the number of
+    /// cards. Follows the last expanded activity, so it stays put while the
+    /// island collapses.
+    var cardPosition: (index: Int, count: Int)? {
+        guard let id = lastExpandedID,
+              let index = state.activities.firstIndex(where: { $0.id == id })
+        else { return nil }
+        return (index, state.activities.count)
+    }
+
     func showNextCard() {
         update { $0.showNextCard() }
     }

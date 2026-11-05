@@ -67,7 +67,8 @@ struct NotchIslandView: View {
         .islandInteraction(
             model: model,
             shape: NotchIslandShape(parameters: parameters, centerX: centerX),
-            anchor: UnitPoint(x: centerX / OverlayLayout.panelSize.width, y: 0)
+            anchor: UnitPoint(x: centerX / OverlayLayout.panelSize.width, y: 0),
+            width: parameters.width
         )
     }
 }
