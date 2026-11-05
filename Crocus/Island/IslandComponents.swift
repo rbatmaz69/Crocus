@@ -5,16 +5,40 @@ import SwiftUI
 /// Circular progress, 20 pt, 3 pt stroke, system blue (compact right wing).
 struct IslandProgressRing: View {
     let progress: Double
+    var tint: Color = CrocusColors.progress
 
     var body: some View {
         ZStack {
-            Circle().stroke(CrocusColors.progress.opacity(CrocusColors.progressTrackOpacity), lineWidth: 3)
+            Circle().stroke(tint.opacity(CrocusColors.progressTrackOpacity), lineWidth: 3)
             Circle()
-                .trim(from: 0, to: progress)
-                .stroke(CrocusColors.progress, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .trim(from: 0, to: min(max(progress, 0), 1))
+                .stroke(tint, style: StrokeStyle(lineWidth: 3, lineCap: .round))
                 .rotationEffect(.degrees(-90))
         }
         .frame(width: 20, height: 20)
+        .animation(.easeInOut(duration: 0.3), value: progress)
+    }
+}
+
+/// Indeterminate progress: a rotating arc in the ring's size and colour.
+struct IslandSpinner: View {
+    var tint: Color = CrocusColors.progress
+    @State private var rotation: Double = 0
+
+    var body: some View {
+        ZStack {
+            Circle().stroke(tint.opacity(CrocusColors.progressTrackOpacity), lineWidth: 3)
+            Circle()
+                .trim(from: 0, to: 0.28)
+                .stroke(tint, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .rotationEffect(.degrees(rotation))
+        }
+        .frame(width: 20, height: 20)
+        .onAppear {
+            withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
+                rotation = 360
+            }
+        }
     }
 }
 

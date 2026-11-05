@@ -4,7 +4,7 @@ Crocus brings a Dynamic-Island-style live activity area to the Mac: a black isla
 
 ![Overview](design/boards/00-overview.png)
 
-The visual design lives in [`design/`](design/README.md).
+The visual design lives in [`design/`](design/README.md). Apps and scripts can push their own activities via the `crocus://` URL scheme – see [Live Activities](docs/live-activities.md).
 
 ## Requirements
 
@@ -27,7 +27,7 @@ xcodebuild -project Crocus.xcodeproj -scheme Crocus -destination 'platform=macOS
 xcodebuild -project Crocus.xcodeproj -scheme Crocus -destination 'platform=macOS' test
 ```
 
-Crocus runs as a menu bar agent (no Dock icon) inside the App Sandbox. Look for the capsule icon in the menu bar to open Settings or quit. The `crocus://` URL scheme is registered, e.g. `open crocus://test`.
+Crocus runs as a menu bar agent (no Dock icon) inside the App Sandbox. Look for the capsule icon in the menu bar to open Settings or quit. Try a Live Activity: `open -g "crocus://start?id=demo&title=Demo&symbol=hammer&progress=0.5"`.
 
 Signing uses "Sign to Run Locally" by default; set your team in `project.yml` (`DEVELOPMENT_TEAM`) for distribution builds.
 
