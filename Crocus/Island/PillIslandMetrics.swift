@@ -23,7 +23,7 @@ enum PillIslandMetrics {
         switch presentation {
         case .idle:
             return PillShapeParameters(width: spec.idle.width, height: spec.idle.height, cornerRadius: spec.idle.cornerRadius)
-        case .compact:
+        case .compact, .minimal:
             return PillShapeParameters(width: spec.compact.width, height: spec.compact.height, cornerRadius: spec.compact.cornerRadius)
         case .expanded:
             return PillShapeParameters(

@@ -1,0 +1,46 @@
+import SwiftUI
+
+/// A long-running activity shown in the island. Activity sources (#13–#19,
+/// Live Activities #11) implement this and push themselves into the
+/// `IslandStore`. Views are type-erased so the store can hold any source.
+@MainActor
+protocol IslandActivity: AnyObject {
+    /// Stable identifier; pushing an activity with the same id updates it.
+    var id: String { get }
+    var kind: ActivityKind { get }
+    /// When it started; breaks ties between activities of the same kind.
+    var startedAt: Date { get }
+    /// What VoiceOver reads for the compact island, e.g. "Timer, 4 minutes
+    /// 32 seconds remaining".
+    var accessibilityLabel: String { get }
+
+    /// Symbol in the left wing.
+    var compactLeading: AnyView { get }
+    /// Value in the right wing.
+    var compactTrailing: AnyView { get }
+    /// Right wing content when it is reduced to 44 pt (symbol or ring only).
+    var compactTrailingReduced: AnyView { get }
+
+    /// Expanded header, left of the camera.
+    var expandedSource: AnyView { get }
+    /// Expanded header, right of the camera.
+    var expandedStatus: AnyView { get }
+    /// Expanded rows below the header.
+    var expandedContent: AnyView { get }
+}
+
+extension IslandActivity {
+    var compactTrailingReduced: AnyView { compactTrailing }
+
+    /// The value the state machine works with.
+    var entry: ActivityEntry {
+        ActivityEntry(id: id, kind: kind, startedAt: startedAt)
+    }
+}
+
+/// The parts of an activity the state machine needs: identity, kind and age.
+struct ActivityEntry: Equatable, Sendable {
+    let id: String
+    let kind: ActivityKind
+    let startedAt: Date
+}

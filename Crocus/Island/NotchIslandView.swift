@@ -19,7 +19,7 @@ struct NotchIslandView: View {
                     switch model.presentation {
                     case .idle:
                         EmptyView()
-                    case .compact:
+                    case .compact, .minimal:
                         IslandCompactContent(model: model, metrics: metrics)
                             .frame(width: parameters.width, height: parameters.height)
                             .offset(x: centerX - parameters.leading)

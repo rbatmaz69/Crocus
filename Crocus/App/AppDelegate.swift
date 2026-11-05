@@ -3,7 +3,8 @@ import AppKit
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let router = URLRouter()
-    let overlay = OverlayController()
+    let store = IslandStore()
+    lazy var overlay = OverlayController(store: store)
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Don't put windows on screen while running as a unit test host.

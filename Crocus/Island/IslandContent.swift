@@ -1,22 +1,29 @@
 import SwiftUI
 
-/// Content of the compact state, laid out for the given mode. Sample content
-/// in DEBUG until real activities exist.
+/// Content of the compact state: the event, or the main activity.
 struct IslandCompactContent: View {
     let model: OverlayPanelModel
     let metrics: IslandLayoutMetrics
 
     var body: some View {
+        let store = model.store
         let reduced = metrics.trailingWingWidth < CrocusMetrics.notch.wingWidth
+
         CompactLayout(metrics: metrics) {
-            #if DEBUG
-            DebugIslandSamples.compactLeading
-            #endif
+            if let event = store.currentEvent {
+                event.compactLeading
+            } else if let activity = store.primaryActivity {
+                activity.compactLeading
+            }
         } trailing: {
-            #if DEBUG
-            DebugIslandSamples.compactTrailing(reduced: reduced)
-            #endif
+            if let event = store.currentEvent {
+                event.compactTrailing
+            } else if let activity = store.primaryActivity {
+                reduced ? activity.compactTrailingReduced : activity.compactTrailing
+            }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(store.accessibilityLabel)
     }
 }
 
@@ -27,18 +34,13 @@ struct IslandExpandedContent: View {
     let metrics: IslandLayoutMetrics
 
     var body: some View {
+        let activity = model.store.primaryActivity
         ExpandedLayout(metrics: metrics) { model.expandedContentHeight = $0 } source: {
-            #if DEBUG
-            Text("build.sh · Terminal")
-            #endif
+            activity?.expandedSource
         } status: {
-            #if DEBUG
-            Text("2:14 ago")
-            #endif
+            activity?.expandedStatus
         } content: {
-            #if DEBUG
-            DebugIslandSamples.expandedContent(large: model.usesLargeSample)
-            #endif
+            activity?.expandedContent
         }
     }
 }
