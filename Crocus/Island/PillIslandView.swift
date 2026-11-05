@@ -21,6 +21,7 @@ struct PillIslandView: View {
             .overlay {
                 shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
             }
+            .islandInteraction(model: model, shape: shape, anchor: .top)
             .offset(x: centerX - model.panelCenterX)
             .padding(.top, PillIslandMetrics.topOffset)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

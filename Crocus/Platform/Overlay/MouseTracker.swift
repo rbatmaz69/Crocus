@@ -48,9 +48,12 @@ final class MouseTracker {
     func update() {
         let location = NSEvent.mouseLocation
         for panel in panels() {
-            let ignores = !(panel.isVisible && panel.hitRegion.contains(location))
-            if panel.ignoresMouseEvents != ignores {
-                panel.ignoresMouseEvents = ignores
+            let isOver = panel.isVisible && panel.hitRegion.contains(location)
+            if panel.ignoresMouseEvents == isOver {
+                panel.ignoresMouseEvents = !isOver
+            }
+            if panel.model.isHovered != isOver {
+                panel.model.isHovered = isOver
             }
         }
     }

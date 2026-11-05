@@ -186,3 +186,34 @@ import Testing
         #expect(state.display == .compact(primary: "timer"))
     }
 }
+
+@Suite struct IslandStateCardTests {
+    let t0 = ContinuousClock.now
+
+    func state(_ ids: [(String, ActivityKind)]) -> IslandState {
+        var state = IslandState()
+        for (id, kind) in ids { state.upsert(ActivityEntry(id: id, kind: kind, startedAt: .distantPast)) }
+        return state
+    }
+
+    @Test func nextAndPrevious() {
+        var s = state([("cam", .cameraMicrophone), ("timer", .timer), ("music", .music)])
+        s.expand()
+        do { let moved = s.showNextCard(); #expect(moved) }
+        #expect(s.display == .expanded("timer"))
+        s.showNextCard()
+        #expect(s.display == .expanded("music"))
+        do { let moved = s.showNextCard(); #expect(!moved) }
+        #expect(s.display == .expanded("music"))
+        s.showPreviousCard()
+        s.showPreviousCard()
+        #expect(s.display == .expanded("cam"))
+        do { let moved = s.showPreviousCard(); #expect(!moved) }
+    }
+
+    @Test func onlyWhileExpanded() {
+        var s = state([("timer", .timer), ("music", .music)])
+        do { let moved = s.showNextCard(); #expect(!moved) }
+        #expect(s.display == .minimal(primary: "timer", secondary: "music"))
+    }
+}

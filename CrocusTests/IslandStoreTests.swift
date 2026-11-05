@@ -48,6 +48,20 @@ private final class TestActivity: IslandActivity {
         #expect(store.presentation == .idle)
     }
 
+    @Test func toggleAndCards() {
+        let store = IslandStore(defaults: defaults)
+        store.toggle()
+        #expect(store.presentation == .idle)
+        store.upsert(TestActivity("timer", .timer))
+        store.upsert(TestActivity("music", .music))
+        store.toggle()
+        #expect(store.presentation == .expanded)
+        store.showNextCard()
+        #expect(store.primaryActivity?.id == "music")
+        store.toggle()
+        #expect(store.presentation == .minimal)
+    }
+
     @Test func eventContentAndLabel() {
         let store = IslandStore(defaults: defaults)
         store.upsert(TestActivity("timer", .timer))

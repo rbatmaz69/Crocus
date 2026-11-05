@@ -34,6 +34,11 @@ struct NotchIslandView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .islandInteraction(
+                model: model,
+                shape: NotchIslandShape(parameters: parameters, centerX: centerX),
+                anchor: UnitPoint(x: centerX / OverlayLayout.panelSize.width, y: 0)
+            )
             .animation(spring, value: parameters)
             .animation(spring, value: model.presentation)
             .onChange(of: parameters, initial: true) { _, newValue in

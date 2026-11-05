@@ -93,6 +93,19 @@ final class IslandStore {
         update { $0.collapse(now: time) }
     }
 
+    /// Global shortcut: collapse when expanded, expand otherwise.
+    func toggle() {
+        if presentation == .expanded { collapse() } else { expand() }
+    }
+
+    func showNextCard() {
+        update { $0.showNextCard() }
+    }
+
+    func showPreviousCard() {
+        update { $0.showPreviousCard() }
+    }
+
     // MARK: - Internals
 
     private func reloadPriority() {
