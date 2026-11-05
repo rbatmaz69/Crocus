@@ -11,6 +11,12 @@ final class IslandStore {
     private(set) var activities: [String: any IslandActivity] = [:]
     private(set) var events: [String: IslandEvent] = [:]
 
+    /// The activity last shown expanded / in the compact main shape. Kept
+    /// after the state moves on, so content fading out during a transition
+    /// keeps showing what was there instead of the next activity.
+    private(set) var lastExpandedID: String?
+    private(set) var lastCompactID: String?
+
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let now: () -> ContinuousClock.Instant
     @ObservationIgnored private var deadlineTask: Task<Void, Never>?
@@ -52,6 +58,18 @@ final class IslandStore {
     var currentEvent: IslandEvent? {
         if case .event(let id) = state.display { return events[id] }
         return nil
+    }
+
+    /// Content for the expanded layout: the expanded activity, or – while
+    /// collapsing – the one that was expanded.
+    var expandedContentActivity: (any IslandActivity)? {
+        lastExpandedID.flatMap { activities[$0] }
+    }
+
+    /// Content for the compact layout's main shape: the current main
+    /// activity, or – while expanding or fading to idle – the last one.
+    var compactContentActivity: (any IslandActivity)? {
+        lastCompactID.flatMap { activities[$0] }
     }
 
     var accessibilityLabel: String {
@@ -118,6 +136,11 @@ final class IslandStore {
         let before = state.display
         change(&state)
         pruneEvents()
+        switch state.display {
+        case .expanded(let id): lastExpandedID = id
+        case .compact(let id), .minimal(let id, _): lastCompactID = id
+        case .idle, .event: break
+        }
         if state.display != before {
             Self.logger.info("Island: \(String(describing: before), privacy: .public) → \(String(describing: self.state.display), privacy: .public)")
         }

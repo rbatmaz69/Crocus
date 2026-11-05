@@ -39,3 +39,24 @@ import Testing
         #expect(!reduced([item(x: 1500)]))                // on the screen to the right
     }
 }
+
+@Suite struct MenuBarClearanceMinimalTests {
+    let screen = CGRect(x: 0, y: 0, width: 1470, height: 956)
+    let notch = CGRect(x: 645.5, y: 924, width: 179, height: 32)
+
+    @Test func minimalNeedsRoomForTheDrop() {
+        #expect(MenuBarClearance.extraWidth(for: .compact) == 0)
+        #expect(MenuBarClearance.extraWidth(for: .minimal) == 46)
+
+        // An item that fits compact (edge 900.5) but not minimal (edge 946.5).
+        let item = WindowInfo(ownerPID: 7, layer: 25, bounds: CGRect(x: 920, y: 0, width: 30, height: 32))
+        let compact = MenuBarClearance.isRightWingReduced(
+            notchRect: notch, screenBounds: screen, menuBarHeight: 32, extraTrailingWidth: 0, windows: [item]
+        )
+        let minimal = MenuBarClearance.isRightWingReduced(
+            notchRect: notch, screenBounds: screen, menuBarHeight: 32, extraTrailingWidth: 46, windows: [item]
+        )
+        #expect(!compact)
+        #expect(minimal)
+    }
+}

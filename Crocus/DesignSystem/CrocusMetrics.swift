@@ -74,6 +74,10 @@ enum CrocusMetrics {
         ]
     )
 
+    /// Content inside the drop (notch) and circle (pill).
+    static let dropContentSize: CGFloat = 24
+    static let circleContentSize: CGFloat = 22
+
     /// Minimum hit target, even when the visible symbol is smaller.
     static let minimumHitTarget: CGFloat = 28
     /// Visible diameter of the page dots in the expanded state.

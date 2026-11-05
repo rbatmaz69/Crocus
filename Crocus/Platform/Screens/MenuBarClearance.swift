@@ -15,10 +15,13 @@ enum MenuBarClearance {
     ///   - notchRect: the notch in screen coordinates
     ///   - screenBounds: the screen in Core Graphics coordinates (`CGDisplayBounds`)
     ///   - menuBarHeight: height of the menu bar strip to search in
+    ///   - extraTrailingWidth: more space needed right of the wing (the drop
+    ///     in the minimal state, see `extraWidth(for:)`)
     static func isRightWingReduced(
         notchRect: CGRect,
         screenBounds: CGRect,
         menuBarHeight: CGFloat,
+        extraTrailingWidth: CGFloat = 0,
         windows: [WindowInfo]
     ) -> Bool {
         let menuBar = CGRect(
@@ -35,7 +38,14 @@ enum MenuBarClearance {
             .min()
 
         guard let leftmostItem else { return false }
-        let fullWingEdge = notchRect.maxX + CrocusMetrics.notch.wingWidth + CrocusMetrics.Compact.menuBarItemSpacing
+        let fullWingEdge = notchRect.maxX + CrocusMetrics.notch.wingWidth + extraTrailingWidth
+            + CrocusMetrics.Compact.menuBarItemSpacing
         return fullWingEdge > leftmostItem
+    }
+
+    /// Space the minimal state needs right of the wing: gap + drop (spec size
+    /// as an upper bound; on smaller notches the drop is a bit narrower).
+    static func extraWidth(for presentation: IslandPresentation) -> CGFloat {
+        presentation == .minimal ? MinimalLayout.spacing + MinimalLayout.notchDropDiameter : 0
     }
 }

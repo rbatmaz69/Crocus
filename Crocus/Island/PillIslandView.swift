@@ -1,7 +1,9 @@
 import SwiftUI
 
 /// The island in pill mode: a black pill floating 6 pt below the top edge
-/// with a soft shadow and a hairline outline that adapts to the wallpaper.
+/// with a soft shadow and a hairline outline that adapts to the wallpaper. In
+/// the minimal state a 30 pt circle sits next to it and the group stays
+/// centred.
 struct PillIslandView: View {
     let model: OverlayPanelModel
 
@@ -9,27 +11,45 @@ struct PillIslandView: View {
         let parameters = model.pillShapeParameters
         let centerX = model.islandCenterXInPanel
         let spring = model.transitionSpring.animation
-        let metrics = IslandLayoutMetrics.pill
-        let shape = RoundedRectangle(cornerRadius: parameters.cornerRadius, style: .continuous)
+        let secondary = model.presentation == .minimal ? model.store.secondaryActivity : nil
+        let mainCenterX = centerX + (secondary == nil ? 0 : MinimalLayout.pillMainOffset)
+        let circleRect = secondary.map { _ in MinimalLayout.pillCircleRect(centerX: centerX) }
 
-        content(metrics: metrics)
+        ZStack(alignment: .top) {
+            mainPill(parameters: parameters)
+                .offset(x: mainCenterX - model.panelCenterX)
+
+            if let secondary, let circleRect {
+                PillCircleView(model: model, activity: secondary)
+                    .offset(x: circleRect.midX - model.panelCenterX)
+                    .transition(.scale(scale: 0.2, anchor: .leading).combined(with: .opacity))
+            }
+        }
+        .padding(.top, PillIslandMetrics.topOffset)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .animation(spring, value: parameters)
+        .animation(spring, value: model.presentation)
+        .animation(CrocusSprings.dropDetach.animation, value: secondary?.id)
+        .onChange(of: parameters.bodyRect(centerX: mainCenterX), initial: true) { _, newValue in
+            model.islandFrameInWindow = newValue
+        }
+        .onChange(of: circleRect, initial: true) { _, newValue in
+            model.dropFrameInWindow = newValue
+        }
+    }
+
+    private func mainPill(parameters: PillShapeParameters) -> some View {
+        let shape = RoundedRectangle(cornerRadius: parameters.cornerRadius, style: .continuous)
+        return content(metrics: .pill)
             .frame(width: parameters.width, height: parameters.height, alignment: .top)
             .clipShape(shape)
             .background {
-                shadowed(shape.fill(CrocusColors.island))
+                PillShadow.apply(to: shape.fill(CrocusColors.island))
             }
             .overlay {
                 shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
             }
             .islandInteraction(model: model, shape: shape, anchor: .top)
-            .offset(x: centerX - model.panelCenterX)
-            .padding(.top, PillIslandMetrics.topOffset)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .animation(spring, value: parameters)
-            .animation(spring, value: model.presentation)
-            .onChange(of: parameters, initial: true) { _, newValue in
-                model.islandFrameInWindow = newValue.bodyRect(centerX: centerX)
-            }
     }
 
     @ViewBuilder
@@ -44,13 +64,6 @@ struct PillIslandView: View {
         case .expanded:
             IslandExpandedContent(model: model, metrics: metrics)
                 .transition(.opacity)
-        }
-    }
-
-    /// Applies the pill shadows from the spec (CSS blur → SwiftUI radius = blur / 2).
-    private func shadowed(_ view: some View) -> some View {
-        CrocusMetrics.pill.shadows.reduce(AnyView(view)) { view, shadow in
-            AnyView(view.shadow(color: .black.opacity(shadow.opacity), radius: shadow.radius, x: 0, y: shadow.y))
         }
     }
 }

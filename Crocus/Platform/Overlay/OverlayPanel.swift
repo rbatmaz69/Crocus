@@ -10,6 +10,8 @@ final class OverlayPanelModel {
     /// Island frame reported by the SwiftUI view, in the panel's content
     /// coordinates (top-left origin).
     var islandFrameInWindow: CGRect?
+    /// Drop/circle frame in the minimal state, same coordinates.
+    var dropFrameInWindow: CGRect?
 
     var presentation: IslandPresentation = .idle {
         didSet {
@@ -25,8 +27,8 @@ final class OverlayPanelModel {
     let store: IslandStore
     /// The menu bar (and so the wallpaper under the pill) is dark.
     var menuBarIsDark = true
-    /// The pointer is over the island (set by `MouseTracker`).
-    var isHovered = false
+    /// The part of the island under the pointer (set by `MouseTracker`).
+    var hoveredPart: IslandPart?
     var hoverStyle = HoverStyle.breathe
 
     init(geometry: ScreenGeometry, store: IslandStore) {
@@ -170,10 +172,19 @@ final class OverlayPanel: NSPanel {
         frameRect
     }
 
+    /// The part of the island under a point in screen coordinates.
+    func part(at point: CGPoint) -> IslandPart? {
+        IslandPart.part(
+            at: point,
+            main: model.islandFrameInWindow.map { OverlayLayout.screenRect(forWindowRect: $0, panelFrame: frame) },
+            drop: model.dropFrameInWindow.map { OverlayLayout.screenRect(forWindowRect: $0, panelFrame: frame) }
+        )
+    }
+
     /// The island's hit region in screen coordinates.
     var hitRegion: IslandHitRegion {
-        IslandHitRegion(rect: model.islandFrameInWindow.map {
-            OverlayLayout.screenRect(forWindowRect: $0, panelFrame: frame)
+        IslandHitRegion(rects: [model.islandFrameInWindow, model.dropFrameInWindow].compactMap {
+            $0.map { OverlayLayout.screenRect(forWindowRect: $0, panelFrame: frame) }
         })
     }
 

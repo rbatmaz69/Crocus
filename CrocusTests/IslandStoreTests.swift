@@ -62,6 +62,25 @@ private final class TestActivity: IslandActivity {
         #expect(store.presentation == .minimal)
     }
 
+    @Test func contentStaysDuringTransitions() {
+        let store = IslandStore(defaults: defaults)
+        store.upsert(TestActivity("timer", .timer))
+        store.upsert(TestActivity("music", .music))
+        #expect(store.compactContentActivity?.id == "timer")
+
+        // Expanding the drop's activity: the compact main shape keeps the timer
+        // while it fades out.
+        store.expand(id: "music")
+        #expect(store.expandedContentActivity?.id == "music")
+        #expect(store.compactContentActivity?.id == "timer")
+
+        // Collapsing: the expanded content keeps music while it fades out.
+        store.collapse()
+        #expect(store.presentation == .minimal)
+        #expect(store.primaryActivity?.id == "timer")
+        #expect(store.expandedContentActivity?.id == "music")
+    }
+
     @Test func eventContentAndLabel() {
         let store = IslandStore(defaults: defaults)
         store.upsert(TestActivity("timer", .timer))
