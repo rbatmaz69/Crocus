@@ -36,6 +36,7 @@ struct CrocusApp: App {
 private struct DebugMenu: View {
     @Bindable var overlay: OverlayController
     @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
+    @State private var islandState = DebugIslandState.idle
 
     var body: some View {
         Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
@@ -44,6 +45,15 @@ private struct DebugMenu: View {
             ForEach(TargetScreenOption.allCases) { option in
                 Text(option.title).tag(option)
             }
+        }
+        Picker("Island State", selection: $islandState) {
+            ForEach(DebugIslandState.allCases) { state in
+                Text(state.title).tag(state)
+            }
+        }
+        .onChange(of: islandState) { _, state in
+            overlay.usesLargeSample = state.usesLargeSample
+            overlay.presentation = state.presentation
         }
     }
 }

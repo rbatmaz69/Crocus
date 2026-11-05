@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Stand-in for the island until the real shapes land (#5 notch, #6 pill):
-/// a black idle shape at the top centre of the panel. On a notch display it
-/// covers the notch and is invisible; on other displays it shows as a pill.
+/// Stand-in for the pill-mode island until its real shape lands (#6):
+/// a black idle pill at the top centre of the panel. (Notch mode uses
+/// `NotchIslandView`.)
 struct IslandPlaceholderView: View {
     let model: OverlayPanelModel
 
@@ -14,12 +14,6 @@ struct IslandPlaceholderView: View {
         let topOffset = isNotch ? 0 : geometry.metrics.topOffset
 
         ZStack(alignment: .top) {
-            if model.showsDebugFrame {
-                Rectangle()
-                    .fill(Color.red.opacity(0.06))
-                    .strokeBorder(Color.red.opacity(0.6), lineWidth: 1)
-            }
-
             shape(cornerRadius: cornerRadius, hasNotch: isNotch)
                 .fill(CrocusColors.island)
                 .frame(width: island.width, height: island.height)
@@ -31,7 +25,6 @@ struct IslandPlaceholderView: View {
                 .padding(.top, topOffset)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .islandEnvironment()
         .accessibilityHidden(true)
     }
 

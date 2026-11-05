@@ -11,8 +11,47 @@ final class OverlayPanelModel {
     /// coordinates (top-left origin).
     var islandFrameInWindow: CGRect?
 
+    var presentation: IslandPresentation = .idle {
+        didSet {
+            if oldValue != presentation { previousPresentation = oldValue }
+        }
+    }
+    private(set) var previousPresentation: IslandPresentation = .idle
+    /// Menu bar items need the space: the right wing shrinks to 44 pt.
+    var rightWingReduced = false
+    /// Natural height of the expanded content, reported by `ExpandedLayout`.
+    var expandedContentHeight: CGFloat?
+    /// Debug: show the taller expanded sample.
+    var usesLargeSample = false
+
     init(geometry: ScreenGeometry) {
         self.geometry = geometry
+    }
+
+    /// Horizontal centre of the notch in panel coordinates.
+    var notchCenterXInPanel: CGFloat {
+        geometry.islandCenterX - OverlayLayout.panelFrame(for: geometry).minX
+    }
+
+    /// Target shape of the notch island, `nil` in pill mode.
+    var notchShapeParameters: NotchShapeParameters? {
+        guard let notch = geometry.notchRect else { return nil }
+        return NotchIslandMetrics.parameters(
+            for: presentation,
+            notch: notch.size,
+            rightWingReduced: rightWingReduced,
+            expandedContentHeight: expandedContentHeight
+        )
+    }
+
+    /// Spring for the current transition: expand into the expanded state,
+    /// collapse out of it, idle → compact otherwise.
+    var transitionSpring: SpringSpec {
+        switch (previousPresentation, presentation) {
+        case (_, .expanded): CrocusSprings.expand
+        case (.expanded, _): CrocusSprings.collapse
+        default: CrocusSprings.idleToCompact
+        }
     }
 }
 
@@ -54,7 +93,7 @@ final class OverlayPanel: NSPanel {
         ignoresMouseEvents = true
         animationBehavior = .none
 
-        let hostingView = NSHostingView(rootView: IslandPlaceholderView(model: model))
+        let hostingView = NSHostingView(rootView: IslandRootView(model: model))
         hostingView.sizingOptions = []
         contentView = hostingView
         setFrame(frame, display: false)
