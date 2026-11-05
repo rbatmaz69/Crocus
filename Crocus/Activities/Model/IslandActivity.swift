@@ -21,6 +21,10 @@ protocol IslandActivity: AnyObject {
     /// Right wing content when it is reduced to 44 pt (symbol or ring only).
     var compactTrailingReduced: AnyView { get }
 
+    /// Content of the drop/circle when this is the second activity
+    /// (minimal state): cover, symbol or ring.
+    var minimal: AnyView { get }
+
     /// Expanded header, left of the camera.
     var expandedSource: AnyView { get }
     /// Expanded header, right of the camera.
@@ -31,6 +35,7 @@ protocol IslandActivity: AnyObject {
 
 extension IslandActivity {
     var compactTrailingReduced: AnyView { compactTrailing }
+    var minimal: AnyView { compactLeading }
 
     /// The value the state machine works with.
     var entry: ActivityEntry {

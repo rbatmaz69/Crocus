@@ -8,6 +8,10 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
     let model: OverlayPanelModel
     let shape: S
     let anchor: UnitPoint
+    /// Which shape this is; only the hovered one shows the hint.
+    var part: IslandPart = .main
+    /// What a click does; `nil` expands the main activity.
+    var onTap: (() -> Void)?
 
     @State private var isPressed = false
     @State private var pressStarted: Date?
@@ -17,17 +21,20 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
     func body(content: Content) -> some View {
         let presentation = model.presentation
         let canExpand = presentation == .compact || presentation == .minimal
+        let isHovered = model.hoveredPart == part
         let hoverScale = HoverHint.scale(
-            style: model.hoverStyle, isHovered: model.isHovered, presentation: presentation, breathPhase: false
+            style: model.hoverStyle, isHovered: isHovered, presentation: presentation, breathPhase: false
         )
-        let breathes = HoverHint.breathes(style: model.hoverStyle, isHovered: model.isHovered, presentation: presentation)
+        let breathes = HoverHint.breathes(style: model.hoverStyle, isHovered: isHovered, presentation: presentation)
 
         content
             .contentShape(shape)
             .scaleEffect(isPressed ? HoverHint.pressedScale : 1, anchor: anchor)
             .scaleEffect(hoverScale, anchor: anchor)
             .animation(CrocusSprings.hoverHint.animation, value: hoverScale)
-            .scaleEffect(breathes && breathPhase ? HoverHint.breathLowScale / HoverHint.enlargedScale : 1, anchor: anchor)
+            // Driven only by `breathPhase`, which is animated back with the hover
+            // spring when the pointer leaves – so the breathing never jumps.
+            .scaleEffect(HoverHint.breathFactor(breathPhase: breathPhase), anchor: anchor)
             .gesture(press, including: canExpand ? .all : .subviews)
             .simultaneousGesture(cardDrag, including: presentation == .expanded ? .all : .subviews)
             .contextMenu {
@@ -67,7 +74,7 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
                 DispatchQueue.main.asyncAfter(deadline: .now() + remaining) {
                     withAnimation(CrocusSprings.hoverHint.animation) { isPressed = false }
                 }
-                model.store.expand()
+                if let onTap { onTap() } else { model.store.expand() }
             }
     }
 }
@@ -89,7 +96,13 @@ extension IslandInteractionModifier {
 }
 
 extension View {
-    func islandInteraction(model: OverlayPanelModel, shape: some Shape, anchor: UnitPoint) -> some View {
-        modifier(IslandInteractionModifier(model: model, shape: shape, anchor: anchor))
+    func islandInteraction(
+        model: OverlayPanelModel,
+        shape: some Shape,
+        anchor: UnitPoint,
+        part: IslandPart = .main,
+        onTap: (() -> Void)? = nil
+    ) -> some View {
+        modifier(IslandInteractionModifier(model: model, shape: shape, anchor: anchor, part: part, onTap: onTap))
     }
 }

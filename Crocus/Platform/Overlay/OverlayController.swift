@@ -179,6 +179,7 @@ final class OverlayController {
                 notchRect: notch,
                 screenBounds: CGDisplayBounds(screen.displayID),
                 menuBarHeight: screen.geometry.menuBarHeight,
+                extraTrailingWidth: MenuBarClearance.extraWidth(for: store.presentation),
                 windows: windows
             )
             if panel.model.rightWingReduced != reduced {
@@ -202,6 +203,7 @@ final class OverlayController {
             panel.model.presentation = presentation
         }
         guard presentation != previous else { return }
+        updateMenuBarClearance()
         applyKeyboardFocus()
         updateClickOutside()
         if presentation == .expanded {

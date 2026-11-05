@@ -41,4 +41,9 @@ import Testing
         #expect(HoverHint.pressedScale == 0.98)
         #expect(HoverHint.minimumPressDuration == 0.08)
     }
+
+    @Test func breathFactorDependsOnlyOnPhase() {
+        #expect(HoverHint.breathFactor(breathPhase: false) == 1)
+        #expect(abs(HoverHint.breathFactor(breathPhase: true) * HoverHint.enlargedScale - HoverHint.breathLowScale) < 0.0001)
+    }
 }

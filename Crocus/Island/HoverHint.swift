@@ -39,6 +39,12 @@ enum HoverHint {
         style == .breathe && isActive(style: style, isHovered: isHovered, presentation: presentation)
     }
 
+    /// Extra scale on top of `enlargedScale` at the low point of breathing.
+    /// Depends only on the phase, so leaving hover animates it back to 1.
+    static func breathFactor(breathPhase: Bool) -> CGFloat {
+        breathPhase ? breathLowScale / enlargedScale : 1
+    }
+
     /// Combined scale for the hint; `breathPhase` is the low point of the
     /// breathing cycle.
     static func scale(style: HoverStyle, isHovered: Bool, presentation: IslandPresentation, breathPhase: Bool) -> CGFloat {

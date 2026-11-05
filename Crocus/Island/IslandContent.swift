@@ -12,13 +12,13 @@ struct IslandCompactContent: View {
         CompactLayout(metrics: metrics) {
             if let event = store.currentEvent {
                 event.compactLeading
-            } else if let activity = store.primaryActivity {
+            } else if let activity = store.compactContentActivity {
                 activity.compactLeading
             }
         } trailing: {
             if let event = store.currentEvent {
                 event.compactTrailing
-            } else if let activity = store.primaryActivity {
+            } else if let activity = store.compactContentActivity {
                 reduced ? activity.compactTrailingReduced : activity.compactTrailing
             }
         }
@@ -34,7 +34,7 @@ struct IslandExpandedContent: View {
     let metrics: IslandLayoutMetrics
 
     var body: some View {
-        let activity = model.store.primaryActivity
+        let activity = model.store.expandedContentActivity
         ExpandedLayout(metrics: metrics) { model.expandedContentHeight = $0 } source: {
             activity?.expandedSource
         } status: {

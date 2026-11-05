@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// The island in notch mode: `NotchIslandShape` plus the content of the
-/// current presentation, animated with the spec springs.
+/// current presentation, animated with the spec springs; in the minimal state
+/// the second activity hangs next to it as a drop.
 struct NotchIslandView: View {
     let model: OverlayPanelModel
 
@@ -10,41 +11,64 @@ struct NotchIslandView: View {
             let centerX = model.islandCenterXInPanel
             let spring = model.transitionSpring.animation
             let metrics = IslandLayoutMetrics.notch(notchSize: notch.size, rightWingReduced: model.rightWingReduced)
+            let secondary = model.presentation == .minimal ? model.store.secondaryActivity : nil
+            let dropCenterX = MinimalLayout.notchDropCenterX(main: parameters, centerX: centerX)
+            let dropParameters = MinimalLayout.notchDropParameters(main: parameters)
+            let dropRect = secondary.map { _ in dropParameters.bodyRect(centerX: dropCenterX) }
 
             ZStack(alignment: .topLeading) {
-                NotchIslandShape(parameters: parameters, centerX: centerX)
-                    .fill(CrocusColors.island)
+                mainShape(parameters: parameters, metrics: metrics, centerX: centerX)
 
-                Group {
-                    switch model.presentation {
-                    case .idle:
-                        EmptyView()
-                    case .compact, .minimal:
-                        IslandCompactContent(model: model, metrics: metrics)
-                            .frame(width: parameters.width, height: parameters.height)
-                            .offset(x: centerX - parameters.leading)
-                            .transition(.opacity)
-                    case .expanded:
-                        IslandExpandedContent(model: model, metrics: metrics)
-                            .frame(height: parameters.height, alignment: .top)
-                            .clipped()
-                            .offset(x: centerX - metrics.expandedWidth / 2)
-                            .transition(.opacity)
-                    }
+                if let secondary {
+                    NotchDropView(model: model, activity: secondary, centerX: dropCenterX, parameters: dropParameters)
+                        .transition(
+                            .scale(scale: 0.2, anchor: UnitPoint(x: (dropCenterX - dropParameters.leading) / OverlayLayout.panelSize.width, y: 0))
+                                .combined(with: .opacity)
+                        )
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .islandInteraction(
-                model: model,
-                shape: NotchIslandShape(parameters: parameters, centerX: centerX),
-                anchor: UnitPoint(x: centerX / OverlayLayout.panelSize.width, y: 0)
-            )
             .animation(spring, value: parameters)
             .animation(spring, value: model.presentation)
+            .animation(CrocusSprings.dropDetach.animation, value: secondary?.id)
             .onChange(of: parameters, initial: true) { _, newValue in
                 model.islandFrameInWindow = newValue.bodyRect(centerX: centerX)
             }
+            .onChange(of: dropRect, initial: true) { _, newValue in
+                model.dropFrameInWindow = newValue
+            }
         }
+    }
+
+    private func mainShape(parameters: NotchShapeParameters, metrics: IslandLayoutMetrics, centerX: CGFloat) -> some View {
+        ZStack(alignment: .topLeading) {
+            NotchIslandShape(parameters: parameters, centerX: centerX)
+                .fill(CrocusColors.island)
+
+            Group {
+                switch model.presentation {
+                case .idle:
+                    EmptyView()
+                case .compact, .minimal:
+                    IslandCompactContent(model: model, metrics: metrics)
+                        .frame(width: parameters.width, height: parameters.height)
+                        .offset(x: centerX - parameters.leading)
+                        .transition(.opacity)
+                case .expanded:
+                    IslandExpandedContent(model: model, metrics: metrics)
+                        .frame(height: parameters.height, alignment: .top)
+                        .clipped()
+                        .offset(x: centerX - metrics.expandedWidth / 2)
+                        .transition(.opacity)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .islandInteraction(
+            model: model,
+            shape: NotchIslandShape(parameters: parameters, centerX: centerX),
+            anchor: UnitPoint(x: centerX / OverlayLayout.panelSize.width, y: 0)
+        )
     }
 }
 

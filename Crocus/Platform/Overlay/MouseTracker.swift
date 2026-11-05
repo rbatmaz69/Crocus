@@ -52,8 +52,9 @@ final class MouseTracker {
             if panel.ignoresMouseEvents == isOver {
                 panel.ignoresMouseEvents = !isOver
             }
-            if panel.model.isHovered != isOver {
-                panel.model.isHovered = isOver
+            let part = isOver ? panel.part(at: location) : nil
+            if panel.model.hoveredPart != part {
+                panel.model.hoveredPart = part
             }
         }
     }
