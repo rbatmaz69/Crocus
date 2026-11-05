@@ -113,7 +113,7 @@ final class OverlayController {
                 panel.model.presentation = store.presentation
                 panel.model.hoverStyle = AppSettings.hoverStyle(in: defaults)
                 panel.onEscape = { [weak self] in self?.store.collapse() }
-                panel.onArrow = { [weak self] direction in self?.switchCard(direction) }
+                panel.onArrow = { [weak self] direction in self?.stepCard(CardNavigation.step(forArrow: direction)) }
                 panel.onSwipe = { [weak self] direction in self?.handleSwipe(direction) }
                 panel.model.menuBarIsDark = menuBarIsDark
                 panels[screen.displayID] = panel
@@ -219,18 +219,14 @@ final class OverlayController {
         switch direction {
         case .down: store.expand()
         case .up: store.collapse()
-        case .left, .right: switchCard(direction)
+        case .left, .right: stepCard(CardNavigation.step(forSwipe: direction))
         }
     }
 
-    /// Fingers or arrow to the left bring in the next card from the right.
-    private func switchCard(_ direction: SwipeDirection) {
+    /// +1 = next card, -1 = previous; only while expanded.
+    private func stepCard(_ step: Int) {
         guard store.presentation == .expanded else { return }
-        switch direction {
-        case .left: store.showNextCard()
-        case .right: store.showPreviousCard()
-        case .up, .down: break
-        }
+        if step > 0 { store.showNextCard() } else if step < 0 { store.showPreviousCard() }
     }
 
     /// While expanded, a click outside the island collapses it.

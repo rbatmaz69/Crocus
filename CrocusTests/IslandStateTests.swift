@@ -217,3 +217,52 @@ import Testing
         #expect(s.display == .minimal(primary: "timer", secondary: "music"))
     }
 }
+
+@Suite struct IslandStateStackTests {
+    func state(_ ids: [(String, ActivityKind)]) -> IslandState {
+        var state = IslandState()
+        for (id, kind) in ids { state.upsert(ActivityEntry(id: id, kind: kind, startedAt: .distantPast)) }
+        return state
+    }
+
+    @Test func indexStartsAtTheCompactCard() {
+        var s = state([("timer", .timer), ("music", .music), ("build", .liveActivity)])
+        #expect(s.cardIndex == nil)
+        s.expand()
+        #expect(s.cardIndex == 0)
+        #expect(s.cardCount == 3)
+    }
+
+    @Test func dropOpensAtItsCard() {
+        var s = state([("timer", .timer), ("music", .music)])
+        s.expand(id: "music")
+        #expect(s.cardIndex == 1)
+    }
+
+    @Test func showCardJumps() {
+        var s = state([("timer", .timer), ("build", .liveActivity), ("music", .music)])
+        s.expand()
+        do { let ok = s.showCard(at: 2); #expect(ok) }
+        #expect(s.display == .expanded("music"))
+        do { let ok = s.showCard(at: 5); #expect(!ok) }
+        do { let ok = s.showCard(at: -1); #expect(!ok) }
+        #expect(s.cardIndex == 2)
+    }
+
+    @Test func showCardOnlyWhileExpanded() {
+        var s = state([("timer", .timer), ("music", .music)])
+        do { let ok = s.showCard(at: 1); #expect(!ok) }
+        #expect(s.display == .minimal(primary: "timer", secondary: "music"))
+    }
+
+    @Test func newActivityKeepsTheCurrentCard() {
+        var s = state([("timer", .timer), ("music", .music)])
+        s.expand()
+        s.showNextCard()
+        #expect(s.display == .expanded("music"))
+        s.upsert(ActivityEntry(id: "cam", kind: .cameraMicrophone, startedAt: .distantPast))
+        #expect(s.display == .expanded("music"))
+        #expect(s.cardIndex == 2)
+        #expect(s.cardCount == 3)
+    }
+}

@@ -26,6 +26,7 @@ struct NotchDropView: View {
             shape: shape,
             anchor: UnitPoint(x: centerX / OverlayLayout.panelSize.width, y: 0),
             part: .drop,
+            width: parameters.width,
             onTap: { model.store.expand(id: activity.id) }
         )
         .accessibilityElement(children: .ignore)
@@ -54,7 +55,10 @@ struct PillCircleView: View {
             .overlay {
                 Circle().strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
             }
-            .islandInteraction(model: model, shape: Circle(), anchor: .top, part: .drop, onTap: { model.store.expand(id: activity.id) })
+            .islandInteraction(
+                model: model, shape: Circle(), anchor: .top, part: .drop, width: diameter,
+                onTap: { model.store.expand(id: activity.id) }
+            )
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(activity.accessibilityLabel)
             .accessibilityAddTraits(.isButton)

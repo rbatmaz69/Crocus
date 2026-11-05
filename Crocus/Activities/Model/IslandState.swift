@@ -125,6 +125,22 @@ struct IslandState: Sendable {
 
     // MARK: - Cards
 
+    /// Number of cards when expanded: one per running activity.
+    var cardCount: Int { activities.count }
+
+    /// Position of the expanded activity in priority order.
+    var cardIndex: Int? {
+        expandedActivityID.flatMap { id in activities.firstIndex { $0.id == id } }
+    }
+
+    /// Jumps straight to a card (page dots). Only while expanded.
+    @discardableResult
+    mutating func showCard(at index: Int) -> Bool {
+        guard expandedActivityID != nil, activities.indices.contains(index) else { return false }
+        expandedActivityID = activities[index].id
+        return true
+    }
+
     /// While expanded, moves to the next activity in priority order (stops at
     /// the end; the rubber band comes with #23).
     @discardableResult

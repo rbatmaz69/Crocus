@@ -78,6 +78,16 @@ enum CrocusMetrics {
     static let dropContentSize: CGFloat = 24
     static let circleContentSize: CGFloat = 22
 
+    /// Page dots of the expanded card stack.
+    enum PageDots {
+        static let dotSize: CGFloat = 6
+        /// Centre-to-centre distance.
+        static let spacing: CGFloat = 19
+        /// Height of the clickable row; also the minimum width at both ends.
+        static let hitSize: CGFloat = 28
+        static let inactiveOpacity: Double = 0.5
+    }
+
     /// Minimum hit target, even when the visible symbol is smaller.
     static let minimumHitTarget: CGFloat = 28
     /// Visible diameter of the page dots in the expanded state.

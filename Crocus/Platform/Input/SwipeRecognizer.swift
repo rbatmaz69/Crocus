@@ -83,3 +83,21 @@ enum CardDrag {
         return translation.width < 0 ? .left : .right
     }
 }
+
+/// Which way a card step goes for each input. Keys follow reading order
+/// (→ next), swipes and drags follow the content (fingers left pull the next
+/// card in from the right).
+enum CardNavigation {
+    /// +1 = next card, -1 = previous card.
+    static func step(forArrow direction: SwipeDirection) -> Int {
+        switch direction {
+        case .right: 1
+        case .left: -1
+        case .up, .down: 0
+        }
+    }
+
+    static func step(forSwipe direction: SwipeDirection) -> Int {
+        -step(forArrow: direction)
+    }
+}
