@@ -8,14 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		04030FEE34D9C250D99C4417 /* ScreenGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CF16A945F93F686B44CD59 /* ScreenGeometry.swift */; };
+		0536411B3718821B1D3099F9 /* ClickOutsideMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170F7E40D7B053C63CFBBCE7 /* ClickOutsideMonitor.swift */; };
 		08B4355CB19DDE89F62F31FF /* CrocusColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BAC8129449A035E12A6DA3 /* CrocusColors.swift */; };
 		08BA17014E89EB78E2849AE0 /* NotchIslandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341C6186C15EBD965BB7FEDF /* NotchIslandView.swift */; };
+		0A5E5BFDB6981C906314F9C8 /* SwipeRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B22FF6F1627532A85C2E9D8 /* SwipeRecognizer.swift */; };
 		0CE9413342DF52323D1C02F7 /* ActivityPriority.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FF01D7313862B7DD198346 /* ActivityPriority.swift */; };
+		125E477591DD3B1C7601D8F2 /* IslandInteractionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6F1BF6B6B899FDC6CB29D4 /* IslandInteractionModifier.swift */; };
 		1680E072156610CDFE6F9A24 /* IslandContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122EA92F102F7F5E29010D34 /* IslandContent.swift */; };
 		1699F1FE61F5840227250BA2 /* TargetScreenResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */; };
 		1FE54275F86BA0D5F2912171 /* MenuBarClearanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383929CF44F0D51708D61585 /* MenuBarClearanceTests.swift */; };
 		21C51CBBFACBB9F4BF73FF07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4FB41042672DEDA32A5E8E9 /* Assets.xcassets */; };
 		2B3FB90BBA7B66D379B192F3 /* IslandEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA93759A19B996B0BF9BD2 /* IslandEvent.swift */; };
+		2C352E8D9B6EA25C7A5D5A52 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8A3626008579BCCD11F3A0 /* HapticFeedback.swift */; };
 		34E56E1F7442366B359E3B6A /* ActivityPriorityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */; };
 		36557D5D17BF37E401E48DB1 /* MenuBarAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F47213399C44DF9DC3F0D /* MenuBarAppearance.swift */; };
 		393E468B8A89A07DF4F613E2 /* IslandStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */; };
@@ -48,17 +52,23 @@
 		B6B8D90A8DC9BD0607320F42 /* IslandLayoutMetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E4E408A4B9E1C193CF07E /* IslandLayoutMetricsTests.swift */; };
 		B939F90EC1E988660EFD67FD /* DesignTokensTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */; };
 		BAE57AE1A84343827F394101 /* PointerScreenDebouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */; };
+		BCACC484462E5DC1A42719C3 /* KeyboardShortcutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DCBADCA32D64B303E0E815 /* KeyboardShortcutSpec.swift */; };
+		BF7A9F68482EC20D917550EE /* HoverHintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C774EA9BBFD919DAD9B0B116 /* HoverHintTests.swift */; };
 		BFE951271B502C1AA1186516 /* NotchIslandShapeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */; };
+		C675186A86E1049668BDFEE2 /* KeyboardShortcutSpecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6FB467FC32AB7084114205 /* KeyboardShortcutSpecTests.swift */; };
 		CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */; };
 		CF4987BB3686E6879FA1E547 /* PointerScreenDebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */; };
 		CF77CE5857CD95E3AB7710F4 /* NotchIslandMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */; };
 		D1F62F8A2540EF5EE6E19647 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */; };
 		D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A16FF870167FB621B64308 /* CrocusSprings.swift */; };
+		D8054E366896EB04D5A8E45D /* SwipeRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */; };
 		DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */; };
 		E5AF16DE3AFC3D963C2A2D73 /* IslandActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FF04FE3F6FC0A23C110817 /* IslandActivity.swift */; };
 		E6236D1F409FF76415A9611A /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46E07BFA3A02A8FCD937363 /* OverlayPanel.swift */; };
 		EA6677A8B621FED5AFABED1F /* IslandHitRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */; };
 		EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */; };
+		ECB61806EA86DE75FF1F5C5F /* HoverHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F258C883BBC0DFA681488ABA /* HoverHint.swift */; };
+		F0A49963E9BDB148F8B5A568 /* GlobalHotKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4EB42DAE067ABF3BDE0F0A /* GlobalHotKey.swift */; };
 		F32C57B837A2832E2299B341 /* PillIslandMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F258D47FC9594F3B539040CB /* PillIslandMetrics.swift */; };
 		F5D6A1CCD2ACA854354FB7F4 /* IslandHitRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */; };
 		FBF7B04534790BEA525B19F7 /* ContinuousCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8946A04E840EA25E432A884A /* ContinuousCorner.swift */; };
@@ -77,7 +87,9 @@
 
 /* Begin PBXFileReference section */
 		0373831257A6BDE3F2B3446B /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		0C4EB42DAE067ABF3BDE0F0A /* GlobalHotKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHotKey.swift; sourceTree = "<group>"; };
 		122EA92F102F7F5E29010D34 /* IslandContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandContent.swift; sourceTree = "<group>"; };
+		170F7E40D7B053C63CFBBCE7 /* ClickOutsideMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickOutsideMonitor.swift; sourceTree = "<group>"; };
 		1A33871F340180009F6CEE1C /* SampleActivities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleActivities.swift; sourceTree = "<group>"; };
 		1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusMetrics.swift; sourceTree = "<group>"; };
 		203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometryTests.swift; sourceTree = "<group>"; };
@@ -85,6 +97,7 @@
 		2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStoreTests.swift; sourceTree = "<group>"; };
 		28589CB97835C5D738141A59 /* CrocusTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusTypography.swift; sourceTree = "<group>"; };
 		2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncerTests.swift; sourceTree = "<group>"; };
+		2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeRecognizerTests.swift; sourceTree = "<group>"; };
 		2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHitRegion.swift; sourceTree = "<group>"; };
 		2E1941DE3DE23F3963BFA1B1 /* IslandState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandState.swift; sourceTree = "<group>"; };
 		329CBEAA3B17DA6DEDAD2E05 /* IslandPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandPresentation.swift; sourceTree = "<group>"; };
@@ -93,6 +106,7 @@
 		39010B3D65B263CCF32A1B08 /* CompactLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLayout.swift; sourceTree = "<group>"; };
 		3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayout.swift; sourceTree = "<group>"; };
 		3B0E4E408A4B9E1C193CF07E /* IslandLayoutMetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandLayoutMetricsTests.swift; sourceTree = "<group>"; };
+		3E6F1BF6B6B899FDC6CB29D4 /* IslandInteractionModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandInteractionModifier.swift; sourceTree = "<group>"; };
 		3F61E78CB8FEB388A42A37B5 /* ActivityKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityKind.swift; sourceTree = "<group>"; };
 		40741D43E26040909E116D85 /* URLRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRouter.swift; sourceTree = "<group>"; };
 		458D83892EAA22D2278366B6 /* FullScreenVideoDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetector.swift; sourceTree = "<group>"; };
@@ -104,6 +118,7 @@
 		6DC13E5727374621F7BF995C /* CrocusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrocusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B7A9251EEC65564ECE9977 /* Crocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78CF16A945F93F686B44CD59 /* ScreenGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometry.swift; sourceTree = "<group>"; };
+		7B22FF6F1627532A85C2E9D8 /* SwipeRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeRecognizer.swift; sourceTree = "<group>"; };
 		7CB1AA2AEA9F1C008496B3CA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		879135D9C1D24C986DC6EEA5 /* IslandStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStateTests.swift; sourceTree = "<group>"; };
 		8847639190D3C517C187B5D5 /* IslandStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStore.swift; sourceTree = "<group>"; };
@@ -116,23 +131,28 @@
 		9FDFC2BD6342483649A6FD42 /* ScreenDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenDescriptor.swift; sourceTree = "<group>"; };
 		A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandShapeTests.swift; sourceTree = "<group>"; };
 		A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetScreenResolverTests.swift; sourceTree = "<group>"; };
+		A8DCBADCA32D64B303E0E815 /* KeyboardShortcutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutSpec.swift; sourceTree = "<group>"; };
+		AF6FB467FC32AB7084114205 /* KeyboardShortcutSpecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutSpecTests.swift; sourceTree = "<group>"; };
 		B1BAC8129449A035E12A6DA3 /* CrocusColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusColors.swift; sourceTree = "<group>"; };
 		B1FF01D7313862B7DD198346 /* ActivityPriority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityPriority.swift; sourceTree = "<group>"; };
 		B6970B77DC856B96EB5EFB6B /* MouseTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MouseTracker.swift; sourceTree = "<group>"; };
 		B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityPriorityTests.swift; sourceTree = "<group>"; };
+		C774EA9BBFD919DAD9B0B116 /* HoverHintTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverHintTests.swift; sourceTree = "<group>"; };
 		D2FF04FE3F6FC0A23C110817 /* IslandActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandActivity.swift; sourceTree = "<group>"; };
 		D46E07BFA3A02A8FCD937363 /* OverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPanel.swift; sourceTree = "<group>"; };
 		D621AC6461D881438F83EF25 /* URLRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRouterTests.swift; sourceTree = "<group>"; };
 		DA3F47213399C44DF9DC3F0D /* MenuBarAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarAppearance.swift; sourceTree = "<group>"; };
 		DA6E4305ED985805356F2FEA /* TargetScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetScreen.swift; sourceTree = "<group>"; };
 		DDD083D8D4B003B78178DB94 /* IslandComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandComponents.swift; sourceTree = "<group>"; };
+		DF8A3626008579BCCD11F3A0 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		E73D9184B0EA34989C34EB50 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		E908358244D5D9A297B65B1C /* PillIslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillIslandView.swift; sourceTree = "<group>"; };
 		ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetectorTests.swift; sourceTree = "<group>"; };
 		ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokensTests.swift; sourceTree = "<group>"; };
 		EDCB7E68607BDB98E90DC64A /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
 		F04A29424CB721E0E862C1C6 /* NotchIslandMetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandMetricsTests.swift; sourceTree = "<group>"; };
+		F258C883BBC0DFA681488ABA /* HoverHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverHint.swift; sourceTree = "<group>"; };
 		F258D47FC9594F3B539040CB /* PillIslandMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillIslandMetrics.swift; sourceTree = "<group>"; };
 		F4FB41042672DEDA32A5E8E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F99E043A81632BFE7AFCA870 /* MenuBarClearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarClearance.swift; sourceTree = "<group>"; };
@@ -189,10 +209,12 @@
 				B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */,
 				ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */,
 				ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */,
+				C774EA9BBFD919DAD9B0B116 /* HoverHintTests.swift */,
 				971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */,
 				3B0E4E408A4B9E1C193CF07E /* IslandLayoutMetricsTests.swift */,
 				879135D9C1D24C986DC6EEA5 /* IslandStateTests.swift */,
 				2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */,
+				AF6FB467FC32AB7084114205 /* KeyboardShortcutSpecTests.swift */,
 				383929CF44F0D51708D61585 /* MenuBarClearanceTests.swift */,
 				F04A29424CB721E0E862C1C6 /* NotchIslandMetricsTests.swift */,
 				A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */,
@@ -200,6 +222,7 @@
 				205D4022614CAA3BD99E6EDB /* PillIslandMetricsTests.swift */,
 				2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */,
 				203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */,
+				2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */,
 				A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */,
 				D621AC6461D881438F83EF25 /* URLRouterTests.swift */,
 			);
@@ -257,6 +280,18 @@
 			path = Debug;
 			sourceTree = "<group>";
 		};
+		E9A7520F3058DCA0E87C6AFC /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				170F7E40D7B053C63CFBBCE7 /* ClickOutsideMonitor.swift */,
+				0C4EB42DAE067ABF3BDE0F0A /* GlobalHotKey.swift */,
+				DF8A3626008579BCCD11F3A0 /* HapticFeedback.swift */,
+				A8DCBADCA32D64B303E0E815 /* KeyboardShortcutSpec.swift */,
+				7B22FF6F1627532A85C2E9D8 /* SwipeRecognizer.swift */,
+			);
+			path = Input;
+			sourceTree = "<group>";
+		};
 		F43F586B26127C7B2AEB9886 /* Intents */ = {
 			isa = PBXGroup;
 			children = (
@@ -295,8 +330,10 @@
 				39010B3D65B263CCF32A1B08 /* CompactLayout.swift */,
 				8946A04E840EA25E432A884A /* ContinuousCorner.swift */,
 				50875E1DD2F25D283F389BF3 /* ExpandedLayout.swift */,
+				F258C883BBC0DFA681488ABA /* HoverHint.swift */,
 				DDD083D8D4B003B78178DB94 /* IslandComponents.swift */,
 				122EA92F102F7F5E29010D34 /* IslandContent.swift */,
+				3E6F1BF6B6B899FDC6CB29D4 /* IslandInteractionModifier.swift */,
 				901844F7ED44B105941040D6 /* IslandLayoutMetrics.swift */,
 				329CBEAA3B17DA6DEDAD2E05 /* IslandPresentation.swift */,
 				9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */,
@@ -311,6 +348,7 @@
 		FD78296A0443467EA86CBC01 /* Platform */ = {
 			isa = PBXGroup;
 			children = (
+				E9A7520F3058DCA0E87C6AFC /* Input */,
 				27CEA6E9C11F9EE497AFA394 /* Overlay */,
 				FA24806234270F2255DA2466 /* Screens */,
 				0373831257A6BDE3F2B3446B /* .gitkeep */,
@@ -416,10 +454,12 @@
 				34E56E1F7442366B359E3B6A /* ActivityPriorityTests.swift in Sources */,
 				B939F90EC1E988660EFD67FD /* DesignTokensTests.swift in Sources */,
 				DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */,
+				BF7A9F68482EC20D917550EE /* HoverHintTests.swift in Sources */,
 				EA6677A8B621FED5AFABED1F /* IslandHitRegionTests.swift in Sources */,
 				B6B8D90A8DC9BD0607320F42 /* IslandLayoutMetricsTests.swift in Sources */,
 				4891DBEC190DCF58929894ED /* IslandStateTests.swift in Sources */,
 				393E468B8A89A07DF4F613E2 /* IslandStoreTests.swift in Sources */,
+				C675186A86E1049668BDFEE2 /* KeyboardShortcutSpecTests.swift in Sources */,
 				1FE54275F86BA0D5F2912171 /* MenuBarClearanceTests.swift in Sources */,
 				A75843B0C4CFB6EE48B0B00F /* NotchIslandMetricsTests.swift in Sources */,
 				BFE951271B502C1AA1186516 /* NotchIslandShapeTests.swift in Sources */,
@@ -427,6 +467,7 @@
 				80971A2DD8EAE960F169983D /* PillIslandMetricsTests.swift in Sources */,
 				CF4987BB3686E6879FA1E547 /* PointerScreenDebouncerTests.swift in Sources */,
 				975C4B3F82C948E9B5C152B2 /* ScreenGeometryTests.swift in Sources */,
+				D8054E366896EB04D5A8E45D /* SwipeRecognizerTests.swift in Sources */,
 				1699F1FE61F5840227250BA2 /* TargetScreenResolverTests.swift in Sources */,
 				53A8DFE84C0A7C1A2822B263 /* URLRouterTests.swift in Sources */,
 			);
@@ -440,6 +481,7 @@
 				0CE9413342DF52323D1C02F7 /* ActivityPriority.swift in Sources */,
 				CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */,
 				D1F62F8A2540EF5EE6E19647 /* AppSettings.swift in Sources */,
+				0536411B3718821B1D3099F9 /* ClickOutsideMonitor.swift in Sources */,
 				A0C396DB8582ECFB80E71873 /* CompactLayout.swift in Sources */,
 				FBF7B04534790BEA525B19F7 /* ContinuousCorner.swift in Sources */,
 				72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */,
@@ -449,15 +491,20 @@
 				6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */,
 				8A4E19DC762C50E871AAA27A /* ExpandedLayout.swift in Sources */,
 				ABCE5A4FA1EBD9E256940A7D /* FullScreenVideoDetector.swift in Sources */,
+				F0A49963E9BDB148F8B5A568 /* GlobalHotKey.swift in Sources */,
+				2C352E8D9B6EA25C7A5D5A52 /* HapticFeedback.swift in Sources */,
+				ECB61806EA86DE75FF1F5C5F /* HoverHint.swift in Sources */,
 				E5AF16DE3AFC3D963C2A2D73 /* IslandActivity.swift in Sources */,
 				8E2781E1170E05A996F6CD31 /* IslandComponents.swift in Sources */,
 				1680E072156610CDFE6F9A24 /* IslandContent.swift in Sources */,
 				2B3FB90BBA7B66D379B192F3 /* IslandEvent.swift in Sources */,
 				F5D6A1CCD2ACA854354FB7F4 /* IslandHitRegion.swift in Sources */,
+				125E477591DD3B1C7601D8F2 /* IslandInteractionModifier.swift in Sources */,
 				B5326B80695762A9CF273685 /* IslandLayoutMetrics.swift in Sources */,
 				FEC872F7A9D11F36603278A8 /* IslandPresentation.swift in Sources */,
 				B65ED105153B4555986ACCEA /* IslandState.swift in Sources */,
 				846AC389E33DF71C419E8550 /* IslandStore.swift in Sources */,
+				BCACC484462E5DC1A42719C3 /* KeyboardShortcutSpec.swift in Sources */,
 				36557D5D17BF37E401E48DB1 /* MenuBarAppearance.swift in Sources */,
 				962B0E95F32F6B698534E658 /* MenuBarClearance.swift in Sources */,
 				8CB4BAC1AB2AF48ED2EA4D01 /* MouseTracker.swift in Sources */,
@@ -473,6 +520,7 @@
 				9BD92DDE0AA8054A7FCEA76F /* SampleActivities.swift in Sources */,
 				39CC4E1A8BD41559AA1CE311 /* ScreenDescriptor.swift in Sources */,
 				04030FEE34D9C250D99C4417 /* ScreenGeometry.swift in Sources */,
+				0A5E5BFDB6981C906314F9C8 /* SwipeRecognizer.swift in Sources */,
 				58E54A21642953CE438963D7 /* TargetScreen.swift in Sources */,
 				484FFC474D8E1D44C7FE5191 /* URLRouter.swift in Sources */,
 			);

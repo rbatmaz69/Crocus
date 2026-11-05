@@ -7,12 +7,18 @@ enum AppSettings {
         static let hideDuringFullScreenVideo = "hideDuringFullScreenVideo"
         static let targetScreen = "targetScreen"
         static let activityPriority = "activityPriority"
+        static let hoverStyle = "hoverStyle"
+        static let hapticFeedback = "hapticFeedback"
+        static let globalShortcut = "globalShortcut"
     }
 
     static func registerDefaults(in defaults: UserDefaults = .standard) {
         defaults.register(defaults: [
             Key.hideDuringFullScreenVideo: true,
             Key.targetScreen: TargetScreenOption.automatic.rawValue,
+            Key.hoverStyle: HoverStyle.breathe.rawValue,
+            Key.hapticFeedback: true,
+            Key.globalShortcut: KeyboardShortcutSpec.default.stringValue,
         ])
     }
 
@@ -30,5 +36,20 @@ enum AppSettings {
 
     static func setActivityPriority(_ priority: ActivityPriority, in defaults: UserDefaults = .standard) {
         defaults.set(priority.storedOrder, forKey: Key.activityPriority)
+    }
+
+    static func hoverStyle(in defaults: UserDefaults = .standard) -> HoverStyle {
+        defaults.string(forKey: Key.hoverStyle).flatMap(HoverStyle.init(rawValue:)) ?? .breathe
+    }
+
+    static func hapticFeedback(in defaults: UserDefaults = .standard) -> Bool {
+        defaults.bool(forKey: Key.hapticFeedback)
+    }
+
+    /// `nil` when the user removed the shortcut (empty string).
+    static func globalShortcut(in defaults: UserDefaults = .standard) -> KeyboardShortcutSpec? {
+        guard let string = defaults.string(forKey: Key.globalShortcut) else { return .default }
+        if string.isEmpty { return nil }
+        return KeyboardShortcutSpec(string: string) ?? .default
     }
 }

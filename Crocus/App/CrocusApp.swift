@@ -37,10 +37,15 @@ private struct DebugMenu: View {
     @Bindable var overlay: OverlayController
     let store: IslandStore
     @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
+    @AppStorage(AppSettings.Key.hoverStyle) private var hoverStyle = HoverStyle.breathe
 
     var body: some View {
         Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
-        Toggle("Overlay Accepts Keyboard", isOn: $overlay.acceptsKeyboard)
+        Picker("Hover Style", selection: $hoverStyle) {
+            ForEach(HoverStyle.allCases) { style in
+                Text(style.title).tag(style)
+            }
+        }
         Picker("Target Screen", selection: $targetScreen) {
             ForEach(TargetScreenOption.allCases) { option in
                 Text(option.title).tag(option)

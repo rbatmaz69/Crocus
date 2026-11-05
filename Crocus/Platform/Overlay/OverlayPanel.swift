@@ -25,6 +25,9 @@ final class OverlayPanelModel {
     let store: IslandStore
     /// The menu bar (and so the wallpaper under the pill) is dark.
     var menuBarIsDark = true
+    /// The pointer is over the island (set by `MouseTracker`).
+    var isHovered = false
+    var hoverStyle = HoverStyle.breathe
 
     init(geometry: ScreenGeometry, store: IslandStore) {
         self.geometry = geometry
@@ -78,6 +81,14 @@ final class OverlayPanel: NSPanel {
     let model: OverlayPanelModel
     private(set) var acceptsKeyboard = false
 
+    /// Esc while the panel is key.
+    var onEscape: (() -> Void)?
+    /// ← / → while the panel is key.
+    var onArrow: ((SwipeDirection) -> Void)?
+    /// A recognised two-finger swipe over the island.
+    var onSwipe: ((SwipeDirection) -> Void)?
+    private var swipeRecognizer = SwipeRecognizer()
+
     init(displayID: CGDirectDisplayID, geometry: ScreenGeometry, store: IslandStore) {
         self.displayID = displayID
         self.model = OverlayPanelModel(geometry: geometry, store: store)
@@ -105,14 +116,54 @@ final class OverlayPanel: NSPanel {
         ignoresMouseEvents = true
         animationBehavior = .none
 
-        let hostingView = NSHostingView(rootView: IslandRootView(model: model))
+        let hostingView = IslandHostingView(rootView: IslandRootView(model: model))
         hostingView.sizingOptions = []
+        hostingView.onScroll = { [weak self] event in self?.handleScroll(event) }
         contentView = hostingView
         setFrame(frame, display: false)
     }
 
     override var canBecomeKey: Bool { acceptsKeyboard }
     override var canBecomeMain: Bool { false }
+
+    /// Intercepts Esc and ←/→ before SwiftUI's focus handling sees them; Tab
+    /// and everything else go on to the focused control.
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown {
+            switch Int(event.keyCode) {
+            case 53: // Esc
+                onEscape?()
+                return
+            case 123: // ←
+                onArrow?(.left)
+                return
+            case 124: // →
+                onArrow?(.right)
+                return
+            default:
+                break
+            }
+        }
+        super.sendEvent(event)
+    }
+
+    override func cancelOperation(_ sender: Any?) {
+        onEscape?()
+    }
+
+    private func handleScroll(_ event: NSEvent) {
+        let sample = ScrollSample(
+            deltaX: event.scrollingDeltaX,
+            deltaY: event.scrollingDeltaY,
+            isPrecise: event.hasPreciseScrollingDeltas,
+            phase: ScrollSample.Phase(event.phase),
+            isMomentum: !event.momentumPhase.isEmpty,
+            isDirectionInverted: event.isDirectionInvertedFromDevice
+        )
+        if let direction = swipeRecognizer.handle(sample) {
+            onSwipe?(direction)
+        }
+    }
 
     /// Keep the panel where we put it, even over the menu bar.
     override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
@@ -137,6 +188,43 @@ final class OverlayPanel: NSPanel {
             // Ordering out returns key status to the active app's window.
             orderOut(nil)
             orderFrontRegardless()
+        }
+    }
+}
+
+/// Hosts the island. Takes the first click although the panel is never
+/// active, and hands scroll events to the swipe recognizer.
+final class IslandHostingView: NSHostingView<IslandRootView> {
+    var onScroll: ((NSEvent) -> Void)?
+
+    required init(rootView: IslandRootView) {
+        super.init(rootView: rootView)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not supported")
+    }
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func scrollWheel(with event: NSEvent) {
+        onScroll?(event)
+    }
+}
+
+private extension ScrollSample.Phase {
+    init(_ phase: NSEvent.Phase) {
+        if phase.contains(.began) {
+            self = .began
+        } else if phase.contains(.changed) {
+            self = .changed
+        } else if phase.contains(.ended) {
+            self = .ended
+        } else if phase.contains(.cancelled) {
+            self = .cancelled
+        } else {
+            self = .other
         }
     }
 }

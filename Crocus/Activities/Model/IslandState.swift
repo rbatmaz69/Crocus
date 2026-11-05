@@ -123,6 +123,25 @@ struct IslandState: Sendable {
         return true
     }
 
+    // MARK: - Cards
+
+    /// While expanded, moves to the next activity in priority order (stops at
+    /// the end; the rubber band comes with #23).
+    @discardableResult
+    mutating func showNextCard() -> Bool { moveCard(by: 1) }
+
+    @discardableResult
+    mutating func showPreviousCard() -> Bool { moveCard(by: -1) }
+
+    private mutating func moveCard(by offset: Int) -> Bool {
+        guard let expandedActivityID,
+              let index = activities.firstIndex(where: { $0.id == expandedActivityID }),
+              activities.indices.contains(index + offset)
+        else { return false }
+        self.expandedActivityID = activities[index + offset].id
+        return true
+    }
+
     // MARK: - Events
 
     mutating func post(_ event: EventEntry, now: Instant) {

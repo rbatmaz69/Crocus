@@ -12,12 +12,6 @@ final class OverlayController {
         didSet { panels.values.forEach { $0.model.showsDebugFrame = showsDebugFrame } }
     }
 
-    /// Debug aid until the expanded state exists: let the target panel take
-    /// keyboard focus.
-    var acceptsKeyboard = false {
-        didSet { applyKeyboardFocus() }
-    }
-
     /// The screen that currently shows the island.
     private(set) var targetScreenID: CGDirectDisplayID?
 
@@ -41,6 +35,9 @@ final class OverlayController {
     @ObservationIgnored private var pointerDeadlineTask: Task<Void, Never>?
     @ObservationIgnored private var scheduledDeadline: ContinuousClock.Instant?
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private let clickOutside = ClickOutsideMonitor()
+    @ObservationIgnored private let haptics = HapticFeedback()
+    @ObservationIgnored private let hotKey = GlobalHotKey()
 
     private static let logger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Overlay")
     private static let screenLogger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Screens")
@@ -57,6 +54,8 @@ final class OverlayController {
         observeStore()
         mouseTracker.onPointerMove = { [weak self] location in self?.pointerMoved(to: location) }
         menuBarAppearance.onChange = { [weak self] _ in self?.applyMenuBarAppearance() }
+        hotKey.onPress = { [weak self] in self?.store.toggle() }
+        hotKey.register(AppSettings.globalShortcut(in: defaults))
         mouseTracker.start()
 
         observe(NotificationCenter.default, NSApplication.didChangeScreenParametersNotification) {
@@ -80,6 +79,9 @@ final class OverlayController {
         pointerDeadlineTask?.cancel()
         pointerDeadlineTask = nil
         mouseTracker.stop()
+        clickOutside.stop()
+        haptics.cancel()
+        hotKey.unregister()
         panels.values.forEach { $0.close() }
         panels.removeAll()
     }
@@ -109,6 +111,10 @@ final class OverlayController {
                 let panel = OverlayPanel(displayID: screen.displayID, geometry: geometry, store: store)
                 panel.model.showsDebugFrame = showsDebugFrame
                 panel.model.presentation = store.presentation
+                panel.model.hoverStyle = AppSettings.hoverStyle(in: defaults)
+                panel.onEscape = { [weak self] in self?.store.collapse() }
+                panel.onArrow = { [weak self] direction in self?.switchCard(direction) }
+                panel.onSwipe = { [weak self] direction in self?.handleSwipe(direction) }
                 panel.model.menuBarIsDark = menuBarIsDark
                 panels[screen.displayID] = panel
             }
@@ -142,10 +148,11 @@ final class OverlayController {
             targetScreenID = target
             let name = screens.first { $0.displayID == target }?.name ?? "none"
             Self.screenLogger.info("Target screen (\(option.rawValue, privacy: .public)): \(name, privacy: .public)")
-            if acceptsKeyboard { applyKeyboardFocus() }
+            applyKeyboardFocus()
         }
         updateMenuBarClearance()
         menuBarAppearance.attach()
+        applyInputSettings()
         updateVisibility()
     }
 
@@ -190,9 +197,61 @@ final class OverlayController {
         } onChange: { [weak self] in
             Task { @MainActor in self?.observeStore() }
         }
+        let previous = panels.values.first?.model.presentation
         for panel in panels.values where panel.model.presentation != presentation {
             panel.model.presentation = presentation
         }
+        guard presentation != previous else { return }
+        applyKeyboardFocus()
+        updateClickOutside()
+        if presentation == .expanded {
+            if AppSettings.hapticFeedback(in: defaults) { haptics.scheduleExpandedSettled() }
+        } else {
+            haptics.cancel()
+        }
+    }
+
+    // MARK: - Interaction
+
+    private func handleSwipe(_ direction: SwipeDirection) {
+        switch direction {
+        case .down: store.expand()
+        case .up: store.collapse()
+        case .left, .right: switchCard(direction)
+        }
+    }
+
+    /// Fingers or arrow to the left bring in the next card from the right.
+    private func switchCard(_ direction: SwipeDirection) {
+        guard store.presentation == .expanded else { return }
+        switch direction {
+        case .left: store.showNextCard()
+        case .right: store.showPreviousCard()
+        case .up, .down: break
+        }
+    }
+
+    /// While expanded, a click outside the island collapses it.
+    private func updateClickOutside() {
+        if store.presentation == .expanded {
+            clickOutside.start { [weak self] location in
+                guard let self, let target = self.targetScreenID, let panel = self.panels[target] else { return }
+                if !panel.hitRegion.contains(location) {
+                    self.store.collapse()
+                }
+            }
+        } else {
+            clickOutside.stop()
+        }
+    }
+
+    /// Hover style and global shortcut follow the settings.
+    private func applyInputSettings() {
+        let style = AppSettings.hoverStyle(in: defaults)
+        for panel in panels.values where panel.model.hoverStyle != style {
+            panel.model.hoverStyle = style
+        }
+        hotKey.register(AppSettings.globalShortcut(in: defaults))
     }
 
     // MARK: - Pointer
@@ -272,9 +331,12 @@ final class OverlayController {
 
     // MARK: - Helpers
 
+    /// Only the expanded island on the target screen takes keyboard focus
+    /// (Esc, arrows, Tab); it hands focus back on collapse.
     private func applyKeyboardFocus() {
+        let expanded = store.presentation == .expanded
         for (displayID, panel) in panels {
-            panel.setAcceptsKeyboard(acceptsKeyboard && displayID == targetScreenID)
+            panel.setAcceptsKeyboard(expanded && displayID == targetScreenID)
         }
     }
 
