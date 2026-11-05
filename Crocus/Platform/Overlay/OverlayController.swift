@@ -2,7 +2,8 @@ import AppKit
 import os
 
 /// Owns one `OverlayPanel` per connected screen, keeps them in sync with the
-/// screen configuration and hides them during full-screen videos.
+/// screen configuration, shows the island only on the target screen and hides
+/// it during full-screen apps/videos.
 @MainActor
 @Observable
 final class OverlayController {
@@ -11,43 +12,49 @@ final class OverlayController {
         didSet { panels.values.forEach { $0.model.showsDebugFrame = showsDebugFrame } }
     }
 
-    /// Debug aid until the expanded state exists: let the panel under the
-    /// pointer take keyboard focus.
+    /// Debug aid until the expanded state exists: let the target panel take
+    /// keyboard focus.
     var acceptsKeyboard = false {
         didSet { applyKeyboardFocus() }
     }
 
+    /// The screen that currently shows the island.
+    private(set) var targetScreenID: CGDirectDisplayID?
+
+    @ObservationIgnored private var screens: [ScreenDescriptor] = []
     @ObservationIgnored private var panels: [CGDirectDisplayID: OverlayPanel] = [:]
     @ObservationIgnored private lazy var mouseTracker = MouseTracker { [unowned self] in Array(self.panels.values) }
     @ObservationIgnored private let detector = FullScreenVideoDetector()
     @ObservationIgnored private var observers: [(NotificationCenter, NSObjectProtocol)] = []
     @ObservationIgnored private var fullScreenTimer: Timer?
+    @ObservationIgnored private var pointerDebounce = PointerScreenDebounce()
+    @ObservationIgnored private var pointerDeadlineTask: Task<Void, Never>?
+    @ObservationIgnored private var scheduledDeadline: ContinuousClock.Instant?
     @ObservationIgnored private let defaults: UserDefaults
 
     private static let logger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Overlay")
+    private static let screenLogger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Screens")
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
     }
 
-    var panelCount: Int { panels.count }
-
     func start() {
         AppSettings.registerDefaults(in: defaults)
-        let powerState = SystemPowerAssertions().isDisplaySleepPrevented().map { "\($0)" } ?? "unreadable"
-        Self.logger.info("Display sleep assertion state: \(powerState, privacy: .public)")
+        pointerDebounce.force(ScreenDescriptor.screen(containing: NSEvent.mouseLocation, in: ScreenDescriptor.current()))
         reconcile()
+        mouseTracker.onPointerMove = { [weak self] location in self?.pointerMoved(to: location) }
         mouseTracker.start()
 
         observe(NotificationCenter.default, NSApplication.didChangeScreenParametersNotification) {
             $0.reconcile()
         }
         observe(NotificationCenter.default, UserDefaults.didChangeNotification) {
-            $0.updateVisibility()
+            $0.refresh()
         }
         let workspace = NSWorkspace.shared.notificationCenter
-        observe(workspace, NSWorkspace.activeSpaceDidChangeNotification) { $0.updateVisibility() }
-        observe(workspace, NSWorkspace.didActivateApplicationNotification) { $0.updateVisibility() }
+        observe(workspace, NSWorkspace.activeSpaceDidChangeNotification) { $0.refresh() }
+        observe(workspace, NSWorkspace.didActivateApplicationNotification) { $0.refresh() }
     }
 
     func stop() {
@@ -57,48 +64,108 @@ final class OverlayController {
         observers.removeAll()
         fullScreenTimer?.invalidate()
         fullScreenTimer = nil
+        pointerDeadlineTask?.cancel()
+        pointerDeadlineTask = nil
         mouseTracker.stop()
         panels.values.forEach { $0.close() }
         panels.removeAll()
     }
 
-    /// Creates panels for new screens, closes panels of removed screens and
-    /// repositions the rest.
-    func reconcile() {
-        var seen = Set<CGDirectDisplayID>()
-        for screen in NSScreen.screens {
-            guard let displayID = screen.displayID else { continue }
-            seen.insert(displayID)
-            let frame = OverlayLayout.panelFrame(for: screen.frame)
-            let hasNotch = screen.safeAreaInsets.top > 0
+    // MARK: - Screens
 
-            if let panel = panels[displayID] {
-                panel.model.hasNotch = hasNotch
+    /// Re-reads all screens: creates panels for new screens, closes panels of
+    /// removed screens, updates geometry and position of the rest, then picks
+    /// the target screen again.
+    func reconcile() {
+        let previous = Dictionary(uniqueKeysWithValues: screens.map { ($0.displayID, $0) })
+        screens = ScreenDescriptor.current()
+
+        for screen in screens {
+            let geometry = screen.geometry
+            if previous[screen.displayID]?.geometry != geometry {
+                logGeometry(of: screen)
+            }
+
+            if let panel = panels[screen.displayID] {
+                panel.model.geometry = geometry
+                let frame = OverlayLayout.panelFrame(for: geometry)
                 if panel.frame != frame {
                     panel.setFrame(frame, display: true)
                 }
             } else {
-                let panel = OverlayPanel(displayID: displayID, frame: frame, hasNotch: hasNotch)
+                let panel = OverlayPanel(displayID: screen.displayID, geometry: geometry)
                 panel.model.showsDebugFrame = showsDebugFrame
-                panels[displayID] = panel
-                panel.orderFrontRegardless()
-                Self.logger.info("Added overlay for display \(displayID) (\(hasNotch ? "notch" : "pill", privacy: .public))")
+                panels[screen.displayID] = panel
             }
         }
 
-        for (displayID, panel) in panels where !seen.contains(displayID) {
+        let connected = Set(screens.map(\.displayID))
+        for (displayID, panel) in panels where !connected.contains(displayID) {
             panel.close()
             panels[displayID] = nil
-            Self.logger.info("Removed overlay for display \(displayID)")
+            Self.screenLogger.info("Display \(displayID) disconnected")
         }
 
-        updateVisibility()
-        mouseTracker.update()
+        // The settled pointer screen may be gone: decide again without waiting.
+        if let settled = pointerDebounce.settled, !connected.contains(settled) {
+            pointerDebounce.force(ScreenDescriptor.screen(containing: NSEvent.mouseLocation, in: screens))
+        }
+
+        refresh()
     }
 
-    /// Hides panels per `OverlayVisibility`: for any full-screen app in pill
-    /// mode, for full-screen video in notch mode (if enabled).
-    func updateVisibility() {
+    /// Picks the target screen and updates which panels are visible.
+    func refresh() {
+        let option = AppSettings.targetScreen(in: defaults)
+        let target = TargetScreenResolver.resolve(
+            option,
+            screens: screens,
+            pointerScreenID: pointerDebounce.settled,
+            activeMenuBarScreenID: NSScreen.main?.displayID
+        )
+        if target != targetScreenID {
+            targetScreenID = target
+            let name = screens.first { $0.displayID == target }?.name ?? "none"
+            Self.screenLogger.info("Target screen (\(option.rawValue, privacy: .public)): \(name, privacy: .public)")
+            if acceptsKeyboard { applyKeyboardFocus() }
+        }
+        updateVisibility()
+    }
+
+    // MARK: - Pointer
+
+    private func pointerMoved(to location: CGPoint) {
+        let screen = ScreenDescriptor.screen(containing: location, in: screens)
+        if pointerDebounce.observe(screen, at: .now) != nil {
+            refresh()
+        }
+        schedulePointerDeadline()
+    }
+
+    /// The pointer may stop moving before the debounce delay is over, so check
+    /// again once it has passed.
+    private func schedulePointerDeadline() {
+        let deadline = pointerDebounce.deadline
+        guard deadline != scheduledDeadline else { return }
+        scheduledDeadline = deadline
+        pointerDeadlineTask?.cancel()
+        guard let deadline else { return }
+
+        pointerDeadlineTask = Task { [weak self] in
+            try? await Task.sleep(until: deadline, clock: .continuous)
+            guard !Task.isCancelled, let self else { return }
+            self.scheduledDeadline = nil
+            if self.pointerDebounce.observe(self.pointerDebounce.pendingScreen, at: .now) != nil {
+                self.refresh()
+            }
+        }
+    }
+
+    // MARK: - Visibility
+
+    /// Shows the panel on the target screen unless `OverlayVisibility` hides it
+    /// (any full-screen app in pill mode, full-screen video in notch mode).
+    private func updateVisibility() {
         let hideEnabled = AppSettings.hideDuringFullScreenVideo(in: defaults)
         let entries = Array(panels)
         let result = detector.screensPlayingFullScreenVideo(entries.map { CGDisplayBounds($0.key) })
@@ -107,17 +174,21 @@ final class OverlayController {
             let panel = entry.value
             let isFullScreen = result.fullScreen.contains(index)
             let isVideo = result.video.contains(index)
-            let hide = OverlayVisibility.isHidden(
-                hasNotch: panel.model.hasNotch,
+            let hiddenByFullScreen = OverlayVisibility.isHidden(
+                mode: panel.model.geometry.mode,
                 hasFullScreenWindow: isFullScreen,
                 isPlayingFullScreenVideo: isVideo,
                 hideDuringFullScreenVideo: hideEnabled
             )
-            if hide, panel.isVisible {
+            let show = entry.key == targetScreenID && !hiddenByFullScreen
+
+            if !show, panel.isVisible {
                 panel.orderOut(nil)
-                let reason = isVideo ? "full-screen video" : "full-screen app"
-                Self.logger.info("Hiding overlay on display \(entry.key): \(reason, privacy: .public)")
-            } else if !hide, !panel.isVisible {
+                if hiddenByFullScreen, entry.key == targetScreenID {
+                    let reason = isVideo ? "full-screen video" : "full-screen app"
+                    Self.logger.info("Hiding overlay on display \(entry.key): \(reason, privacy: .public)")
+                }
+            } else if show, !panel.isVisible {
                 panel.orderFrontRegardless()
                 Self.logger.info("Showing overlay on display \(entry.key)")
             }
@@ -136,11 +207,24 @@ final class OverlayController {
         mouseTracker.update()
     }
 
+    // MARK: - Helpers
+
     private func applyKeyboardFocus() {
-        let mouse = NSEvent.mouseLocation
-        let target = panels.values.first { $0.frame.contains(mouse) } ?? panels.values.first
-        for panel in panels.values {
-            panel.setAcceptsKeyboard(acceptsKeyboard && panel === target)
+        for (displayID, panel) in panels {
+            panel.setAcceptsKeyboard(acceptsKeyboard && displayID == targetScreenID)
+        }
+    }
+
+    private func logGeometry(of screen: ScreenDescriptor) {
+        let g = screen.geometry
+        if let notch = g.notchRect {
+            Self.screenLogger.info(
+                "\(screen.name, privacy: .public) [\(screen.displayID)]: notch \(Double(notch.width)) × \(Double(notch.height)) at x \(Double(notch.minX)), frame \(Double(g.frame.width)) × \(Double(g.frame.height))"
+            )
+        } else {
+            Self.screenLogger.info(
+                "\(screen.name, privacy: .public) [\(screen.displayID)]: pill, menu bar \(Double(g.menuBarHeight)), built-in \(screen.isBuiltIn), frame \(Double(g.frame.width)) × \(Double(g.frame.height))"
+            )
         }
     }
 
@@ -156,11 +240,5 @@ final class OverlayController {
             }
         }
         observers.append((center, token))
-    }
-}
-
-extension NSScreen {
-    var displayID: CGDirectDisplayID? {
-        (deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value
     }
 }

@@ -7,8 +7,11 @@ struct IslandPlaceholderView: View {
     let model: OverlayPanelModel
 
     var body: some View {
-        let metrics = OverlayLayout.metrics(hasNotch: model.hasNotch)
-        let idle = metrics.idle
+        let geometry = model.geometry
+        let isNotch = geometry.mode == .notch
+        let island = geometry.idleIslandRect
+        let cornerRadius = geometry.metrics.idle.cornerRadius
+        let topOffset = isNotch ? 0 : geometry.metrics.topOffset
 
         ZStack(alignment: .top) {
             if model.showsDebugFrame {
@@ -17,15 +20,15 @@ struct IslandPlaceholderView: View {
                     .strokeBorder(Color.red.opacity(0.6), lineWidth: 1)
             }
 
-            shape(cornerRadius: idle.cornerRadius, hasNotch: model.hasNotch)
+            shape(cornerRadius: cornerRadius, hasNotch: isNotch)
                 .fill(CrocusColors.island)
-                .frame(width: idle.width, height: idle.height)
+                .frame(width: island.width, height: island.height)
                 .onGeometryChange(for: CGRect.self) { proxy in
                     proxy.frame(in: .global)
                 } action: { frame in
                     model.islandFrameInWindow = frame
                 }
-                .padding(.top, metrics.topOffset)
+                .padding(.top, topOffset)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .islandEnvironment()

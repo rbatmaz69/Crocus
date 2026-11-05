@@ -91,12 +91,12 @@ enum OverlayVisibility {
     /// - Notch mode: macOS keeps full-screen content below the notch, so the
     ///   island only hides for full-screen video, if that setting is on.
     static func isHidden(
-        hasNotch: Bool,
+        mode: IslandMode,
         hasFullScreenWindow: Bool,
         isPlayingFullScreenVideo: Bool,
         hideDuringFullScreenVideo: Bool
     ) -> Bool {
-        if !hasNotch && hasFullScreenWindow { return true }
+        if mode == .pill && hasFullScreenWindow { return true }
         return hideDuringFullScreenVideo && isPlayingFullScreenVideo
     }
 }

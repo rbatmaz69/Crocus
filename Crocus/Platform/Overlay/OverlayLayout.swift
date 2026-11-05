@@ -17,30 +17,14 @@ enum OverlayLayout {
             + margin
     )
 
-    /// The panel is centred horizontally and hangs from the top edge of the screen.
-    static func panelFrame(for screenFrame: CGRect) -> CGRect {
+    /// The panel hangs from the top edge of the screen, centred on the island
+    /// (the notch may not sit exactly at the screen's midpoint).
+    static func panelFrame(for geometry: ScreenGeometry) -> CGRect {
         CGRect(
-            x: (screenFrame.midX - panelSize.width / 2).rounded(),
-            y: screenFrame.maxY - panelSize.height,
+            x: (geometry.islandCenterX - panelSize.width / 2).rounded(),
+            y: geometry.frame.maxY - panelSize.height,
             width: panelSize.width,
             height: panelSize.height
-        )
-    }
-
-    /// The fixed metrics for a screen: notch mode if it has a notch, pill mode otherwise.
-    static func metrics(hasNotch: Bool) -> IslandModeMetrics {
-        hasNotch ? CrocusMetrics.notch : CrocusMetrics.pill
-    }
-
-    /// Where the idle island sits on a screen, in screen coordinates.
-    static func idleIslandRect(in screenFrame: CGRect, hasNotch: Bool) -> CGRect {
-        let metrics = metrics(hasNotch: hasNotch)
-        let size = metrics.idle
-        return CGRect(
-            x: screenFrame.midX - size.width / 2,
-            y: screenFrame.maxY - metrics.topOffset - size.height,
-            width: size.width,
-            height: size.height
         )
     }
 

@@ -3,6 +3,11 @@ import Testing
 @testable import Crocus
 
 @Suite struct OverlayLayoutTests {
+    static func pill(_ frame: CGRect) -> ScreenGeometry {
+        .make(frame: frame, visibleFrame: frame.insetBy(dx: 0, dy: 12).offsetBy(dx: 0, dy: -12),
+              safeAreaTop: 0, auxLeft: nil, auxRight: nil, isBuiltIn: false)
+    }
+
     @Test func panelFitsLargestState() {
         let size = OverlayLayout.panelSize
         #expect(size.width >= CrocusMetrics.notch.expanded.width + 2 * OverlayLayout.margin)
@@ -16,22 +21,23 @@ import Testing
         CGRect(x: 0, y: 956, width: 1512, height: 982),      // external above
     ])
     func panelHangsFromTopCentre(_ screen: CGRect) {
-        let frame = OverlayLayout.panelFrame(for: screen)
+        let frame = OverlayLayout.panelFrame(for: Self.pill(screen))
         #expect(frame.maxY == screen.maxY)
         #expect(abs(frame.midX - screen.midX) <= 0.5)
         #expect(frame.size == OverlayLayout.panelSize)
     }
 
-    @Test func idleIslandNotch() {
-        let screen = CGRect(x: 0, y: 0, width: 1470, height: 956)
-        let rect = OverlayLayout.idleIslandRect(in: screen, hasNotch: true)
-        #expect(rect == CGRect(x: 735 - 93, y: 956 - 37, width: 186, height: 37))
-    }
-
-    @Test func idleIslandPillFloats6ptBelowTop() {
-        let screen = CGRect(x: 1470, y: 0, width: 2560, height: 1440)
-        let rect = OverlayLayout.idleIslandRect(in: screen, hasNotch: false)
-        #expect(rect == CGRect(x: 1470 + 1280 - 48, y: 1440 - 6 - 20, width: 96, height: 20))
+    @Test func panelCentresOnOffCentreNotch() {
+        // Notch 4 pt right of the screen centre.
+        let frame = CGRect(x: 0, y: 0, width: 1512, height: 982)
+        let geometry = ScreenGeometry.make(
+            frame: frame, visibleFrame: frame, safeAreaTop: 38,
+            auxLeft: CGRect(x: 0, y: 944, width: 667, height: 38),
+            auxRight: CGRect(x: 0, y: 944, width: 659, height: 38),
+            isBuiltIn: true
+        )
+        let panel = OverlayLayout.panelFrame(for: geometry)
+        #expect(abs(panel.midX - geometry.notchRect!.midX) <= 0.5)
     }
 
     @Test func windowRectToScreenRect() {
