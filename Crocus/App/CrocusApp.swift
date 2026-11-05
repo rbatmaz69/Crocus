@@ -55,6 +55,11 @@ private struct DebugMenu: View {
             overlay.usesLargeSample = state.usesLargeSample
             overlay.presentation = state.presentation
         }
+        Picker("Pill Outline", selection: $overlay.pillOutlineOverride) {
+            ForEach(PillOutlineOverride.allCases) { option in
+                Text(option.title).tag(option)
+            }
+        }
     }
 }
 #endif

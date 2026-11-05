@@ -103,3 +103,8 @@ extension CrocusMetrics {
         static let minimumButtonHeight: CGFloat = 28
     }
 }
+
+extension ShadowSpec {
+    /// SwiftUI's shadow radius is about half the CSS blur radius.
+    var radius: CGFloat { blur / 2 }
+}

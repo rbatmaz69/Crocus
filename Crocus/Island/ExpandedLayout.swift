@@ -1,10 +1,10 @@
 import SwiftUI
 
 /// Expanded anatomy: a header split left and right of the camera (source /
-/// status), then the content with 22 pt inset and 14 pt row spacing. Reports
+/// status; split the same way in pill mode), then the content with 22 pt inset and 14 pt row spacing. Reports
 /// its natural height so the island can follow the content.
 struct ExpandedLayout<Source: View, Status: View, Content: View>: View {
-    let notchSize: CGSize
+    let metrics: IslandLayoutMetrics
     var onHeightChange: (CGFloat) -> Void
     @ViewBuilder var source: Source
     @ViewBuilder var status: Status
@@ -15,13 +15,13 @@ struct ExpandedLayout<Source: View, Status: View, Content: View>: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 source.frame(maxWidth: .infinity, alignment: .leading)
-                Color.clear.frame(width: notchSize.width)
+                Color.clear.frame(width: metrics.headerGapWidth)
                 status.frame(maxWidth: .infinity, alignment: .trailing)
             }
             .font(.system(size: 11))
             .foregroundStyle(CrocusColors.secondary)
             .lineLimit(1)
-            .frame(height: notchSize.height)
+            .frame(height: metrics.headerHeight)
 
             VStack(alignment: .leading, spacing: CrocusMetrics.Expanded.rowSpacing) {
                 content
@@ -30,7 +30,7 @@ struct ExpandedLayout<Source: View, Status: View, Content: View>: View {
             .padding(.bottom, inset)
         }
         .padding(.horizontal, inset)
-        .frame(width: CrocusMetrics.notch.expanded.width)
+        .frame(width: metrics.expandedWidth)
         .fixedSize(horizontal: false, vertical: true)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { onHeightChange($0) }
     }
