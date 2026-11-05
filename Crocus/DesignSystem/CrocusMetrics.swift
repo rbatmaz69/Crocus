@@ -79,3 +79,27 @@ enum CrocusMetrics {
     /// Visible diameter of the page dots in the expanded state.
     static let pageDotDiameter: CGFloat = 6
 }
+
+/// Anatomy of the notch-mode island (boards 03, 05, 07).
+extension CrocusMetrics {
+    enum Compact {
+        /// The compact island reaches this far below the hardware notch.
+        static let extraHeightBelowNotch: CGFloat = 3
+        static let symbolSize: CGFloat = 24
+        /// Edge inset of the symbol in the left wing.
+        static let leadingInset: CGFloat = 18
+        /// Edge inset of the value in the right wing.
+        static let trailingInset: CGFloat = 16
+        /// Right wing width when menu bar items need the space.
+        static let reducedWingWidth: CGFloat = 44
+        /// Minimum distance between the island and menu bar items.
+        static let menuBarItemSpacing: CGFloat = 16
+    }
+
+    enum Expanded {
+        static let contentInset: CGFloat = 22
+        static let rowSpacing: CGFloat = 14
+        static let buttonHeight: CGFloat = 32
+        static let minimumButtonHeight: CGFloat = 28
+    }
+}

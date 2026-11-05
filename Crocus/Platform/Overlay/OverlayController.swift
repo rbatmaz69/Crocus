@@ -21,10 +21,22 @@ final class OverlayController {
     /// The screen that currently shows the island.
     private(set) var targetScreenID: CGDirectDisplayID?
 
+    /// What the island shows. Driven by the debug menu until the state
+    /// machine (#7) exists.
+    var presentation: IslandPresentation = .idle {
+        didSet { panels.values.forEach { $0.model.presentation = presentation } }
+    }
+
+    /// Debug: show the taller expanded sample.
+    var usesLargeSample = false {
+        didSet { panels.values.forEach { $0.model.usesLargeSample = usesLargeSample } }
+    }
+
     @ObservationIgnored private var screens: [ScreenDescriptor] = []
     @ObservationIgnored private var panels: [CGDirectDisplayID: OverlayPanel] = [:]
     @ObservationIgnored private lazy var mouseTracker = MouseTracker { [unowned self] in Array(self.panels.values) }
     @ObservationIgnored private let detector = FullScreenVideoDetector()
+    @ObservationIgnored private let windowList = SystemWindowList()
     @ObservationIgnored private var observers: [(NotificationCenter, NSObjectProtocol)] = []
     @ObservationIgnored private var fullScreenTimer: Timer?
     @ObservationIgnored private var pointerDebounce = PointerScreenDebounce()
@@ -95,6 +107,8 @@ final class OverlayController {
             } else {
                 let panel = OverlayPanel(displayID: screen.displayID, geometry: geometry)
                 panel.model.showsDebugFrame = showsDebugFrame
+                panel.model.presentation = presentation
+                panel.model.usesLargeSample = usesLargeSample
                 panels[screen.displayID] = panel
             }
         }
@@ -129,7 +143,26 @@ final class OverlayController {
             Self.screenLogger.info("Target screen (\(option.rawValue, privacy: .public)): \(name, privacy: .public)")
             if acceptsKeyboard { applyKeyboardFocus() }
         }
+        updateMenuBarClearance()
         updateVisibility()
+    }
+
+    /// Shrinks the right wing where menu bar items need the space.
+    private func updateMenuBarClearance() {
+        let windows = windowList.onScreenWindows()
+        for screen in screens {
+            guard let notch = screen.geometry.notchRect, let panel = panels[screen.displayID] else { continue }
+            let reduced = MenuBarClearance.isRightWingReduced(
+                notchRect: notch,
+                screenBounds: CGDisplayBounds(screen.displayID),
+                menuBarHeight: screen.geometry.menuBarHeight,
+                windows: windows
+            )
+            if panel.model.rightWingReduced != reduced {
+                panel.model.rightWingReduced = reduced
+                Self.screenLogger.info("\(screen.name, privacy: .public): right wing \(reduced ? "reduced to 44 pt" : "full", privacy: .public)")
+            }
+        }
     }
 
     // MARK: - Pointer

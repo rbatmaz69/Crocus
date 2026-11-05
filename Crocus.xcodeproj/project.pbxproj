@@ -9,8 +9,11 @@
 /* Begin PBXBuildFile section */
 		04030FEE34D9C250D99C4417 /* ScreenGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CF16A945F93F686B44CD59 /* ScreenGeometry.swift */; };
 		08B4355CB19DDE89F62F31FF /* CrocusColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BAC8129449A035E12A6DA3 /* CrocusColors.swift */; };
+		08BA17014E89EB78E2849AE0 /* NotchIslandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341C6186C15EBD965BB7FEDF /* NotchIslandView.swift */; };
 		1699F1FE61F5840227250BA2 /* TargetScreenResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */; };
+		1FE54275F86BA0D5F2912171 /* MenuBarClearanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383929CF44F0D51708D61585 /* MenuBarClearanceTests.swift */; };
 		21C51CBBFACBB9F4BF73FF07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4FB41042672DEDA32A5E8E9 /* Assets.xcassets */; };
+		34CBF616C5F0C5BA1F5C7C0C /* DebugIslandContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C0239427B169291492AFAC /* DebugIslandContent.swift */; };
 		39CC4E1A8BD41559AA1CE311 /* ScreenDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDFC2BD6342483649A6FD42 /* ScreenDescriptor.swift */; };
 		44880B93F2F40036A8E3475E /* OverlayLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */; };
 		484FFC474D8E1D44C7FE5191 /* URLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40741D43E26040909E116D85 /* URLRouter.swift */; };
@@ -20,14 +23,21 @@
 		6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28589CB97835C5D738141A59 /* CrocusTypography.swift */; };
 		72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */; };
 		8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDCB7E68607BDB98E90DC64A /* OverlayController.swift */; };
+		8A4E19DC762C50E871AAA27A /* ExpandedLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50875E1DD2F25D283F389BF3 /* ExpandedLayout.swift */; };
 		8CB4BAC1AB2AF48ED2EA4D01 /* MouseTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6970B77DC856B96EB5EFB6B /* MouseTracker.swift */; };
+		962B0E95F32F6B698534E658 /* MenuBarClearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99E043A81632BFE7AFCA870 /* MenuBarClearance.swift */; };
 		975C4B3F82C948E9B5C152B2 /* ScreenGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */; };
+		A0C396DB8582ECFB80E71873 /* CompactLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39010B3D65B263CCF32A1B08 /* CompactLayout.swift */; };
+		A75843B0C4CFB6EE48B0B00F /* NotchIslandMetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A29424CB721E0E862C1C6 /* NotchIslandMetricsTests.swift */; };
 		A9B1A6DCDE000DFCDFED0BE7 /* OverlayLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */; };
 		ABCE5A4FA1EBD9E256940A7D /* FullScreenVideoDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458D83892EAA22D2278366B6 /* FullScreenVideoDetector.swift */; };
+		B026120B49B66DEAD943499D /* NotchIslandShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957504076061D31A24E3A4ED /* NotchIslandShape.swift */; };
 		B939F90EC1E988660EFD67FD /* DesignTokensTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */; };
 		BAE57AE1A84343827F394101 /* PointerScreenDebouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */; };
+		BFE951271B502C1AA1186516 /* NotchIslandShapeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */; };
 		CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */; };
 		CF4987BB3686E6879FA1E547 /* PointerScreenDebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */; };
+		CF77CE5857CD95E3AB7710F4 /* NotchIslandMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */; };
 		D1F62F8A2540EF5EE6E19647 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */; };
 		D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A16FF870167FB621B64308 /* CrocusSprings.swift */; };
 		DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */; };
@@ -35,6 +45,8 @@
 		EA6677A8B621FED5AFABED1F /* IslandHitRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */; };
 		EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */; };
 		F5D6A1CCD2ACA854354FB7F4 /* IslandHitRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */; };
+		FBF7B04534790BEA525B19F7 /* ContinuousCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8946A04E840EA25E432A884A /* ContinuousCorner.swift */; };
+		FEC872F7A9D11F36603278A8 /* IslandPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 329CBEAA3B17DA6DEDAD2E05 /* IslandPresentation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,10 +66,16 @@
 		28589CB97835C5D738141A59 /* CrocusTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusTypography.swift; sourceTree = "<group>"; };
 		2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncerTests.swift; sourceTree = "<group>"; };
 		2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHitRegion.swift; sourceTree = "<group>"; };
+		329CBEAA3B17DA6DEDAD2E05 /* IslandPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandPresentation.swift; sourceTree = "<group>"; };
+		341C6186C15EBD965BB7FEDF /* NotchIslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandView.swift; sourceTree = "<group>"; };
+		383929CF44F0D51708D61585 /* MenuBarClearanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarClearanceTests.swift; sourceTree = "<group>"; };
+		39010B3D65B263CCF32A1B08 /* CompactLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLayout.swift; sourceTree = "<group>"; };
 		3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayout.swift; sourceTree = "<group>"; };
 		40741D43E26040909E116D85 /* URLRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRouter.swift; sourceTree = "<group>"; };
 		458D83892EAA22D2278366B6 /* FullScreenVideoDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetector.swift; sourceTree = "<group>"; };
+		49C0239427B169291492AFAC /* DebugIslandContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugIslandContent.swift; sourceTree = "<group>"; };
 		4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusApp.swift; sourceTree = "<group>"; };
+		50875E1DD2F25D283F389BF3 /* ExpandedLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandedLayout.swift; sourceTree = "<group>"; };
 		54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayoutTests.swift; sourceTree = "<group>"; };
 		683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncer.swift; sourceTree = "<group>"; };
 		6DC13E5727374621F7BF995C /* CrocusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrocusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,10 +83,14 @@
 		78B7A9251EEC65564ECE9977 /* Crocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78CF16A945F93F686B44CD59 /* ScreenGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometry.swift; sourceTree = "<group>"; };
 		7CB1AA2AEA9F1C008496B3CA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		8946A04E840EA25E432A884A /* ContinuousCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinuousCorner.swift; sourceTree = "<group>"; };
 		91A16FF870167FB621B64308 /* CrocusSprings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusSprings.swift; sourceTree = "<group>"; };
+		9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandMetrics.swift; sourceTree = "<group>"; };
+		957504076061D31A24E3A4ED /* NotchIslandShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandShape.swift; sourceTree = "<group>"; };
 		971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHitRegionTests.swift; sourceTree = "<group>"; };
 		9E26CF80E597F28AAFE668A0 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		9FDFC2BD6342483649A6FD42 /* ScreenDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenDescriptor.swift; sourceTree = "<group>"; };
+		A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandShapeTests.swift; sourceTree = "<group>"; };
 		A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetScreenResolverTests.swift; sourceTree = "<group>"; };
 		B1BAC8129449A035E12A6DA3 /* CrocusColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusColors.swift; sourceTree = "<group>"; };
 		B6970B77DC856B96EB5EFB6B /* MouseTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MouseTracker.swift; sourceTree = "<group>"; };
@@ -80,7 +102,9 @@
 		ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetectorTests.swift; sourceTree = "<group>"; };
 		ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokensTests.swift; sourceTree = "<group>"; };
 		EDCB7E68607BDB98E90DC64A /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
+		F04A29424CB721E0E862C1C6 /* NotchIslandMetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandMetricsTests.swift; sourceTree = "<group>"; };
 		F4FB41042672DEDA32A5E8E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F99E043A81632BFE7AFCA870 /* MenuBarClearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarClearance.swift; sourceTree = "<group>"; };
 		F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -121,6 +145,9 @@
 				ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */,
 				ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */,
 				971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */,
+				383929CF44F0D51708D61585 /* MenuBarClearanceTests.swift */,
+				F04A29424CB721E0E862C1C6 /* NotchIslandMetricsTests.swift */,
+				A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */,
 				54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */,
 				2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */,
 				203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */,
@@ -193,6 +220,7 @@
 		FA24806234270F2255DA2466 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				F99E043A81632BFE7AFCA870 /* MenuBarClearance.swift */,
 				683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */,
 				9FDFC2BD6342483649A6FD42 /* ScreenDescriptor.swift */,
 				78CF16A945F93F686B44CD59 /* ScreenGeometry.swift */,
@@ -205,7 +233,15 @@
 			isa = PBXGroup;
 			children = (
 				7CB1AA2AEA9F1C008496B3CA /* .gitkeep */,
+				39010B3D65B263CCF32A1B08 /* CompactLayout.swift */,
+				8946A04E840EA25E432A884A /* ContinuousCorner.swift */,
+				49C0239427B169291492AFAC /* DebugIslandContent.swift */,
+				50875E1DD2F25D283F389BF3 /* ExpandedLayout.swift */,
 				720FC673855FA75FA49D271A /* IslandPlaceholderView.swift */,
+				329CBEAA3B17DA6DEDAD2E05 /* IslandPresentation.swift */,
+				9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */,
+				957504076061D31A24E3A4ED /* NotchIslandShape.swift */,
+				341C6186C15EBD965BB7FEDF /* NotchIslandView.swift */,
 			);
 			path = Island;
 			sourceTree = "<group>";
@@ -318,6 +354,9 @@
 				B939F90EC1E988660EFD67FD /* DesignTokensTests.swift in Sources */,
 				DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */,
 				EA6677A8B621FED5AFABED1F /* IslandHitRegionTests.swift in Sources */,
+				1FE54275F86BA0D5F2912171 /* MenuBarClearanceTests.swift in Sources */,
+				A75843B0C4CFB6EE48B0B00F /* NotchIslandMetricsTests.swift in Sources */,
+				BFE951271B502C1AA1186516 /* NotchIslandShapeTests.swift in Sources */,
 				A9B1A6DCDE000DFCDFED0BE7 /* OverlayLayoutTests.swift in Sources */,
 				CF4987BB3686E6879FA1E547 /* PointerScreenDebouncerTests.swift in Sources */,
 				975C4B3F82C948E9B5C152B2 /* ScreenGeometryTests.swift in Sources */,
@@ -332,15 +371,24 @@
 			files = (
 				CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */,
 				D1F62F8A2540EF5EE6E19647 /* AppSettings.swift in Sources */,
+				A0C396DB8582ECFB80E71873 /* CompactLayout.swift in Sources */,
+				FBF7B04534790BEA525B19F7 /* ContinuousCorner.swift in Sources */,
 				72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */,
 				08B4355CB19DDE89F62F31FF /* CrocusColors.swift in Sources */,
 				EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */,
 				D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */,
 				6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */,
+				34CBF616C5F0C5BA1F5C7C0C /* DebugIslandContent.swift in Sources */,
+				8A4E19DC762C50E871AAA27A /* ExpandedLayout.swift in Sources */,
 				ABCE5A4FA1EBD9E256940A7D /* FullScreenVideoDetector.swift in Sources */,
 				F5D6A1CCD2ACA854354FB7F4 /* IslandHitRegion.swift in Sources */,
 				606F10412C7BFDA746402F3A /* IslandPlaceholderView.swift in Sources */,
+				FEC872F7A9D11F36603278A8 /* IslandPresentation.swift in Sources */,
+				962B0E95F32F6B698534E658 /* MenuBarClearance.swift in Sources */,
 				8CB4BAC1AB2AF48ED2EA4D01 /* MouseTracker.swift in Sources */,
+				CF77CE5857CD95E3AB7710F4 /* NotchIslandMetrics.swift in Sources */,
+				B026120B49B66DEAD943499D /* NotchIslandShape.swift in Sources */,
+				08BA17014E89EB78E2849AE0 /* NotchIslandView.swift in Sources */,
 				8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */,
 				44880B93F2F40036A8E3475E /* OverlayLayout.swift in Sources */,
 				E6236D1F409FF76415A9611A /* OverlayPanel.swift in Sources */,
