@@ -5,14 +5,14 @@ import SwiftUI
 @MainActor
 @Observable
 final class OverlayPanelModel {
-    var hasNotch: Bool
+    var geometry: ScreenGeometry
     var showsDebugFrame = false
     /// Island frame reported by the SwiftUI view, in the panel's content
     /// coordinates (top-left origin).
     var islandFrameInWindow: CGRect?
 
-    init(hasNotch: Bool) {
-        self.hasNotch = hasNotch
+    init(geometry: ScreenGeometry) {
+        self.geometry = geometry
     }
 }
 
@@ -27,9 +27,10 @@ final class OverlayPanel: NSPanel {
     let model: OverlayPanelModel
     private(set) var acceptsKeyboard = false
 
-    init(displayID: CGDirectDisplayID, frame: CGRect, hasNotch: Bool) {
+    init(displayID: CGDirectDisplayID, geometry: ScreenGeometry) {
         self.displayID = displayID
-        self.model = OverlayPanelModel(hasNotch: hasNotch)
+        self.model = OverlayPanelModel(geometry: geometry)
+        let frame = OverlayLayout.panelFrame(for: geometry)
         super.init(
             contentRect: frame,
             styleMask: [.borderless, .nonactivatingPanel],

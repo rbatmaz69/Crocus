@@ -80,33 +80,33 @@ private struct FakePower: PowerAssertionProviding {
     @Test(arguments: [true, false])
     func pillHidesForAnyFullScreenApp(video: Bool) {
         #expect(OverlayVisibility.isHidden(
-            hasNotch: false, hasFullScreenWindow: true,
+            mode: .pill, hasFullScreenWindow: true,
             isPlayingFullScreenVideo: video, hideDuringFullScreenVideo: false
         ))
     }
 
     @Test func notchStaysForFullScreenAppWithoutVideo() {
         #expect(!OverlayVisibility.isHidden(
-            hasNotch: true, hasFullScreenWindow: true,
+            mode: .notch, hasFullScreenWindow: true,
             isPlayingFullScreenVideo: false, hideDuringFullScreenVideo: true
         ))
     }
 
     @Test func notchHidesForVideoOnlyWhenEnabled() {
         #expect(OverlayVisibility.isHidden(
-            hasNotch: true, hasFullScreenWindow: true,
+            mode: .notch, hasFullScreenWindow: true,
             isPlayingFullScreenVideo: true, hideDuringFullScreenVideo: true
         ))
         #expect(!OverlayVisibility.isHidden(
-            hasNotch: true, hasFullScreenWindow: true,
+            mode: .notch, hasFullScreenWindow: true,
             isPlayingFullScreenVideo: true, hideDuringFullScreenVideo: false
         ))
     }
 
-    @Test(arguments: [true, false])
-    func visibleWithoutFullScreen(hasNotch: Bool) {
+    @Test(arguments: [IslandMode.notch, .pill])
+    func visibleWithoutFullScreen(mode: IslandMode) {
         #expect(!OverlayVisibility.isHidden(
-            hasNotch: hasNotch, hasFullScreenWindow: false,
+            mode: mode, hasFullScreenWindow: false,
             isPlayingFullScreenVideo: false, hideDuringFullScreenVideo: true
         ))
     }

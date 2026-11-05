@@ -35,10 +35,16 @@ struct CrocusApp: App {
 #if DEBUG
 private struct DebugMenu: View {
     @Bindable var overlay: OverlayController
+    @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
 
     var body: some View {
         Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
         Toggle("Overlay Accepts Keyboard", isOn: $overlay.acceptsKeyboard)
+        Picker("Target Screen", selection: $targetScreen) {
+            ForEach(TargetScreenOption.allCases) { option in
+                Text(option.title).tag(option)
+            }
+        }
     }
 }
 #endif

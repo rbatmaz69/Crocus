@@ -10,6 +10,8 @@ import AppKit
 final class MouseTracker {
     private var monitors: [Any] = []
     private let panels: () -> [OverlayPanel]
+    /// Called with the pointer location (screen coordinates) on every move.
+    var onPointerMove: ((CGPoint) -> Void)?
 
     init(panels: @escaping () -> [OverlayPanel]) {
         self.panels = panels
@@ -20,12 +22,12 @@ final class MouseTracker {
         let mask: NSEvent.EventTypeMask = [.mouseMoved, .leftMouseDragged, .rightMouseDragged]
 
         if let global = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self] _ in
-            MainActor.assumeIsolated { self?.update() }
+            MainActor.assumeIsolated { self?.pointerMoved() }
         }) {
             monitors.append(global)
         }
         if let local = NSEvent.addLocalMonitorForEvents(matching: mask, handler: { [weak self] event in
-            MainActor.assumeIsolated { self?.update() }
+            MainActor.assumeIsolated { self?.pointerMoved() }
             return event
         }) {
             monitors.append(local)
@@ -36,6 +38,11 @@ final class MouseTracker {
     func stop() {
         monitors.forEach(NSEvent.removeMonitor)
         monitors.removeAll()
+    }
+
+    private func pointerMoved() {
+        update()
+        onPointerMove?(NSEvent.mouseLocation)
     }
 
     func update() {
