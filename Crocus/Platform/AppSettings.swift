@@ -6,6 +6,7 @@ enum AppSettings {
     enum Key {
         static let hideDuringFullScreenVideo = "hideDuringFullScreenVideo"
         static let targetScreen = "targetScreen"
+        static let activityPriority = "activityPriority"
     }
 
     static func registerDefaults(in defaults: UserDefaults = .standard) {
@@ -21,5 +22,13 @@ enum AppSettings {
 
     static func targetScreen(in defaults: UserDefaults = .standard) -> TargetScreenOption {
         defaults.string(forKey: Key.targetScreen).flatMap(TargetScreenOption.init(rawValue:)) ?? .automatic
+    }
+
+    static func activityPriority(in defaults: UserDefaults = .standard) -> ActivityPriority {
+        ActivityPriority(storedOrder: defaults.stringArray(forKey: Key.activityPriority) ?? [])
+    }
+
+    static func setActivityPriority(_ priority: ActivityPriority, in defaults: UserDefaults = .standard) {
+        defaults.set(priority.storedOrder, forKey: Key.activityPriority)
     }
 }

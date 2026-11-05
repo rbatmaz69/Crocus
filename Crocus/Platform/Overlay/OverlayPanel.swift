@@ -21,13 +21,14 @@ final class OverlayPanelModel {
     var rightWingReduced = false
     /// Natural height of the expanded content, reported by `ExpandedLayout`.
     var expandedContentHeight: CGFloat?
-    /// Debug: show the taller expanded sample.
-    var usesLargeSample = false
+    /// Source of the island content.
+    let store: IslandStore
     /// The menu bar (and so the wallpaper under the pill) is dark.
     var menuBarIsDark = true
 
-    init(geometry: ScreenGeometry) {
+    init(geometry: ScreenGeometry, store: IslandStore) {
         self.geometry = geometry
+        self.store = store
     }
 
     /// Horizontal centre of the island (the notch, or the screen centre in
@@ -77,9 +78,9 @@ final class OverlayPanel: NSPanel {
     let model: OverlayPanelModel
     private(set) var acceptsKeyboard = false
 
-    init(displayID: CGDirectDisplayID, geometry: ScreenGeometry) {
+    init(displayID: CGDirectDisplayID, geometry: ScreenGeometry, store: IslandStore) {
         self.displayID = displayID
-        self.model = OverlayPanelModel(geometry: geometry)
+        self.model = OverlayPanelModel(geometry: geometry, store: store)
         let frame = OverlayLayout.panelFrame(for: geometry)
         super.init(
             contentRect: frame,

@@ -15,7 +15,7 @@ struct CrocusApp: App {
 
             #if DEBUG
             Divider()
-            DebugMenu(overlay: appDelegate.overlay)
+            DebugMenu(overlay: appDelegate.overlay, store: appDelegate.store)
             #endif
 
             Divider()
@@ -35,8 +35,8 @@ struct CrocusApp: App {
 #if DEBUG
 private struct DebugMenu: View {
     @Bindable var overlay: OverlayController
+    let store: IslandStore
     @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
-    @State private var islandState = DebugIslandState.idle
 
     var body: some View {
         Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
@@ -46,14 +46,22 @@ private struct DebugMenu: View {
                 Text(option.title).tag(option)
             }
         }
-        Picker("Island State", selection: $islandState) {
-            ForEach(DebugIslandState.allCases) { state in
-                Text(state.title).tag(state)
+        Menu("Activities") {
+            ForEach(ActivityKind.allCases, id: \.self) { kind in
+                Toggle(SampleActivities.make(kind).title, isOn: Binding(
+                    get: { store.activities["sample.\(kind.rawValue)"] != nil },
+                    set: { on in
+                        if on { store.upsert(SampleActivities.make(kind)) } else { store.remove(id: "sample.\(kind.rawValue)") }
+                    }
+                ))
             }
-        }
-        .onChange(of: islandState) { _, state in
-            overlay.usesLargeSample = state.usesLargeSample
-            overlay.presentation = state.presentation
+            Divider()
+            Button("Send Charging Event") { store.post(SampleActivities.chargingEvent) }
+            Button("Send Bluetooth Event") { store.post(SampleActivities.bluetoothEvent) }
+            Divider()
+            Button("Expand") { store.expand() }
+            Button("Collapse") { store.collapse() }
+            Button("End All") { store.removeAll() }
         }
         Picker("Pill Outline", selection: $overlay.pillOutlineOverride) {
             ForEach(PillOutlineOverride.allCases) { option in

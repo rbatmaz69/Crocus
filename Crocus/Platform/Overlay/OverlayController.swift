@@ -21,16 +21,8 @@ final class OverlayController {
     /// The screen that currently shows the island.
     private(set) var targetScreenID: CGDirectDisplayID?
 
-    /// What the island shows. Driven by the debug menu until the state
-    /// machine (#7) exists.
-    var presentation: IslandPresentation = .idle {
-        didSet { panels.values.forEach { $0.model.presentation = presentation } }
-    }
-
-    /// Debug: show the taller expanded sample.
-    var usesLargeSample = false {
-        didSet { panels.values.forEach { $0.model.usesLargeSample = usesLargeSample } }
-    }
+    /// What the island shows comes from here.
+    let store: IslandStore
 
     /// Debug: force the pill outline for a light or dark wallpaper.
     var pillOutlineOverride = PillOutlineOverride.automatic {
@@ -53,7 +45,8 @@ final class OverlayController {
     private static let logger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Overlay")
     private static let screenLogger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Screens")
 
-    init(defaults: UserDefaults = .standard) {
+    init(store: IslandStore, defaults: UserDefaults = .standard) {
+        self.store = store
         self.defaults = defaults
     }
 
@@ -61,6 +54,7 @@ final class OverlayController {
         AppSettings.registerDefaults(in: defaults)
         pointerDebounce.force(ScreenDescriptor.screen(containing: NSEvent.mouseLocation, in: ScreenDescriptor.current()))
         reconcile()
+        observeStore()
         mouseTracker.onPointerMove = { [weak self] location in self?.pointerMoved(to: location) }
         menuBarAppearance.onChange = { [weak self] _ in self?.applyMenuBarAppearance() }
         mouseTracker.start()
@@ -112,10 +106,9 @@ final class OverlayController {
                     panel.setFrame(frame, display: true)
                 }
             } else {
-                let panel = OverlayPanel(displayID: screen.displayID, geometry: geometry)
+                let panel = OverlayPanel(displayID: screen.displayID, geometry: geometry, store: store)
                 panel.model.showsDebugFrame = showsDebugFrame
-                panel.model.presentation = presentation
-                panel.model.usesLargeSample = usesLargeSample
+                panel.model.presentation = store.presentation
                 panel.model.menuBarIsDark = menuBarIsDark
                 panels[screen.displayID] = panel
             }
@@ -185,6 +178,20 @@ final class OverlayController {
                 panel.model.rightWingReduced = reduced
                 Self.screenLogger.info("\(screen.name, privacy: .public): right wing \(reduced ? "reduced to 44 pt" : "full", privacy: .public)")
             }
+        }
+    }
+
+    // MARK: - Store
+
+    /// Pushes the store's presentation to all panels whenever it changes.
+    private func observeStore() {
+        let presentation = withObservationTracking {
+            store.presentation
+        } onChange: { [weak self] in
+            Task { @MainActor in self?.observeStore() }
+        }
+        for panel in panels.values where panel.model.presentation != presentation {
+            panel.model.presentation = presentation
         }
     }
 

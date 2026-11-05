@@ -1,0 +1,83 @@
+import SwiftUI
+
+/// Building blocks for activity content, styled after the spec.
+
+/// Circular progress, 20 pt, 3 pt stroke, system blue (compact right wing).
+struct IslandProgressRing: View {
+    let progress: Double
+
+    var body: some View {
+        ZStack {
+            Circle().stroke(CrocusColors.progress.opacity(CrocusColors.progressTrackOpacity), lineWidth: 3)
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(CrocusColors.progress, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+        }
+        .frame(width: 20, height: 20)
+    }
+}
+
+/// Linear progress bar on the surface colour (expanded).
+struct IslandProgressBar: View {
+    let progress: Double
+    var tint: Color = CrocusColors.progress
+    var height: CGFloat = 6
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule().fill(CrocusColors.surface)
+                Capsule().fill(tint).frame(width: proxy.size.width * min(max(progress, 0), 1))
+            }
+        }
+        .frame(height: height)
+    }
+}
+
+/// Capsule button; the primary action is filled white.
+struct IslandButton: View {
+    let title: String
+    var primary = false
+    var action: () -> Void = {}
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(primary ? CrocusColors.island : CrocusColors.primary)
+                .padding(.horizontal, 14)
+                .frame(minHeight: CrocusMetrics.Expanded.buttonHeight)
+                .background(Capsule().fill(primary ? CrocusColors.primary : CrocusColors.surface))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// Symbol in the compact left wing.
+struct IslandCompactSymbol: View {
+    let systemName: String
+    var color: Color = CrocusColors.primary
+
+    var body: some View {
+        Image(systemName: systemName)
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(color)
+            .frame(width: CrocusMetrics.Compact.symbolSize, height: CrocusMetrics.Compact.symbolSize)
+    }
+}
+
+/// Value in the compact right wing (Semibold 15, tabular digits).
+struct IslandCompactValue: View {
+    let text: String
+    var color: Color = CrocusColors.primary
+
+    var body: some View {
+        Text(text)
+            .font(CrocusTypography.title.font(inCompactIsland: true))
+            .monospacedDigit()
+            .foregroundStyle(color)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+    }
+}

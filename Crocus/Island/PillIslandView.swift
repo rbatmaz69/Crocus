@@ -36,7 +36,7 @@ struct PillIslandView: View {
         switch model.presentation {
         case .idle:
             Color.clear
-        case .compact:
+        case .compact, .minimal:
             IslandCompactContent(model: model, metrics: metrics)
                 .frame(width: metrics.compactWidth)
                 .transition(.opacity)

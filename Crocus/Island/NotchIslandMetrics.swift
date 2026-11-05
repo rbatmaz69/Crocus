@@ -38,7 +38,7 @@ enum NotchIslandMetrics {
                 leading: halfNotch, trailing: halfNotch, height: notch.height,
                 bottomRadius: spec.idle.cornerRadius, shoulderRadius: shoulder
             )
-        case .compact:
+        case .compact, .minimal:
             let rightWing = rightWingReduced ? CrocusMetrics.Compact.reducedWingWidth : spec.wingWidth
             return NotchShapeParameters(
                 leading: halfNotch + spec.wingWidth,
