@@ -5,11 +5,13 @@ import SwiftUI
 /// the second activity hangs next to it as a drop.
 struct NotchIslandView: View {
     let model: OverlayPanelModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         if let parameters = model.notchShapeParameters, let notch = model.geometry.notchRect {
             let centerX = model.islandCenterXInPanel
-            let spring = model.transitionSpring.animation
+            // Reduce Motion: the shape jumps to its size (C1–C3).
+            let spring: Animation? = reduceMotion ? nil : model.transitionSpring.animation
             let metrics = IslandLayoutMetrics.notch(notchSize: notch.size, rightWingReduced: model.rightWingReduced)
             let secondary = model.presentation == .minimal ? model.store.secondaryActivity : nil
             let dropCenterX = MinimalLayout.notchDropCenterX(main: parameters, centerX: centerX)
@@ -30,7 +32,7 @@ struct NotchIslandView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .animation(spring, value: parameters)
             .animation(spring, value: model.presentation)
-            .animation(CrocusSprings.dropDetach.animation, value: secondary?.id)
+            .animation(reduceMotion ? nil : CrocusSprings.dropDetach.animation, value: secondary?.id)
             .onChange(of: parameters, initial: true) { _, newValue in
                 model.islandFrameInWindow = newValue.bodyRect(centerX: centerX)
             }
@@ -53,7 +55,7 @@ struct NotchIslandView: View {
                     IslandCompactContent(model: model, metrics: metrics)
                         .frame(width: parameters.width, height: parameters.height)
                         .offset(x: centerX - parameters.leading)
-                        .transition(.opacity)
+                        .transition(.islandCompactContent(reduceMotion: reduceMotion))
                 case .expanded:
                     IslandExpandedContent(model: model, metrics: metrics)
                         .frame(height: parameters.height, alignment: .top)

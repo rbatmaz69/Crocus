@@ -13,7 +13,9 @@ struct IslandCompactContent: View {
             if let event = store.currentEvent {
                 event.compactLeading
             } else if let activity = store.compactContentActivity {
+                // C1: one bounce once the island has settled.
                 activity.compactLeading
+                    .symbolEffect(.bounce, value: model.arrivalBounce)
             }
         } trailing: {
             if let event = store.currentEvent {

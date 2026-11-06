@@ -47,9 +47,11 @@ private struct DebugMenu: View {
     let bluetooth: BluetoothManager
     @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
     @AppStorage(AppSettings.Key.hoverStyle) private var hoverStyle = HoverStyle.breathe
+    @AppStorage(AppSettings.Key.debugSlowAnimations) private var slowAnimations = false
 
     var body: some View {
         Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
+        Toggle("Slow Animations (5×)", isOn: $slowAnimations)
         Picker("Hover Style", selection: $hoverStyle) {
             ForEach(HoverStyle.allCases) { style in
                 Text(style.title).tag(style)

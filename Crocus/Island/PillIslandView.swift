@@ -6,11 +6,13 @@ import SwiftUI
 /// centred.
 struct PillIslandView: View {
     let model: OverlayPanelModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let parameters = model.pillShapeParameters
         let centerX = model.islandCenterXInPanel
-        let spring = model.transitionSpring.animation
+        // Reduce Motion: the shape jumps to its size (C1–C3).
+        let spring: Animation? = reduceMotion ? nil : model.transitionSpring.animation
         let secondary = model.presentation == .minimal ? model.store.secondaryActivity : nil
         let mainCenterX = centerX + (secondary == nil ? 0 : MinimalLayout.pillMainOffset)
         let circleRect = secondary.map { _ in MinimalLayout.pillCircleRect(centerX: centerX) }
@@ -29,7 +31,7 @@ struct PillIslandView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(spring, value: parameters)
         .animation(spring, value: model.presentation)
-        .animation(CrocusSprings.dropDetach.animation, value: secondary?.id)
+        .animation(reduceMotion ? nil : CrocusSprings.dropDetach.animation, value: secondary?.id)
         .onChange(of: parameters.bodyRect(centerX: mainCenterX), initial: true) { _, newValue in
             model.islandFrameInWindow = newValue
         }
@@ -60,7 +62,7 @@ struct PillIslandView: View {
         case .compact, .minimal:
             IslandCompactContent(model: model, metrics: metrics)
                 .frame(width: metrics.compactWidth)
-                .transition(.opacity)
+                .transition(.islandCompactContent(reduceMotion: reduceMotion))
         case .expanded:
             IslandExpandedContent(model: model, metrics: metrics)
                 .transition(.opacity)

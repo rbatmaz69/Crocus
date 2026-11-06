@@ -5,7 +5,7 @@ struct SpringSpec: Equatable, Sendable {
     let dampingFraction: Double
 
     var animation: Animation {
-        .spring(response: response, dampingFraction: dampingFraction)
+        .spring(response: CrocusMotion.seconds(response), dampingFraction: dampingFraction)
     }
 }
 

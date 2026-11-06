@@ -96,6 +96,7 @@
 		ACB5341E075E0011F2178435 /* TimerStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCDBA9EE036083065720CF /* TimerStateTests.swift */; };
 		AE350320C713564EA758FE54 /* TimerActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFB332958E2BDDA9A26E005 /* TimerActivity.swift */; };
 		B026120B49B66DEAD943499D /* NotchIslandShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957504076061D31A24E3A4ED /* NotchIslandShape.swift */; };
+		B0D0FE7131CFE380E9C2611F /* CrocusMotionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8079BE20576C3EE4E11650 /* CrocusMotionTests.swift */; };
 		B2F4002C9C1EB81D2F93C9DD /* PillIslandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E908358244D5D9A297B65B1C /* PillIslandView.swift */; };
 		B4FC27F9EEEE68800DD607BA /* BluetoothDeviceKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685E2B16CA43EEBD87A11381 /* BluetoothDeviceKind.swift */; };
 		B5326B80695762A9CF273685 /* IslandLayoutMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901844F7ED44B105941040D6 /* IslandLayoutMetrics.swift */; };
@@ -123,6 +124,7 @@
 		D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A16FF870167FB621B64308 /* CrocusSprings.swift */; };
 		D8054E366896EB04D5A8E45D /* SwipeRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */; };
 		D825C20DFCD06127CBFD5C3B /* PrivacyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA7F38F34B749DB6664FEDC3 /* PrivacyActivity.swift */; };
+		D94283FDC66DE7E5750F3856 /* CrocusMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A85EA6B0C04B331F6F12DD /* CrocusMotion.swift */; };
 		DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */; };
 		E0332FD6AEA641D5DC1690F0 /* PowerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA58B43AC2001AB169B7B372 /* PowerTests.swift */; };
 		E07EAE37CB6480396A098F66 /* IslandDropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB8E7A24FAD9C2F4F37CB9F /* IslandDropView.swift */; };
@@ -202,6 +204,7 @@
 		5D7FE096770DC4557243A299 /* PowerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerManager.swift; sourceTree = "<group>"; };
 		6099359532F962FCAA76593F /* TimerFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFormat.swift; sourceTree = "<group>"; };
 		64DCDBA9EE036083065720CF /* TimerStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerStateTests.swift; sourceTree = "<group>"; };
+		66A85EA6B0C04B331F6F12DD /* CrocusMotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusMotion.swift; sourceTree = "<group>"; };
 		683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncer.swift; sourceTree = "<group>"; };
 		685E2B16CA43EEBD87A11381 /* BluetoothDeviceKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceKind.swift; sourceTree = "<group>"; };
 		6CC85C916F5459FB9DF37EE0 /* PrivacyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyState.swift; sourceTree = "<group>"; };
@@ -221,6 +224,7 @@
 		879135D9C1D24C986DC6EEA5 /* IslandStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStateTests.swift; sourceTree = "<group>"; };
 		8847639190D3C517C187B5D5 /* IslandStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStore.swift; sourceTree = "<group>"; };
 		8946A04E840EA25E432A884A /* ContinuousCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinuousCorner.swift; sourceTree = "<group>"; };
+		8D8079BE20576C3EE4E11650 /* CrocusMotionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusMotionTests.swift; sourceTree = "<group>"; };
 		901844F7ED44B105941040D6 /* IslandLayoutMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandLayoutMetrics.swift; sourceTree = "<group>"; };
 		91A16FF870167FB621B64308 /* CrocusSprings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusSprings.swift; sourceTree = "<group>"; };
 		9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandMetrics.swift; sourceTree = "<group>"; };
@@ -381,6 +385,7 @@
 				B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */,
 				7BE827B6A00C5BD4197BF357 /* BluetoothTests.swift */,
 				B3D51A8D8AE481DAD6EB52F7 /* CalendarTests.swift */,
+				8D8079BE20576C3EE4E11650 /* CrocusMotionTests.swift */,
 				ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */,
 				EB3F713570108611A6D48BFF /* DownloadsTests.swift */,
 				ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */,
@@ -444,6 +449,7 @@
 			children = (
 				B1BAC8129449A035E12A6DA3 /* CrocusColors.swift */,
 				1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */,
+				66A85EA6B0C04B331F6F12DD /* CrocusMotion.swift */,
 				91A16FF870167FB621B64308 /* CrocusSprings.swift */,
 				28589CB97835C5D738141A59 /* CrocusTypography.swift */,
 			);
@@ -717,6 +723,7 @@
 				34E56E1F7442366B359E3B6A /* ActivityPriorityTests.swift in Sources */,
 				9F8FA14AB803F2BFBBDD8386 /* BluetoothTests.swift in Sources */,
 				48FF9EB6F94B458F02CF2EF3 /* CalendarTests.swift in Sources */,
+				B0D0FE7131CFE380E9C2611F /* CrocusMotionTests.swift in Sources */,
 				B939F90EC1E988660EFD67FD /* DesignTokensTests.swift in Sources */,
 				84EEA01CCA46947E5B18B235 /* DownloadsTests.swift in Sources */,
 				DED8685A07868021E559D7BC /* FullScreenVideoDetectorTests.swift in Sources */,
@@ -776,6 +783,7 @@
 				72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */,
 				08B4355CB19DDE89F62F31FF /* CrocusColors.swift in Sources */,
 				EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */,
+				D94283FDC66DE7E5750F3856 /* CrocusMotion.swift in Sources */,
 				570F9C10437482A155DD9AC6 /* CrocusShortcuts.swift in Sources */,
 				D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */,
 				6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */,
