@@ -12,6 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     lazy var power = PowerManager(store: store)
     lazy var calendar = CalendarManager(store: store)
     lazy var privacy = PrivacyManager(store: store)
+    lazy var downloads = DownloadsManager(store: store)
 
     /// The app that was frontmost before Crocus; `open crocus://…` activates
     /// Crocus, and focus goes back there afterwards.
@@ -37,6 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         power.start()
         calendar.start()
         privacy.start()
+        downloads.start()
         trackFrontmostApp()
     }
 

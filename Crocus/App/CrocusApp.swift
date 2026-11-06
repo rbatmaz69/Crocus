@@ -17,6 +17,7 @@ struct CrocusApp: App {
             TimerMenu(timers: appDelegate.timers)
             NowPlayingPermissionHint(nowPlaying: appDelegate.nowPlaying)
             CalendarAccessMenu(calendar: appDelegate.calendar)
+            DownloadsFolderMenu(downloads: appDelegate.downloads)
 
             #if DEBUG
             Divider()
@@ -146,6 +147,21 @@ private struct CalendarAccessMenu: View {
             Divider()
             Text("Calendar events are off")
             Button("Allow in System Settings…") { NSWorkspace.shared.open(CalendarManager.settingsURL) }
+        }
+    }
+}
+
+/// The downloads folder until onboarding (#26) asks for it.
+private struct DownloadsFolderMenu: View {
+    let downloads: DownloadsManager
+
+    var body: some View {
+        Divider()
+        if let folder = downloads.access.folder {
+            Text("Downloads: \(folder.lastPathComponent)")
+            Button("Change Downloads Folder…") { Task { await downloads.chooseFolder() } }
+        } else {
+            Button("Choose Downloads Folder…") { Task { await downloads.chooseFolder() } }
         }
     }
 }
