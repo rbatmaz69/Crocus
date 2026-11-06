@@ -108,6 +108,9 @@ final class OverlayPanel: NSPanel {
         isMovable = false
         isMovableByWindowBackground = false
         hidesOnDeactivate = false
+        // The island stays when the app is hidden: Shortcuts launches Crocus
+        // hidden to run an intent, and "Hide Others" (⌥⌘H) hides it too.
+        canHide = false
         isReleasedWhenClosed = false
         becomesKeyOnlyIfNeeded = true
         isFloatingPanel = true

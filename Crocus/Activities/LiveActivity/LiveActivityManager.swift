@@ -1,8 +1,8 @@
 import AppKit
 import os
 
-/// Applies Live Activity commands – from the URL scheme now, App Intents in
-/// #12 – and keeps the activities in the island store: shows results for 3 s,
+/// Applies Live Activity commands – from the URL scheme and the App
+/// Intents – and keeps the activities in the island store: shows results for 3 s,
 /// removes ended activities and marks stale ones.
 @MainActor
 final class LiveActivityManager {
@@ -54,6 +54,7 @@ final class LiveActivityManager {
                 return
             }
             activity.update(state, now: time)
+            Self.logger.debug("Updated '\(id, privacy: .public)'")
 
         case .end(let id, let result, let text):
             guard let activity = activities[id] else {
