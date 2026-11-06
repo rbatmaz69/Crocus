@@ -30,7 +30,7 @@ struct LiveActivityFields: Equatable, Sendable {
     var source: String?
 }
 
-/// A validated request from any source (URL scheme now, App Intents in #12).
+/// A validated request from any source: the URL scheme or the App Intents.
 enum LiveActivityCommand: Equatable, Sendable {
     case start(id: String, fields: LiveActivityFields)
     case update(id: String, fields: LiveActivityFields)
@@ -49,6 +49,8 @@ enum LiveActivityError: Error, Equatable, CustomStringConvertible {
     case invalidID(String)
     case invalidProgress(String)
     case invalidResult(String)
+    /// Only from App Intents; the URL scheme ignores unknown ids silently.
+    case notRunning(String)
 
     var description: String {
         switch self {
@@ -57,6 +59,7 @@ enum LiveActivityError: Error, Equatable, CustomStringConvertible {
         case .invalidID(let id): "invalid id '\(id)' (1–64 characters: letters, digits, . _ -)"
         case .invalidProgress(let value): "invalid progress '\(value)' (a number from 0 to 1, or empty)"
         case .invalidResult(let value): "invalid result '\(value)' (success, failure or cancelled)"
+        case .notRunning(let id): "activity '\(id)' is not running"
         }
     }
 }
@@ -116,6 +119,14 @@ enum LiveActivityValidation {
         return .value(min(max(value, 0), 1))
     }
 
+    /// For typed sources (App Intents): `nil` when not given; clamped to 0–1;
+    /// NaN and infinity are rejected.
+    static func progress(number value: Double?) throws -> LiveActivityProgress? {
+        guard let value else { return nil }
+        guard value.isFinite else { throw LiveActivityError.invalidProgress(String(value)) }
+        return .value(min(max(value, 0), 1))
+    }
+
     /// Only https, http and file links; anything else is dropped.
     static func actionURL(_ raw: String?) -> URL? {
         guard let raw, let url = URL(string: raw), let scheme = url.scheme?.lowercased(),
@@ -130,5 +141,53 @@ enum LiveActivityValidation {
             throw LiveActivityError.invalidResult(raw)
         }
         return result
+    }
+}
+
+/// Turns raw input from any source – the URL scheme or the App Intents (#12) –
+/// into validated commands, so both follow exactly the same rules.
+enum LiveActivityCommandBuilder {
+    typealias V = LiveActivityValidation
+
+    /// Validates the start/update values. Progress is already parsed by the
+    /// source (text from a URL, a number from an intent).
+    static func fields(
+        title: String? = nil,
+        symbol: String? = nil,
+        progress: LiveActivityProgress? = nil,
+        status: String? = nil,
+        action: String? = nil,
+        actionTitle: String? = nil,
+        source: String? = nil,
+        symbolExists: (String) -> Bool
+    ) -> LiveActivityFields {
+        let action = V.actionURL(action).map {
+            LiveActivityAction(url: $0, title: V.text(actionTitle, maxLength: V.maxActionTitleLength) ?? V.defaultActionTitle)
+        }
+        return LiveActivityFields(
+            title: V.text(title, maxLength: V.maxTitleLength),
+            symbol: V.symbol(symbol, exists: symbolExists),
+            progress: progress,
+            status: V.text(status, maxLength: V.maxStatusLength),
+            action: action,
+            source: V.text(source, maxLength: V.maxSourceLength)
+        )
+    }
+
+    /// A start needs a title; without progress it shows a spinner.
+    static func start(id: String?, fields: LiveActivityFields) throws -> LiveActivityCommand {
+        let id = try V.id(id)
+        guard fields.title != nil else { throw LiveActivityError.missingParameter("title") }
+        var fields = fields
+        fields.progress = fields.progress ?? .indeterminate
+        return .start(id: id, fields: fields)
+    }
+
+    static func update(id: String?, fields: LiveActivityFields) throws -> LiveActivityCommand {
+        .update(id: try V.id(id), fields: fields)
+    }
+
+    static func end(id: String?, result: LiveActivityResult, text: String?) throws -> LiveActivityCommand {
+        .end(id: try V.id(id), result: result, text: V.text(text, maxLength: V.maxStatusLength))
     }
 }

@@ -1,3 +1,4 @@
+import AppIntents
 import AppKit
 
 @MainActor
@@ -11,6 +12,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Crocus, and focus goes back there afterwards.
     private var previousApp: NSRunningApplication?
     private var activationObserver: NSObjectProtocol?
+
+    override init() {
+        super.init()
+        // Registered before launch finishes: Shortcuts may start Crocus just
+        // to run an intent.
+        let liveActivities = liveActivities
+        AppDependencyManager.shared.add { liveActivities }
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Don't put windows on screen while running as a unit test host.

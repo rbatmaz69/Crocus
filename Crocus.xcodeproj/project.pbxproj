@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00AF9FA9483D1A111604FD17 /* LiveActivityIntentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3D4E8D4ACF5D2393692029 /* LiveActivityIntentTests.swift */; };
 		04030FEE34D9C250D99C4417 /* ScreenGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CF16A945F93F686B44CD59 /* ScreenGeometry.swift */; };
 		0536411B3718821B1D3099F9 /* ClickOutsideMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170F7E40D7B053C63CFBBCE7 /* ClickOutsideMonitor.swift */; };
 		0690C125594C471E1F5E08CC /* LiveActivityManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74BE6527115A72AD71AF1B1 /* LiveActivityManagerTests.swift */; };
@@ -27,20 +28,24 @@
 		393E468B8A89A07DF4F613E2 /* IslandStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */; };
 		39CC4E1A8BD41559AA1CE311 /* ScreenDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDFC2BD6342483649A6FD42 /* ScreenDescriptor.swift */; };
 		3AB5AC25D1AE7FB1D700AE57 /* MinimalLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75EBAB7F8064E7C695CE90F /* MinimalLayoutTests.swift */; };
+		41D15C1C18D29AE71856F760 /* LiveActivityIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE63984770BC3D804555CAC /* LiveActivityIntents.swift */; };
 		44880B93F2F40036A8E3475E /* OverlayLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */; };
 		484FFC474D8E1D44C7FE5191 /* URLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40741D43E26040909E116D85 /* URLRouter.swift */; };
 		4891DBEC190DCF58929894ED /* IslandStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 879135D9C1D24C986DC6EEA5 /* IslandStateTests.swift */; };
 		53A8DFE84C0A7C1A2822B263 /* URLRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D621AC6461D881438F83EF25 /* URLRouterTests.swift */; };
+		570F9C10437482A155DD9AC6 /* CrocusShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEFF64D494E8F6A05FC734D /* CrocusShortcuts.swift */; };
 		58E54A21642953CE438963D7 /* TargetScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6E4305ED985805356F2FEA /* TargetScreen.swift */; };
 		633CEA579F4346EA3B3D3CA5 /* ActivityKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F61E78CB8FEB388A42A37B5 /* ActivityKind.swift */; };
 		670707B29B641667BCF1563A /* PageDotsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ACE80280D8420E5B7470C0 /* PageDotsTests.swift */; };
 		67CC2F666DB2A9F536B74947 /* LiveActivityCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E946438329B255445FA1DF /* LiveActivityCommandTests.swift */; };
 		6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28589CB97835C5D738141A59 /* CrocusTypography.swift */; };
+		724CDA7C35EF13E46639C7C8 /* LiveActivityEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2C36EA26A5C769565F67E2 /* LiveActivityEntity.swift */; };
 		72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */; };
 		8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDCB7E68607BDB98E90DC64A /* OverlayController.swift */; };
 		80971A2DD8EAE960F169983D /* PillIslandMetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205D4022614CAA3BD99E6EDB /* PillIslandMetricsTests.swift */; };
 		846AC389E33DF71C419E8550 /* IslandStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8847639190D3C517C187B5D5 /* IslandStore.swift */; };
 		86DC849B44250D728E76C2C7 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7797B265AFBB4B2116281AC /* LiveActivityManager.swift */; };
+		89DC5E574B802871940834B1 /* LiveActivityIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD6099818EBCC0929EB25A5 /* LiveActivityIntentHandler.swift */; };
 		8A4E19DC762C50E871AAA27A /* ExpandedLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50875E1DD2F25D283F389BF3 /* ExpandedLayout.swift */; };
 		8CB4BAC1AB2AF48ED2EA4D01 /* MouseTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6970B77DC856B96EB5EFB6B /* MouseTracker.swift */; };
 		8E2781E1170E05A996F6CD31 /* IslandComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD083D8D4B003B78178DB94 /* IslandComponents.swift */; };
@@ -108,6 +113,7 @@
 		170F7E40D7B053C63CFBBCE7 /* ClickOutsideMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickOutsideMonitor.swift; sourceTree = "<group>"; };
 		1A33871F340180009F6CEE1C /* SampleActivities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleActivities.swift; sourceTree = "<group>"; };
 		1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusMetrics.swift; sourceTree = "<group>"; };
+		1BE63984770BC3D804555CAC /* LiveActivityIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityIntents.swift; sourceTree = "<group>"; };
 		203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometryTests.swift; sourceTree = "<group>"; };
 		205D4022614CAA3BD99E6EDB /* PillIslandMetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillIslandMetricsTests.swift; sourceTree = "<group>"; };
 		2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStoreTests.swift; sourceTree = "<group>"; };
@@ -140,6 +146,7 @@
 		78CF16A945F93F686B44CD59 /* ScreenGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometry.swift; sourceTree = "<group>"; };
 		7B22FF6F1627532A85C2E9D8 /* SwipeRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeRecognizer.swift; sourceTree = "<group>"; };
 		7CB1AA2AEA9F1C008496B3CA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		7F2C36EA26A5C769565F67E2 /* LiveActivityEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityEntity.swift; sourceTree = "<group>"; };
 		879135D9C1D24C986DC6EEA5 /* IslandStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStateTests.swift; sourceTree = "<group>"; };
 		8847639190D3C517C187B5D5 /* IslandStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStore.swift; sourceTree = "<group>"; };
 		8946A04E840EA25E432A884A /* ContinuousCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinuousCorner.swift; sourceTree = "<group>"; };
@@ -159,6 +166,7 @@
 		B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityPriorityTests.swift; sourceTree = "<group>"; };
 		BAB8E7A24FAD9C2F4F37CB9F /* IslandDropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandDropView.swift; sourceTree = "<group>"; };
+		BC3D4E8D4ACF5D2393692029 /* LiveActivityIntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityIntentTests.swift; sourceTree = "<group>"; };
 		BEE4650EBB2FB6EA31C1391B /* LiveActivityViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityViews.swift; sourceTree = "<group>"; };
 		C0D90424D26D12E41D7AD4D9 /* PageDots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageDots.swift; sourceTree = "<group>"; };
 		C3812BE2C27EDFAB49585EA6 /* LiveActivityStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityStateTests.swift; sourceTree = "<group>"; };
@@ -171,10 +179,11 @@
 		DA3F47213399C44DF9DC3F0D /* MenuBarAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarAppearance.swift; sourceTree = "<group>"; };
 		DA6E4305ED985805356F2FEA /* TargetScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetScreen.swift; sourceTree = "<group>"; };
 		DB5A51764601E79BB475F931 /* LiveActivityURLParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityURLParserTests.swift; sourceTree = "<group>"; };
+		DCD6099818EBCC0929EB25A5 /* LiveActivityIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityIntentHandler.swift; sourceTree = "<group>"; };
 		DDD083D8D4B003B78178DB94 /* IslandComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandComponents.swift; sourceTree = "<group>"; };
 		DF8A3626008579BCCD11F3A0 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
-		E73D9184B0EA34989C34EB50 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		E908358244D5D9A297B65B1C /* PillIslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillIslandView.swift; sourceTree = "<group>"; };
+		ECEFF64D494E8F6A05FC734D /* CrocusShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusShortcuts.swift; sourceTree = "<group>"; };
 		ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetectorTests.swift; sourceTree = "<group>"; };
 		ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokensTests.swift; sourceTree = "<group>"; };
 		EDCB7E68607BDB98E90DC64A /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
@@ -259,6 +268,7 @@
 				2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */,
 				AF6FB467FC32AB7084114205 /* KeyboardShortcutSpecTests.swift */,
 				31E946438329B255445FA1DF /* LiveActivityCommandTests.swift */,
+				BC3D4E8D4ACF5D2393692029 /* LiveActivityIntentTests.swift */,
 				D74BE6527115A72AD71AF1B1 /* LiveActivityManagerTests.swift */,
 				C3812BE2C27EDFAB49585EA6 /* LiveActivityStateTests.swift */,
 				DB5A51764601E79BB475F931 /* LiveActivityURLParserTests.swift */,
@@ -345,7 +355,10 @@
 		F43F586B26127C7B2AEB9886 /* Intents */ = {
 			isa = PBXGroup;
 			children = (
-				E73D9184B0EA34989C34EB50 /* .gitkeep */,
+				ECEFF64D494E8F6A05FC734D /* CrocusShortcuts.swift */,
+				7F2C36EA26A5C769565F67E2 /* LiveActivityEntity.swift */,
+				DCD6099818EBCC0929EB25A5 /* LiveActivityIntentHandler.swift */,
+				1BE63984770BC3D804555CAC /* LiveActivityIntents.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -459,11 +472,11 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					549F6150BCD1C4A7954395CB = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = UA98Q7K4JR;
 						ProvisioningStyle = Automatic;
 					};
 					C1A873E02F70F178E8860CEC = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = UA98Q7K4JR;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -514,6 +527,7 @@
 				393E468B8A89A07DF4F613E2 /* IslandStoreTests.swift in Sources */,
 				C675186A86E1049668BDFEE2 /* KeyboardShortcutSpecTests.swift in Sources */,
 				67CC2F666DB2A9F536B74947 /* LiveActivityCommandTests.swift in Sources */,
+				00AF9FA9483D1A111604FD17 /* LiveActivityIntentTests.swift in Sources */,
 				0690C125594C471E1F5E08CC /* LiveActivityManagerTests.swift in Sources */,
 				C1730CADE8929B1E9A2B8E49 /* LiveActivityStateTests.swift in Sources */,
 				9A90D30AEEB83B07AB968C65 /* LiveActivityURLParserTests.swift in Sources */,
@@ -546,6 +560,7 @@
 				72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */,
 				08B4355CB19DDE89F62F31FF /* CrocusColors.swift in Sources */,
 				EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */,
+				570F9C10437482A155DD9AC6 /* CrocusShortcuts.swift in Sources */,
 				D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */,
 				6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */,
 				8A4E19DC762C50E871AAA27A /* ExpandedLayout.swift in Sources */,
@@ -567,6 +582,9 @@
 				BCACC484462E5DC1A42719C3 /* KeyboardShortcutSpec.swift in Sources */,
 				9278ACFA3E1EE89540EACFBC /* LiveActivity.swift in Sources */,
 				8ED52EA72C3F04B60CC041FC /* LiveActivityCommand.swift in Sources */,
+				724CDA7C35EF13E46639C7C8 /* LiveActivityEntity.swift in Sources */,
+				89DC5E574B802871940834B1 /* LiveActivityIntentHandler.swift in Sources */,
+				41D15C1C18D29AE71856F760 /* LiveActivityIntents.swift in Sources */,
 				86DC849B44250D728E76C2C7 /* LiveActivityManager.swift in Sources */,
 				968D1190F60CA1D09C9AA30C /* LiveActivityState.swift in Sources */,
 				A3BE213254BB85F098265665 /* LiveActivityURLParser.swift in Sources */,
@@ -638,12 +656,12 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = UA98Q7K4JR;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -728,12 +746,12 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = UA98Q7K4JR;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;

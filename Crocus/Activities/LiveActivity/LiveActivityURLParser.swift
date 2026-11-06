@@ -28,16 +28,12 @@ enum LiveActivityURLParser {
             let id = try LiveActivityValidation.id(parameters["id"])
             switch command {
             case "start":
-                var fields = try fields(from: parameters, symbolExists: symbolExists)
-                guard fields.title != nil else { throw LiveActivityError.missingParameter("title") }
-                fields.progress = fields.progress ?? .indeterminate
-                return .success(.start(id: id, fields: fields))
+                return .success(try LiveActivityCommandBuilder.start(id: id, fields: try fields(from: parameters, symbolExists: symbolExists)))
             case "update":
-                return .success(.update(id: id, fields: try fields(from: parameters, symbolExists: symbolExists)))
+                return .success(try LiveActivityCommandBuilder.update(id: id, fields: try fields(from: parameters, symbolExists: symbolExists)))
             case "end":
                 let result = try LiveActivityValidation.result(parameters["result"])
-                let text = LiveActivityValidation.text(parameters["text"], maxLength: LiveActivityValidation.maxStatusLength)
-                return .success(.end(id: id, result: result, text: text))
+                return .success(try LiveActivityCommandBuilder.end(id: id, result: result, text: parameters["text"]))
             default:
                 throw LiveActivityError.unknownCommand(command)
             }
@@ -51,17 +47,15 @@ enum LiveActivityURLParser {
     }
 
     private static func fields(from parameters: [String: String], symbolExists: SymbolCheck) throws -> LiveActivityFields {
-        typealias V = LiveActivityValidation
-        let action = V.actionURL(parameters["action"]).map {
-            LiveActivityAction(url: $0, title: V.text(parameters["actionTitle"], maxLength: V.maxActionTitleLength) ?? V.defaultActionTitle)
-        }
-        return LiveActivityFields(
-            title: V.text(parameters["title"], maxLength: V.maxTitleLength),
-            symbol: V.symbol(parameters["symbol"], exists: symbolExists),
-            progress: try V.progress(parameters["progress"]),
-            status: V.text(parameters["status"], maxLength: V.maxStatusLength),
-            action: action,
-            source: V.text(parameters["source"], maxLength: V.maxSourceLength)
+        LiveActivityCommandBuilder.fields(
+            title: parameters["title"],
+            symbol: parameters["symbol"],
+            progress: try LiveActivityValidation.progress(parameters["progress"]),
+            status: parameters["status"],
+            action: parameters["action"],
+            actionTitle: parameters["actionTitle"],
+            source: parameters["source"],
+            symbolExists: symbolExists
         )
     }
 }
