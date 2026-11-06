@@ -182,15 +182,6 @@ enum SampleActivities {
         }
     }
 
-    @MainActor static var chargingEvent: IslandEvent {
-        IslandEvent(
-            kind: .charging,
-            accessibilityLabel: "Charging, 82 percent",
-            compactLeading: AnyView(IslandCompactSymbol(systemName: "bolt.fill", color: CrocusColors.positive)),
-            compactTrailing: AnyView(IslandCompactValue(text: "82 %", color: CrocusColors.positive))
-        )
-    }
-
     @MainActor static var bluetoothEvent: IslandEvent {
         IslandEvent(
             kind: .bluetooth,

@@ -19,7 +19,7 @@ struct CrocusApp: App {
 
             #if DEBUG
             Divider()
-            DebugMenu(overlay: appDelegate.overlay, store: appDelegate.store)
+            DebugMenu(overlay: appDelegate.overlay, store: appDelegate.store, power: appDelegate.power)
             #endif
 
             Divider()
@@ -40,6 +40,7 @@ struct CrocusApp: App {
 private struct DebugMenu: View {
     @Bindable var overlay: OverlayController
     let store: IslandStore
+    let power: PowerManager
     @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
     @AppStorage(AppSettings.Key.hoverStyle) private var hoverStyle = HoverStyle.breathe
 
@@ -65,7 +66,9 @@ private struct DebugMenu: View {
                 ))
             }
             Divider()
-            Button("Send Charging Event") { store.post(SampleActivities.chargingEvent) }
+            Button("Simulate Plug-In") { power.show(.pluggedIn(level: 82)) }
+            Button("Simulate 10 % Battery") { power.show(.lowBattery(level: 10)) }
+            Button("Simulate 5 % Battery") { power.show(.lowBattery(level: 5)) }
             Button("Send Bluetooth Event") { store.post(SampleActivities.bluetoothEvent) }
             Divider()
             Button("Expand") { store.expand() }

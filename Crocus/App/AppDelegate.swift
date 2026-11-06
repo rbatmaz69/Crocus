@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     lazy var liveActivities = LiveActivityManager(store: store)
     lazy var timers = TimerManager(store: store)
     lazy var nowPlaying = NowPlayingManager(store: store)
+    lazy var power = PowerManager(store: store)
 
     /// The app that was frontmost before Crocus; `open crocus://…` activates
     /// Crocus, and focus goes back there afterwards.
@@ -31,6 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         overlay.start()
         timers.start()
         nowPlaying.start()
+        power.start()
         trackFrontmostApp()
     }
 
