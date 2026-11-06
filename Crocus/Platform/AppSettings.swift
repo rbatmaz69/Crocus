@@ -14,6 +14,8 @@ enum AppSettings {
         static let timers = "timers"
         /// Security-scoped bookmark of the downloads folder (#18).
         static let downloadsBookmark = "downloadsBookmark"
+        /// Debug only: storyboard timings 5× slower.
+        static let debugSlowAnimations = "debugSlowAnimations"
     }
 
     static func registerDefaults(in defaults: UserDefaults = .standard) {

@@ -15,10 +15,27 @@ final class OverlayPanelModel {
 
     var presentation: IslandPresentation = .idle {
         didSet {
-            if oldValue != presentation { previousPresentation = oldValue }
+            guard oldValue != presentation else { return }
+            previousPresentation = oldValue
+            if CrocusMotion.bouncesOnArrival(from: oldValue, to: presentation, isEvent: store.currentEvent != nil, reduceMotion: CrocusMotion.reduceMotion) {
+                scheduleArrivalBounce()
+            }
         }
     }
     private(set) var previousPresentation: IslandPresentation = .idle
+    /// Bumped 400 ms after an activity arrives from idle (C1): its symbol
+    /// bounces once.
+    private(set) var arrivalBounce = 0
+    @ObservationIgnored private var arrivalBounceTask: Task<Void, Never>?
+
+    private func scheduleArrivalBounce() {
+        arrivalBounceTask?.cancel()
+        arrivalBounceTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(CrocusMotion.seconds(CrocusMotion.C1.bounceDelay)))
+            guard !Task.isCancelled else { return }
+            self?.arrivalBounce += 1
+        }
+    }
     /// Menu bar items need the space: the right wing shrinks to 44 pt.
     var rightWingReduced = false
     /// Natural height of the expanded content, reported by `ExpandedLayout`.
