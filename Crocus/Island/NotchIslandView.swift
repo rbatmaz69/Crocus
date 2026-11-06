@@ -55,15 +55,18 @@ struct NotchIslandView: View {
                     IslandCompactContent(model: model, metrics: metrics)
                         .frame(width: parameters.width, height: parameters.height)
                         .offset(x: centerX - parameters.leading)
-                        .transition(.islandCompactContent(reduceMotion: reduceMotion))
+                        .transition(.islandCompactContent(reduceMotion: reduceMotion, fromExpanded: model.previousPresentation == .expanded))
                 case .expanded:
                     IslandExpandedContent(model: model, metrics: metrics)
                         .frame(height: parameters.height, alignment: .top)
-                        .clipped()
                         .offset(x: centerX - metrics.expandedWidth / 2)
-                        .transition(.opacity)
+                        .transition(.islandExpandedContent(reduceMotion: reduceMotion))
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            // Content never shows outside the (moving) shape – no silhouette
+            // of the expanded panel while it collapses.
+            .mask { NotchIslandShape(parameters: parameters, centerX: centerX) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .islandInteraction(

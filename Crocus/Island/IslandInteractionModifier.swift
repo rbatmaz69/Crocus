@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Island interaction on the shape itself: click to expand, press feedback,
+/// Island interaction on the shape itself: click (mouse-down) to expand,
 /// hover hint, click-and-drag sideways to switch cards while expanded, and
 /// the context menu. Scaling is anchored at the top centre of
 /// the island, so the notch shoulders and the pill's top edge stay put.
@@ -15,10 +15,18 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
     /// What a click does; `nil` expands the main activity.
     var onTap: (() -> Void)?
 
-    @State private var isPressed = false
-    @State private var pressStarted: Date?
+    /// The current press already opened the island.
+    @State private var opened = false
     @State private var breathPhase = false
     @Environment(\.openSettings) private var openSettings
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// How hover and breathing scale settle: with the expand spring when
+    /// the island opens, the hover spring otherwise; none with Reduce Motion.
+    static func handOff(_ presentation: IslandPresentation, reduceMotion: Bool) -> Animation? {
+        if reduceMotion { return nil }
+        return presentation == .expanded ? CrocusSprings.expand.animation : CrocusSprings.hoverHint.animation
+    }
 
     func body(content: Content) -> some View {
         let presentation = model.presentation
@@ -31,9 +39,10 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
 
         content
             .contentShape(shape)
-            .scaleEffect(isPressed ? HoverHint.pressedScale : 1, anchor: anchor)
             .scaleEffect(hoverScale, anchor: anchor)
-            .animation(CrocusSprings.hoverHint.animation, value: hoverScale)
+            // Opening: the hint settles with the expand spring, so scale and
+            // shape move as one motion (C2) instead of two springs fighting.
+            .animation(Self.handOff(presentation, reduceMotion: reduceMotion), value: hoverScale)
             // Driven only by `breathPhase`, which is animated back with the hover
             // spring when the pointer leaves – so the breathing never jumps.
             .scaleEffect(HoverHint.breathFactor(breathPhase: breathPhase, width: width), anchor: anchor)
@@ -48,36 +57,32 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
                     NSApp.terminate(nil)
                 }
             }
+            // Opening switches the gesture off mid-press, so its end never
+            // arrives – reset here, or the next click would be swallowed.
+            .onChange(of: presentation) { opened = false }
             .onChange(of: breathes, initial: true) { _, breathes in
                 if breathes {
                     withAnimation(.easeInOut(duration: HoverHint.breathPeriod / 2).repeatForever(autoreverses: true)) {
                         breathPhase = true
                     }
                 } else {
-                    withAnimation(CrocusSprings.hoverHint.animation) {
+                    withAnimation(Self.handOff(model.presentation, reduceMotion: reduceMotion)) {
                         breathPhase = false
                     }
                 }
             }
     }
 
-    /// Press feedback plus click: 0.98× while pressed (at least 80 ms), expand
-    /// on release.
+    /// Opens on mouse-down – no visible press: the click flows straight into
+    /// the expansion (feels like part of the system). Once per press.
     private var press: some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { _ in
-                guard !isPressed else { return }
-                pressStarted = .now
-                withAnimation(.easeOut(duration: 0.06)) { isPressed = true }
-            }
-            .onEnded { _ in
-                let elapsed = pressStarted.map { Date.now.timeIntervalSince($0) } ?? HoverHint.minimumPressDuration
-                let remaining = max(HoverHint.minimumPressDuration - elapsed, 0)
-                DispatchQueue.main.asyncAfter(deadline: .now() + remaining) {
-                    withAnimation(CrocusSprings.hoverHint.animation) { isPressed = false }
-                }
+                guard !opened else { return }
+                opened = true
                 if let onTap { onTap() } else { model.store.expand() }
             }
+            .onEnded { _ in opened = false }
     }
 }
 

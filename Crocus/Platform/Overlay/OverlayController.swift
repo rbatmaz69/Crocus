@@ -25,6 +25,9 @@ final class OverlayController {
 
     @ObservationIgnored private var screens: [ScreenDescriptor] = []
     @ObservationIgnored private var panels: [CGDirectDisplayID: OverlayPanel] = [:]
+    #if DEBUG
+    @ObservationIgnored private let frameMonitor = FrameMonitor()
+    #endif
     @ObservationIgnored private lazy var mouseTracker = MouseTracker { [unowned self] in Array(self.panels.values) }
     @ObservationIgnored private let detector = FullScreenVideoDetector()
     @ObservationIgnored private let windowList = SystemWindowList()
@@ -203,6 +206,11 @@ final class OverlayController {
             panel.model.presentation = presentation
         }
         guard presentation != previous else { return }
+        #if DEBUG
+        if let target = targetScreenID, let view = panels[target]?.contentView {
+            frameMonitor.measure("\(previous.map { String(describing: $0) } ?? "?") → \(presentation)", on: view)
+        }
+        #endif
         updateMenuBarClearance()
         applyKeyboardFocus()
         updateClickOutside()
