@@ -10,6 +10,8 @@ enum AppSettings {
         static let hoverStyle = "hoverStyle"
         static let hapticFeedback = "hapticFeedback"
         static let globalShortcut = "globalShortcut"
+        /// Running timer and stopwatch (#13), so they survive a relaunch.
+        static let timers = "timers"
     }
 
     static func registerDefaults(in defaults: UserDefaults = .standard) {

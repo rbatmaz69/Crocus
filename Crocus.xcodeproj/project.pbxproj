@@ -19,15 +19,19 @@
 		125E477591DD3B1C7601D8F2 /* IslandInteractionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6F1BF6B6B899FDC6CB29D4 /* IslandInteractionModifier.swift */; };
 		1680E072156610CDFE6F9A24 /* IslandContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122EA92F102F7F5E29010D34 /* IslandContent.swift */; };
 		1699F1FE61F5840227250BA2 /* TargetScreenResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */; };
+		1D1441104813432FA518DB0D /* TimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1707468FEAF10B62C252A11C /* TimerIntents.swift */; };
 		1FE54275F86BA0D5F2912171 /* MenuBarClearanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383929CF44F0D51708D61585 /* MenuBarClearanceTests.swift */; };
 		21C51CBBFACBB9F4BF73FF07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4FB41042672DEDA32A5E8E9 /* Assets.xcassets */; };
 		2B3FB90BBA7B66D379B192F3 /* IslandEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA93759A19B996B0BF9BD2 /* IslandEvent.swift */; };
 		2C352E8D9B6EA25C7A5D5A52 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8A3626008579BCCD11F3A0 /* HapticFeedback.swift */; };
+		2E0337F3D25304F518A7CDE1 /* TimerFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6099359532F962FCAA76593F /* TimerFormat.swift */; };
+		33FAD41E6387A330DF8B774C /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9CDDB5E57419ACD38D8F1DF /* TimerState.swift */; };
 		34E56E1F7442366B359E3B6A /* ActivityPriorityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */; };
 		36557D5D17BF37E401E48DB1 /* MenuBarAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F47213399C44DF9DC3F0D /* MenuBarAppearance.swift */; };
 		393E468B8A89A07DF4F613E2 /* IslandStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */; };
 		39CC4E1A8BD41559AA1CE311 /* ScreenDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDFC2BD6342483649A6FD42 /* ScreenDescriptor.swift */; };
 		3AB5AC25D1AE7FB1D700AE57 /* MinimalLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75EBAB7F8064E7C695CE90F /* MinimalLayoutTests.swift */; };
+		3CCDA98FD87AE371AB556E9A /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5082BB0E8AB1A98883A17 /* TimerManager.swift */; };
 		41D15C1C18D29AE71856F760 /* LiveActivityIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE63984770BC3D804555CAC /* LiveActivityIntents.swift */; };
 		44880B93F2F40036A8E3475E /* OverlayLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3904C33D2B23D17F78DCA628 /* OverlayLayout.swift */; };
 		484FFC474D8E1D44C7FE5191 /* URLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40741D43E26040909E116D85 /* URLRouter.swift */; };
@@ -41,6 +45,7 @@
 		6BD76AA946228274C3FFA44D /* CrocusTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28589CB97835C5D738141A59 /* CrocusTypography.swift */; };
 		724CDA7C35EF13E46639C7C8 /* LiveActivityEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2C36EA26A5C769565F67E2 /* LiveActivityEntity.swift */; };
 		72E282C0F9E7D26DA7F5B5A5 /* CrocusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFC8A4507131CD4D16FA33 /* CrocusApp.swift */; };
+		7EDA32965F977AF4E454A61E /* TimerViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58E1C31FD1833E5F7E7FCAA /* TimerViews.swift */; };
 		8028D6BA96BF14FECB3B81E2 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDCB7E68607BDB98E90DC64A /* OverlayController.swift */; };
 		80971A2DD8EAE960F169983D /* PillIslandMetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205D4022614CAA3BD99E6EDB /* PillIslandMetricsTests.swift */; };
 		846AC389E33DF71C419E8550 /* IslandStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8847639190D3C517C187B5D5 /* IslandStore.swift */; };
@@ -60,7 +65,10 @@
 		A3BE213254BB85F098265665 /* LiveActivityURLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AE1BD6FF9DE4CA259B134C /* LiveActivityURLParser.swift */; };
 		A75843B0C4CFB6EE48B0B00F /* NotchIslandMetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A29424CB721E0E862C1C6 /* NotchIslandMetricsTests.swift */; };
 		A9B1A6DCDE000DFCDFED0BE7 /* OverlayLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */; };
+		AA17F0761076423222C933DC /* TimerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A95F4696DA9CFE45485A00F /* TimerManagerTests.swift */; };
 		ABCE5A4FA1EBD9E256940A7D /* FullScreenVideoDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458D83892EAA22D2278366B6 /* FullScreenVideoDetector.swift */; };
+		ACB5341E075E0011F2178435 /* TimerStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCDBA9EE036083065720CF /* TimerStateTests.swift */; };
+		AE350320C713564EA758FE54 /* TimerActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFB332958E2BDDA9A26E005 /* TimerActivity.swift */; };
 		B026120B49B66DEAD943499D /* NotchIslandShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957504076061D31A24E3A4ED /* NotchIslandShape.swift */; };
 		B2F4002C9C1EB81D2F93C9DD /* PillIslandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E908358244D5D9A297B65B1C /* PillIslandView.swift */; };
 		B5326B80695762A9CF273685 /* IslandLayoutMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901844F7ED44B105941040D6 /* IslandLayoutMetrics.swift */; };
@@ -107,9 +115,11 @@
 
 /* Begin PBXFileReference section */
 		0373831257A6BDE3F2B3446B /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		0A95F4696DA9CFE45485A00F /* TimerManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManagerTests.swift; sourceTree = "<group>"; };
 		0C4EB42DAE067ABF3BDE0F0A /* GlobalHotKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHotKey.swift; sourceTree = "<group>"; };
 		122EA92F102F7F5E29010D34 /* IslandContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandContent.swift; sourceTree = "<group>"; };
 		12619D412784A35F813A3445 /* MinimalLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalLayout.swift; sourceTree = "<group>"; };
+		1707468FEAF10B62C252A11C /* TimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIntents.swift; sourceTree = "<group>"; };
 		170F7E40D7B053C63CFBBCE7 /* ClickOutsideMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickOutsideMonitor.swift; sourceTree = "<group>"; };
 		1A33871F340180009F6CEE1C /* SampleActivities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleActivities.swift; sourceTree = "<group>"; };
 		1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusMetrics.swift; sourceTree = "<group>"; };
@@ -121,6 +131,7 @@
 		2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncerTests.swift; sourceTree = "<group>"; };
 		2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeRecognizerTests.swift; sourceTree = "<group>"; };
 		2C30E93441F9E6BAE5086068 /* IslandHitRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHitRegion.swift; sourceTree = "<group>"; };
+		2DFB332958E2BDDA9A26E005 /* TimerActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerActivity.swift; sourceTree = "<group>"; };
 		2E1941DE3DE23F3963BFA1B1 /* IslandState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandState.swift; sourceTree = "<group>"; };
 		31E946438329B255445FA1DF /* LiveActivityCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityCommandTests.swift; sourceTree = "<group>"; };
 		329CBEAA3B17DA6DEDAD2E05 /* IslandPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandPresentation.swift; sourceTree = "<group>"; };
@@ -140,6 +151,8 @@
 		53AE1BD6FF9DE4CA259B134C /* LiveActivityURLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityURLParser.swift; sourceTree = "<group>"; };
 		54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayoutTests.swift; sourceTree = "<group>"; };
 		54CCF72D2BCBAF316D7CEA78 /* LiveActivityCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityCommand.swift; sourceTree = "<group>"; };
+		6099359532F962FCAA76593F /* TimerFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFormat.swift; sourceTree = "<group>"; };
+		64DCDBA9EE036083065720CF /* TimerStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerStateTests.swift; sourceTree = "<group>"; };
 		683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncer.swift; sourceTree = "<group>"; };
 		6DC13E5727374621F7BF995C /* CrocusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrocusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B7A9251EEC65564ECE9977 /* Crocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,6 +168,7 @@
 		9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandMetrics.swift; sourceTree = "<group>"; };
 		957504076061D31A24E3A4ED /* NotchIslandShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandShape.swift; sourceTree = "<group>"; };
 		971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHitRegionTests.swift; sourceTree = "<group>"; };
+		99B5082BB0E8AB1A98883A17 /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		9FDFC2BD6342483649A6FD42 /* ScreenDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenDescriptor.swift; sourceTree = "<group>"; };
 		A3316C9220F3A15DAC2BA650 /* NotchIslandShapeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchIslandShapeTests.swift; sourceTree = "<group>"; };
 		A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetScreenResolverTests.swift; sourceTree = "<group>"; };
@@ -174,6 +188,7 @@
 		C774EA9BBFD919DAD9B0B116 /* HoverHintTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverHintTests.swift; sourceTree = "<group>"; };
 		D2FF04FE3F6FC0A23C110817 /* IslandActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandActivity.swift; sourceTree = "<group>"; };
 		D46E07BFA3A02A8FCD937363 /* OverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPanel.swift; sourceTree = "<group>"; };
+		D58E1C31FD1833E5F7E7FCAA /* TimerViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViews.swift; sourceTree = "<group>"; };
 		D621AC6461D881438F83EF25 /* URLRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRouterTests.swift; sourceTree = "<group>"; };
 		D74BE6527115A72AD71AF1B1 /* LiveActivityManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManagerTests.swift; sourceTree = "<group>"; };
 		DA3F47213399C44DF9DC3F0D /* MenuBarAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarAppearance.swift; sourceTree = "<group>"; };
@@ -183,6 +198,7 @@
 		DDD083D8D4B003B78178DB94 /* IslandComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandComponents.swift; sourceTree = "<group>"; };
 		DF8A3626008579BCCD11F3A0 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		E908358244D5D9A297B65B1C /* PillIslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillIslandView.swift; sourceTree = "<group>"; };
+		E9CDDB5E57419ACD38D8F1DF /* TimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerState.swift; sourceTree = "<group>"; };
 		ECEFF64D494E8F6A05FC734D /* CrocusShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusShortcuts.swift; sourceTree = "<group>"; };
 		ED1F427CF5DEE0FED0281B9B /* FullScreenVideoDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoDetectorTests.swift; sourceTree = "<group>"; };
 		ED8F8F6E28B318ABFDD8BF8D /* DesignTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokensTests.swift; sourceTree = "<group>"; };
@@ -247,6 +263,18 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		330F179C2035C6D77CA4F79D /* Timer */ = {
+			isa = PBXGroup;
+			children = (
+				2DFB332958E2BDDA9A26E005 /* TimerActivity.swift */,
+				6099359532F962FCAA76593F /* TimerFormat.swift */,
+				99B5082BB0E8AB1A98883A17 /* TimerManager.swift */,
+				E9CDDB5E57419ACD38D8F1DF /* TimerState.swift */,
+				D58E1C31FD1833E5F7E7FCAA /* TimerViews.swift */,
+			);
+			path = Timer;
+			sourceTree = "<group>";
+		};
 		590BFFE7FFFBFAFB7DDF3704 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,6 +311,8 @@
 				203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */,
 				2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */,
 				A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */,
+				0A95F4696DA9CFE45485A00F /* TimerManagerTests.swift */,
+				64DCDBA9EE036083065720CF /* TimerStateTests.swift */,
 				D621AC6461D881438F83EF25 /* URLRouterTests.swift */,
 			);
 			path = CrocusTests;
@@ -328,6 +358,7 @@
 				DE2E52272440362BD2065BD8 /* Debug */,
 				05D9103E241F2FDD4E462279 /* LiveActivity */,
 				29CB04E18D4489E58449709A /* Model */,
+				330F179C2035C6D77CA4F79D /* Timer */,
 			);
 			path = Activities;
 			sourceTree = "<group>";
@@ -359,6 +390,7 @@
 				7F2C36EA26A5C769565F67E2 /* LiveActivityEntity.swift */,
 				DCD6099818EBCC0929EB25A5 /* LiveActivityIntentHandler.swift */,
 				1BE63984770BC3D804555CAC /* LiveActivityIntents.swift */,
+				1707468FEAF10B62C252A11C /* TimerIntents.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -542,6 +574,8 @@
 				975C4B3F82C948E9B5C152B2 /* ScreenGeometryTests.swift in Sources */,
 				D8054E366896EB04D5A8E45D /* SwipeRecognizerTests.swift in Sources */,
 				1699F1FE61F5840227250BA2 /* TargetScreenResolverTests.swift in Sources */,
+				AA17F0761076423222C933DC /* TimerManagerTests.swift in Sources */,
+				ACB5341E075E0011F2178435 /* TimerStateTests.swift in Sources */,
 				53A8DFE84C0A7C1A2822B263 /* URLRouterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -608,6 +642,12 @@
 				04030FEE34D9C250D99C4417 /* ScreenGeometry.swift in Sources */,
 				0A5E5BFDB6981C906314F9C8 /* SwipeRecognizer.swift in Sources */,
 				58E54A21642953CE438963D7 /* TargetScreen.swift in Sources */,
+				AE350320C713564EA758FE54 /* TimerActivity.swift in Sources */,
+				2E0337F3D25304F518A7CDE1 /* TimerFormat.swift in Sources */,
+				1D1441104813432FA518DB0D /* TimerIntents.swift in Sources */,
+				3CCDA98FD87AE371AB556E9A /* TimerManager.swift in Sources */,
+				33FAD41E6387A330DF8B774C /* TimerState.swift in Sources */,
+				7EDA32965F977AF4E454A61E /* TimerViews.swift in Sources */,
 				484FFC474D8E1D44C7FE5191 /* URLRouter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

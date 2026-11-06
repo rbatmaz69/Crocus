@@ -13,6 +13,9 @@ struct CrocusApp: App {
             }
             .keyboardShortcut(",")
 
+            Divider()
+            TimerMenu(timers: appDelegate.timers)
+
             #if DEBUG
             Divider()
             DebugMenu(overlay: appDelegate.overlay, store: appDelegate.store)
@@ -76,6 +79,34 @@ private struct DebugMenu: View {
     }
 }
 #endif
+
+/// Start a timer or the stopwatch; pause, resume or stop them.
+private struct TimerMenu: View {
+    let timers: TimerManager
+
+    static let presets: [Int] = [1, 5, 10, 15, 25]
+
+    var body: some View {
+        Menu("Timer") {
+            ForEach(Self.presets, id: \.self) { minutes in
+                Button("\(minutes) min") { timers.startTimer(duration: TimeInterval(minutes * 60)) }
+            }
+            Button("Stopwatch") { timers.startStopwatch() }
+            ForEach(TimerState.Kind.allCases, id: \.self) { kind in
+                if let state = timers.state(kind) {
+                    Divider()
+                    let title = TimerFormat.title(kind)
+                    if state.isRunning {
+                        Button("Pause \(title)") { timers.pause(kind) }
+                    } else if state.isPaused {
+                        Button("Resume \(title)") { timers.resume(kind) }
+                    }
+                    Button("Stop \(title)") { timers.stop(kind) }
+                }
+            }
+        }
+    }
+}
 
 /// Placeholder until the real settings window lands (#27).
 private struct SettingsPlaceholderView: View {
