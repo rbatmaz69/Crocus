@@ -28,9 +28,6 @@ enum HoverHint {
     static let minimumGrowth: CGFloat = 4
     /// Full breathing cycle.
     static let breathPeriod: Double = 2.4
-    /// Press feedback.
-    static let pressedScale: CGFloat = 0.98
-    static let minimumPressDuration: Double = 0.08
 
     /// Hover scale for a shape of the given width: 1.03×, or more for small
     /// shapes so they grow by at least `minimumGrowth`.

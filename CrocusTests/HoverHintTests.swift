@@ -41,11 +41,6 @@ import Testing
         #expect(HoverHint.breathPeriod == 2.4)
     }
 
-    @Test func pressFeedback() {
-        #expect(HoverHint.pressedScale == 0.98)
-        #expect(HoverHint.minimumPressDuration == 0.08)
-    }
-
     @Test func breathFactorDependsOnlyOnPhase() {
         #expect(HoverHint.breathFactor(breathPhase: false, width: 216) == 1)
         let factor = HoverHint.breathFactor(breathPhase: true, width: 216)

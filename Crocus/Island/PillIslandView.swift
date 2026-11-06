@@ -17,20 +17,19 @@ struct PillIslandView: View {
         let mainCenterX = centerX + (secondary == nil ? 0 : MinimalLayout.pillMainOffset)
         let circleRect = secondary.map { _ in MinimalLayout.pillCircleRect(centerX: centerX) }
 
-        ZStack(alignment: .top) {
-            mainPill(parameters: parameters)
-                .offset(x: mainCenterX - model.panelCenterX)
+        ZStack(alignment: .topLeading) {
+            mainPill(parameters: parameters, centerX: mainCenterX)
 
             if let secondary, let circleRect {
                 PillCircleView(model: model, activity: secondary)
-                    .offset(x: circleRect.midX - model.panelCenterX)
+                    .offset(x: circleRect.minX, y: circleRect.minY)
                     .transition(.scale(scale: 0.2, anchor: .leading).combined(with: .opacity))
             }
         }
-        .padding(.top, PillIslandMetrics.topOffset)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .animation(spring, value: parameters)
         .animation(spring, value: model.presentation)
+        .animation(spring, value: mainCenterX)
         .animation(reduceMotion ? nil : CrocusSprings.dropDetach.animation, value: secondary?.id)
         .onChange(of: parameters.bodyRect(centerX: mainCenterX), initial: true) { _, newValue in
             model.islandFrameInWindow = newValue
@@ -40,32 +39,42 @@ struct PillIslandView: View {
         }
     }
 
-    private func mainPill(parameters: PillShapeParameters) -> some View {
-        let shape = RoundedRectangle(cornerRadius: parameters.cornerRadius, style: .continuous)
-        return content(metrics: .pill)
-            .frame(width: parameters.width, height: parameters.height, alignment: .top)
-            .clipShape(shape)
-            .background {
-                PillShadow.apply(to: shape.fill(CrocusColors.island))
-            }
-            .overlay {
-                shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
-            }
-            .islandInteraction(model: model, shape: shape, anchor: .top, width: parameters.width)
+    /// Fill, shadow, outline and content mask: one shape, one curve.
+    private func mainPill(parameters: PillShapeParameters, centerX: CGFloat) -> some View {
+        let shape = PillIslandShape(parameters: parameters, centerX: centerX)
+        let panel = OverlayLayout.panelSize
+        return ZStack(alignment: .topLeading) {
+            PillShadow.apply(to: shape.fill(CrocusColors.island))
+            content(metrics: .pill, centerX: centerX)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .mask { shape }
+            shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .islandInteraction(
+            model: model,
+            shape: shape,
+            anchor: UnitPoint(x: centerX / panel.width, y: PillIslandMetrics.topOffset / panel.height),
+            width: parameters.width
+        )
     }
 
+    /// Content at fixed positions below the pill's top edge – it never rides
+    /// along with the shape (only the mask reveals or hides it).
     @ViewBuilder
-    private func content(metrics: IslandLayoutMetrics) -> some View {
+    private func content(metrics: IslandLayoutMetrics, centerX: CGFloat) -> some View {
         switch model.presentation {
         case .idle:
-            Color.clear
+            EmptyView()
         case .compact, .minimal:
             IslandCompactContent(model: model, metrics: metrics)
-                .frame(width: metrics.compactWidth)
-                .transition(.islandCompactContent(reduceMotion: reduceMotion))
+                .frame(width: metrics.compactWidth, height: CrocusMetrics.pill.compact.height)
+                .offset(x: centerX - metrics.compactWidth / 2, y: PillIslandMetrics.topOffset)
+                .transition(.islandCompactContent(reduceMotion: reduceMotion, fromExpanded: model.previousPresentation == .expanded))
         case .expanded:
             IslandExpandedContent(model: model, metrics: metrics)
-                .transition(.opacity)
+                .offset(x: centerX - metrics.expandedWidth / 2, y: PillIslandMetrics.topOffset)
+                .transition(.islandExpandedContent(reduceMotion: reduceMotion))
         }
     }
 }

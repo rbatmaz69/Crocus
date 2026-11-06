@@ -25,8 +25,10 @@ struct DesignTokensTests {
 
     @Test func springs() {
         #expect(CrocusSprings.idleToCompact == SpringSpec(response: 0.40, dampingFraction: 0.80))
-        #expect(CrocusSprings.expand == SpringSpec(response: 0.42, dampingFraction: 0.72))
-        #expect(CrocusSprings.collapse == SpringSpec(response: 0.35, dampingFraction: 1.00))
+        // Deliberately calmer than the spec table (0.42 / 0.72, 0.35 / 1.0)
+        // after testing the expand/collapse feel (#21).
+        #expect(CrocusSprings.expand == SpringSpec(response: 0.50, dampingFraction: 0.80))
+        #expect(CrocusSprings.collapse == SpringSpec(response: 0.40, dampingFraction: 1.00))
         #expect(CrocusSprings.dropDetach == SpringSpec(response: 0.35, dampingFraction: 0.70))
         #expect(CrocusSprings.cardSwipe == SpringSpec(response: 0.30, dampingFraction: 0.86))
         #expect(CrocusSprings.screenChange == SpringSpec(response: 0.55, dampingFraction: 0.82))

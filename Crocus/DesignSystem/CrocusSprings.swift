@@ -13,8 +13,11 @@ struct SpringSpec: Equatable, Sendable {
 /// strength setting (Subtle / Lively) is applied on top in #25.
 enum CrocusSprings {
     static let idleToCompact = SpringSpec(response: 0.40, dampingFraction: 0.80)
-    static let expand = SpringSpec(response: 0.42, dampingFraction: 0.72)
-    static let collapse = SpringSpec(response: 0.35, dampingFraction: 1.00)
+    /// Calmer than the spec's 0.42 / 0.72 (≈ 4 % overshoot): the floating
+    /// pill bounced visibly; this overshoots ≈ 1.5 % – like the Dynamic Island.
+    static let expand = SpringSpec(response: 0.50, dampingFraction: 0.80)
+    /// Spec 0.35 / 1.0, a little softer; still no overshoot.
+    static let collapse = SpringSpec(response: 0.40, dampingFraction: 1.00)
     static let dropDetach = SpringSpec(response: 0.35, dampingFraction: 0.70)
     static let cardSwipe = SpringSpec(response: 0.30, dampingFraction: 0.86)
     static let screenChange = SpringSpec(response: 0.55, dampingFraction: 0.82)
