@@ -63,16 +63,21 @@ struct IslandProgressBar: View {
 struct IslandButton: View {
     let title: String
     var primary = false
+    /// Optional SF Symbol before the title, e.g. `video.fill` for "Join".
+    var systemImage: String?
     var action: () -> Void = {}
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(primary ? CrocusColors.island : CrocusColors.primary)
-                .padding(.horizontal, 14)
-                .frame(minHeight: CrocusMetrics.Expanded.buttonHeight)
-                .background(Capsule().fill(primary ? CrocusColors.primary : CrocusColors.surface))
+            HStack(spacing: 6) {
+                if let systemImage { Image(systemName: systemImage) }
+                Text(title)
+            }
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(primary ? CrocusColors.island : CrocusColors.primary)
+            .padding(.horizontal, 14)
+            .frame(minHeight: CrocusMetrics.Expanded.buttonHeight)
+            .background(Capsule().fill(primary ? CrocusColors.primary : CrocusColors.surface))
         }
         .buttonStyle(.plain)
     }

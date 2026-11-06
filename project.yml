@@ -35,6 +35,7 @@ targets:
         LSApplicationCategoryType: public.app-category.utilities
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         NSHumanReadableCopyright: "© 2026 Bilal Batmaz"
+        NSCalendarsFullAccessUsageDescription: "Crocus shows your next event in the island 5 minutes before it starts, with a Join button for video calls. It only reads events of the next 24 hours."
         NSAppleEventsUsageDescription: "Crocus shows the song that is playing in Spotify or Music in the island and lets you play, pause and skip from there."
         CFBundleURLTypes:
           - CFBundleURLName: com.rbatmaz69.crocus
@@ -56,6 +57,8 @@ targets:
           - com.spotify.client
         # Spotify cover art (artwork URL from its AppleScript).
         com.apple.security.network.client: true
+        # Calendar (#16): the next events, read only.
+        com.apple.security.personal-information.calendars: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rbatmaz69.crocus

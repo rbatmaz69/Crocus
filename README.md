@@ -4,7 +4,7 @@ Crocus brings a Dynamic-Island-style live activity area to the Mac: a black isla
 
 ![Overview](design/boards/00-overview.png)
 
-The visual design lives in [`design/`](design/README.md). Apps, scripts and shortcuts can push their own activities via the `crocus://` URL scheme or the Shortcuts actions – see [Live Activities](docs/live-activities.md). Crocus also has a built-in [timer and stopwatch](docs/timer.md) shows [what Spotify or Music is playing](docs/now-playing.md) and [charging and low battery](docs/power.md).
+The visual design lives in [`design/`](design/README.md). Apps, scripts and shortcuts can push their own activities via the `crocus://` URL scheme or the Shortcuts actions – see [Live Activities](docs/live-activities.md). Crocus also has a built-in [timer and stopwatch](docs/timer.md) shows [what Spotify or Music is playing](docs/now-playing.md) [charging and low battery](docs/power.md) and your [next calendar event](docs/calendar.md).
 
 ## Requirements
 
