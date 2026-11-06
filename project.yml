@@ -59,6 +59,9 @@ targets:
         com.apple.security.network.client: true
         # Calendar (#16): the next events, read only.
         com.apple.security.personal-information.calendars: true
+        # Privacy indicator (#17): the sandbox hides cameras from CoreMediaIO
+        # without it. Crocus only reads whether a camera runs, never captures.
+        com.apple.security.device.camera: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rbatmaz69.crocus
