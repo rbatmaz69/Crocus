@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let store = IslandStore()
     lazy var overlay = OverlayController(store: store)
     lazy var liveActivities = LiveActivityManager(store: store)
+    lazy var timers = TimerManager(store: store)
 
     /// The app that was frontmost before Crocus; `open crocus://…` activates
     /// Crocus, and focus goes back there afterwards.
@@ -19,12 +20,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // to run an intent.
         let liveActivities = liveActivities
         AppDependencyManager.shared.add { liveActivities }
+        let timers = timers
+        AppDependencyManager.shared.add { timers }
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Don't put windows on screen while running as a unit test host.
         guard !Self.isRunningTests else { return }
         overlay.start()
+        timers.start()
         trackFrontmostApp()
     }
 

@@ -105,3 +105,25 @@ struct IslandCompactValue: View {
             .minimumScaleFactor(0.8)
     }
 }
+
+/// Round 44 pt control, e.g. Pause / Stop on the timer (expanded).
+struct IslandCircleButton: View {
+    let systemName: String
+    let accessibilityLabel: String
+    var action: () -> Void = {}
+
+    static let size: CGFloat = 44
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(CrocusColors.primary)
+                .frame(width: Self.size, height: Self.size)
+                .background(Circle().fill(CrocusColors.surface))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
+    }
+}
