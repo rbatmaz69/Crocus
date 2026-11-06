@@ -176,7 +176,8 @@ final class IslandStore {
         guard let deadline else { return }
 
         deadlineTask = Task { [weak self] in
-            try? await Task.sleep(until: deadline, clock: .continuous)
+            // Tight tolerance: events end on time (storyboard C6: 2500 ms).
+            try? await Task.sleep(until: deadline, tolerance: .milliseconds(10), clock: .continuous)
             guard !Task.isCancelled, let self else { return }
             self.scheduledDeadline = nil
             let time = self.now()
