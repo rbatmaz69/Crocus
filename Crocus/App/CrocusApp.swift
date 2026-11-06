@@ -16,6 +16,7 @@ struct CrocusApp: App {
             Divider()
             TimerMenu(timers: appDelegate.timers)
             NowPlayingPermissionHint(nowPlaying: appDelegate.nowPlaying)
+            CalendarAccessMenu(calendar: appDelegate.calendar)
 
             #if DEBUG
             Divider()
@@ -122,6 +123,29 @@ private struct NowPlayingPermissionHint: View {
             Divider()
             Text("Now Playing is off for \(denied.map(\.displayName).joined(separator: " and "))")
             Button("Allow in System Settings…") { NSWorkspace.shared.open(NowPlayingManager.automationSettingsURL) }
+        }
+    }
+}
+
+/// Calendar access until onboarding (#26) asks for it: allow, or how to
+/// turn it back on.
+private struct CalendarAccessMenu: View {
+    let calendar: CalendarManager
+
+    var body: some View {
+        switch calendar.authorization {
+        case .granted:
+            EmptyView()
+        case .notDetermined:
+            Divider()
+            Button("Allow Calendar…") {
+                NSApp.activate()
+                Task { await calendar.requestAccess() }
+            }
+        case .denied:
+            Divider()
+            Text("Calendar events are off")
+            Button("Allow in System Settings…") { NSWorkspace.shared.open(CalendarManager.settingsURL) }
         }
     }
 }

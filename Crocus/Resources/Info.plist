@@ -41,6 +41,8 @@
 	<true/>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Crocus shows the song that is playing in Spotify or Music in the island and lets you play, pause and skip from there.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Crocus shows your next event in the island 5 minutes before it starts, with a Join button for video calls. It only reads events of the next 24 hours.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026 Bilal Batmaz</string>
 </dict>
