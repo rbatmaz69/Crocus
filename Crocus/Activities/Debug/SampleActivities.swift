@@ -181,15 +181,6 @@ enum SampleActivities {
             IslandProgressBar(progress: 0.62)
         }
     }
-
-    @MainActor static var bluetoothEvent: IslandEvent {
-        IslandEvent(
-            kind: .bluetooth,
-            accessibilityLabel: "AirPods connected",
-            compactLeading: AnyView(IslandCompactSymbol(systemName: "airpods")),
-            compactTrailing: AnyView(IslandCompactValue(text: "Connected", color: CrocusColors.positive))
-        )
-    }
 }
 
 private struct Cover: View {
