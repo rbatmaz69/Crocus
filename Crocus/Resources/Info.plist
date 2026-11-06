@@ -39,6 +39,8 @@
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Crocus shows the song that is playing in Spotify or Music in the island and lets you play, pause and skip from there.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026 Bilal Batmaz</string>
 </dict>
