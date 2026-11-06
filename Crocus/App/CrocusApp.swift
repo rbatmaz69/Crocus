@@ -15,6 +15,7 @@ struct CrocusApp: App {
 
             Divider()
             TimerMenu(timers: appDelegate.timers)
+            NowPlayingPermissionHint(nowPlaying: appDelegate.nowPlaying)
 
             #if DEBUG
             Divider()
@@ -104,6 +105,20 @@ private struct TimerMenu: View {
                     Button("Stop \(title)") { timers.stop(kind) }
                 }
             }
+        }
+    }
+}
+
+/// Shown only when a player isn't allowed: how to turn it back on.
+private struct NowPlayingPermissionHint: View {
+    let nowPlaying: NowPlayingManager
+
+    var body: some View {
+        let denied = MusicPlayer.allCases.filter { nowPlaying.permissions[$0] == .denied }
+        if !denied.isEmpty {
+            Divider()
+            Text("Now Playing is off for \(denied.map(\.displayName).joined(separator: " and "))")
+            Button("Allow in System Settings…") { NSWorkspace.shared.open(NowPlayingManager.automationSettingsURL) }
         }
     }
 }

@@ -35,6 +35,7 @@ targets:
         LSApplicationCategoryType: public.app-category.utilities
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         NSHumanReadableCopyright: "© 2026 Bilal Batmaz"
+        NSAppleEventsUsageDescription: "Crocus shows the song that is playing in Spotify or Music in the island and lets you play, pause and skip from there."
         CFBundleURLTypes:
           - CFBundleURLName: com.rbatmaz69.crocus
             CFBundleTypeRole: Viewer
@@ -44,6 +45,17 @@ targets:
       path: Crocus/Resources/Crocus.entitlements
       properties:
         com.apple.security.app-sandbox: true
+        # Now Playing (#14): Apple Events to the Music app and Spotify.
+        com.apple.security.automation.apple-events: true
+        com.apple.security.scripting-targets:
+          com.apple.Music:
+            - com.apple.Music.playback
+            - com.apple.Music.library.read
+        # Spotify's scripting dictionary defines no access groups.
+        com.apple.security.temporary-exception.apple-events:
+          - com.spotify.client
+        # Spotify cover art (artwork URL from its AppleScript).
+        com.apple.security.network.client: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rbatmaz69.crocus
