@@ -62,6 +62,9 @@ targets:
         # Privacy indicator (#17): the sandbox hides cameras from CoreMediaIO
         # without it. Crocus only reads whether a camera runs, never captures.
         com.apple.security.device.camera: true
+        # Downloads (#18): the folder the user picks, kept as a bookmark.
+        com.apple.security.files.user-selected.read-only: true
+        com.apple.security.files.bookmarks.app-scope: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rbatmaz69.crocus

@@ -12,6 +12,8 @@ enum AppSettings {
         static let globalShortcut = "globalShortcut"
         /// Running timer and stopwatch (#13), so they survive a relaunch.
         static let timers = "timers"
+        /// Security-scoped bookmark of the downloads folder (#18).
+        static let downloadsBookmark = "downloadsBookmark"
     }
 
     static func registerDefaults(in defaults: UserDefaults = .standard) {
