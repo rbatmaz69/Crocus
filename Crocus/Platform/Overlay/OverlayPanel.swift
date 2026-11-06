@@ -64,7 +64,7 @@ final class OverlayPanelModel {
 
     /// Target shape of the pill.
     var pillShapeParameters: PillShapeParameters {
-        PillIslandMetrics.parameters(for: presentation, expandedContentHeight: expandedContentHeight)
+        PillIslandMetrics.parameters(for: presentation, expandedContentHeight: expandedContentHeight, menuBarHeight: geometry.menuBarHeight)
     }
 
     /// Target shape of the notch island, `nil` in pill mode.

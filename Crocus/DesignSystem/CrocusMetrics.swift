@@ -59,12 +59,13 @@ enum CrocusMetrics {
 
     static let pill = IslandModeMetrics(
         topOffset: 6,
-        idle: IslandShapeSpec(width: 96, height: 20, cornerRadius: 10),
-        compact: IslandShapeSpec(width: 216, height: 30, cornerRadius: 15),
+        // Sits centred in the menu bar (smaller than board 04's 96 × 20 / 216 × 30).
+        idle: IslandShapeSpec(width: 80, height: 18, cornerRadius: 9),
+        compact: IslandShapeSpec(width: 200, height: 24, cornerRadius: 12),
         wingWidth: 60,
-        gapWidth: 96,
+        gapWidth: 80,
         minimalSpacing: 6,
-        minimalDiameter: 30,
+        minimalDiameter: 24,
         expanded: ExpandedShapeSpec(width: 440, minHeight: 150, maxHeight: 260, cornerRadius: 30),
         headerHeight: 34,
         shoulderRadius: nil,

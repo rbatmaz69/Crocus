@@ -63,13 +63,13 @@ struct ScreenGeometry: Equatable, Sendable {
     }
 
     /// The idle island in screen coordinates: exactly the notch in notch mode,
-    /// a 96 × 20 pill 6 pt below the top edge otherwise.
+    /// the idle pill centred in the menu bar otherwise.
     var idleIslandRect: CGRect {
         if let notchRect { return notchRect }
         let idle = metrics.idle
         return CGRect(
             x: frame.midX - idle.width / 2,
-            y: frame.maxY - metrics.topOffset - idle.height,
+            y: frame.maxY - PillIslandMetrics.centredTop(height: idle.height, menuBarHeight: menuBarHeight) - idle.height,
             width: idle.width,
             height: idle.height
         )

@@ -76,10 +76,10 @@ struct DesignTokensTests {
     @Test func pillMetrics() {
         let m = CrocusMetrics.pill
         #expect(m.topOffset == 6)
-        #expect(m.idle == IslandShapeSpec(width: 96, height: 20, cornerRadius: 10))
-        #expect(m.compact == IslandShapeSpec(width: 216, height: 30, cornerRadius: 15))
+        #expect(m.idle == IslandShapeSpec(width: 80, height: 18, cornerRadius: 9))
+        #expect(m.compact == IslandShapeSpec(width: 200, height: 24, cornerRadius: 12))
         #expect(m.expanded == ExpandedShapeSpec(width: 440, minHeight: 150, maxHeight: 260, cornerRadius: 30))
-        #expect(m.minimalDiameter == 30)
+        #expect(m.minimalDiameter == 24)
         #expect(m.headerHeight == 34)
         #expect(m.shoulderRadius == nil)
         #expect(m.shadows == [ShadowSpec(y: 8, blur: 24, opacity: 0.28), ShadowSpec(y: 1, blur: 3, opacity: 0.20)])

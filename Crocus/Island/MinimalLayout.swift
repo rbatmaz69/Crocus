@@ -42,11 +42,12 @@ enum MinimalLayout {
     /// How far the pill's centre moves left so the group stays centred.
     static var pillMainOffset: CGFloat { -(spacing + pillCircleDiameter) / 2 }
 
-    static func pillCircleRect(centerX: CGFloat) -> CGRect {
+    /// Next to the compact pill, same top (centred in the menu bar).
+    static func pillCircleRect(centerX: CGFloat, top: CGFloat) -> CGRect {
         let pillRight = centerX + pillMainOffset + CrocusMetrics.pill.compact.width / 2
         return CGRect(
             x: pillRight + spacing,
-            y: PillIslandMetrics.topOffset,
+            y: top,
             width: pillCircleDiameter,
             height: pillCircleDiameter
         )

@@ -61,19 +61,19 @@ import Testing
     }
 
     @Test func pillGroupIsCentred() {
-        #expect(MinimalLayout.pillGroupWidth == 252)
-        #expect(MinimalLayout.pillMainOffset == -18)
+        #expect(MinimalLayout.pillGroupWidth == 230)
+        #expect(MinimalLayout.pillMainOffset == -15)
 
         let pill = PillIslandMetrics.parameters(for: .minimal, expandedContentHeight: nil)
         let pillRect = pill.bodyRect(centerX: centerX + MinimalLayout.pillMainOffset)
-        let circle = MinimalLayout.pillCircleRect(centerX: centerX)
+        let circle = MinimalLayout.pillCircleRect(centerX: centerX, top: pill.top)
 
-        #expect(pillRect.width == 216)
-        #expect(circle.width == 30)
-        #expect(circle.height == 30)
+        #expect(pillRect.width == 200)
+        #expect(circle.width == 24)
+        #expect(circle.height == 24)
         #expect(circle.minX - pillRect.maxX == 6)
-        #expect(circle.minY == 6)
-        #expect(pillRect.minY == 6)
+        #expect(circle.minY == 3)
+        #expect(pillRect.minY == 3)
         // Group edges symmetric around the centre.
         #expect(centerX - pillRect.minX == circle.maxX - centerX)
     }

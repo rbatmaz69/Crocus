@@ -12,12 +12,13 @@ struct PillIslandShape: InsettableShape {
     var centerX: CGFloat
     var inset: CGFloat = 0
 
-    var animatableData: AnimatablePair<CGFloat, AnimatablePair<CGFloat, AnimatablePair<CGFloat, CGFloat>>> {
+    var animatableData: AnimatablePair<AnimatablePair<CGFloat, CGFloat>, AnimatablePair<CGFloat, AnimatablePair<CGFloat, CGFloat>>> {
         get {
-            AnimatablePair(centerX, AnimatablePair(parameters.width, AnimatablePair(parameters.height, parameters.cornerRadius)))
+            AnimatablePair(AnimatablePair(centerX, parameters.top), AnimatablePair(parameters.width, AnimatablePair(parameters.height, parameters.cornerRadius)))
         }
         set {
-            centerX = newValue.first
+            centerX = newValue.first.first
+            parameters.top = newValue.first.second
             parameters.width = newValue.second.first
             parameters.height = newValue.second.second.first
             parameters.cornerRadius = newValue.second.second.second

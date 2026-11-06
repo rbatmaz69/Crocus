@@ -8,12 +8,12 @@ import Testing
 
     @Test func pillGapEqualsIdlePill() {
         #expect(pill.gapWidth == CrocusMetrics.pill.idle.width)
-        #expect(pill.gapWidth == 96)
+        #expect(pill.gapWidth == 80)
     }
 
     @Test func compactWidthIsWingsPlusGap() {
         #expect(notch.compactWidth == 306)
-        #expect(pill.compactWidth == 216)
+        #expect(pill.compactWidth == 200)
         #expect(pill.compactWidth == CrocusMetrics.pill.compact.width)
     }
 
@@ -29,7 +29,7 @@ import Testing
         #expect(pill.expandedWidth == 440)
         #expect(notch.headerHeight == 37)
         #expect(pill.headerHeight == 34)
-        #expect(pill.headerGapWidth == 96)
+        #expect(pill.headerGapWidth == 80)
         #expect(notch.headerGapWidth == 186)
     }
 

@@ -15,7 +15,7 @@ struct PillIslandView: View {
         let spring: Animation? = reduceMotion ? nil : model.transitionSpring.animation
         let secondary = model.presentation == .minimal ? model.store.secondaryActivity : nil
         let mainCenterX = centerX + (secondary == nil ? 0 : MinimalLayout.pillMainOffset)
-        let circleRect = secondary.map { _ in MinimalLayout.pillCircleRect(centerX: centerX) }
+        let circleRect = secondary.map { _ in MinimalLayout.pillCircleRect(centerX: centerX, top: parameters.top) }
 
         ZStack(alignment: .topLeading) {
             mainPill(parameters: parameters, centerX: mainCenterX)
@@ -45,7 +45,7 @@ struct PillIslandView: View {
         let panel = OverlayLayout.panelSize
         return ZStack(alignment: .topLeading) {
             PillShadow.apply(to: shape.fill(CrocusColors.island))
-            content(metrics: .pill, centerX: centerX)
+            content(metrics: .pill, centerX: centerX, top: parameters.top)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .mask { shape }
             shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
@@ -54,7 +54,7 @@ struct PillIslandView: View {
         .islandInteraction(
             model: model,
             shape: shape,
-            anchor: UnitPoint(x: centerX / panel.width, y: PillIslandMetrics.topOffset / panel.height),
+            anchor: UnitPoint(x: centerX / panel.width, y: parameters.top / panel.height),
             width: parameters.width
         )
     }
@@ -62,18 +62,18 @@ struct PillIslandView: View {
     /// Content at fixed positions below the pill's top edge – it never rides
     /// along with the shape (only the mask reveals or hides it).
     @ViewBuilder
-    private func content(metrics: IslandLayoutMetrics, centerX: CGFloat) -> some View {
+    private func content(metrics: IslandLayoutMetrics, centerX: CGFloat, top: CGFloat) -> some View {
         switch model.presentation {
         case .idle:
             EmptyView()
         case .compact, .minimal:
             IslandCompactContent(model: model, metrics: metrics)
                 .frame(width: metrics.compactWidth, height: CrocusMetrics.pill.compact.height)
-                .offset(x: centerX - metrics.compactWidth / 2, y: PillIslandMetrics.topOffset)
+                .offset(x: centerX - metrics.compactWidth / 2, y: top)
                 .transition(.islandCompactContent(reduceMotion: reduceMotion, fromExpanded: model.previousPresentation == .expanded))
         case .expanded:
             IslandExpandedContent(model: model, metrics: metrics)
-                .offset(x: centerX - metrics.expandedWidth / 2, y: PillIslandMetrics.topOffset)
+                .offset(x: centerX - metrics.expandedWidth / 2, y: top)
                 .transition(.islandExpandedContent(reduceMotion: reduceMotion))
         }
     }

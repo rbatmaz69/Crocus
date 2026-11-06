@@ -71,7 +71,7 @@ struct NotchConfig: Sendable, CustomTestStringConvertible {
         #expect(geometry.mode == .pill)
         #expect(geometry.notchRect == nil)
         #expect(geometry.menuBarHeight == 24)
-        #expect(geometry.idleIslandRect == CGRect(x: 1504 - 48, y: 1692 - 6 - 20, width: 96, height: 20))
+        #expect(geometry.idleIslandRect == CGRect(x: 1504 - 40, y: 1692 - PillIslandMetrics.centredTop(height: 18, menuBarHeight: geometry.menuBarHeight) - 18, width: 80, height: 18))
     }
 
     @Test func externalDisplayReportingSafeAreaIsStillPill() {
