@@ -36,6 +36,7 @@ targets:
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         NSHumanReadableCopyright: "© 2026 Bilal Batmaz"
         NSCalendarsFullAccessUsageDescription: "Crocus shows your next event in the island 5 minutes before it starts, with a Join button for video calls. It only reads events of the next 24 hours."
+        NSBluetoothAlwaysUsageDescription: "Crocus briefly shows in the island when a Bluetooth device such as headphones, a mouse or a keyboard connects or disconnects."
         NSAppleEventsUsageDescription: "Crocus shows the song that is playing in Spotify or Music in the island and lets you play, pause and skip from there."
         CFBundleURLTypes:
           - CFBundleURLName: com.rbatmaz69.crocus
@@ -65,6 +66,8 @@ targets:
         # Downloads (#18): the folder the user picks, kept as a bookmark.
         com.apple.security.files.user-selected.read-only: true
         com.apple.security.files.bookmarks.app-scope: true
+        # Bluetooth (#19): connect/disconnect events.
+        com.apple.security.device.bluetooth: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rbatmaz69.crocus

@@ -18,10 +18,11 @@ struct CrocusApp: App {
             NowPlayingPermissionHint(nowPlaying: appDelegate.nowPlaying)
             CalendarAccessMenu(calendar: appDelegate.calendar)
             DownloadsFolderMenu(downloads: appDelegate.downloads)
+            BluetoothAccessMenu(bluetooth: appDelegate.bluetooth)
 
             #if DEBUG
             Divider()
-            DebugMenu(overlay: appDelegate.overlay, store: appDelegate.store, power: appDelegate.power)
+            DebugMenu(overlay: appDelegate.overlay, store: appDelegate.store, power: appDelegate.power, bluetooth: appDelegate.bluetooth)
             #endif
 
             Divider()
@@ -43,6 +44,7 @@ private struct DebugMenu: View {
     @Bindable var overlay: OverlayController
     let store: IslandStore
     let power: PowerManager
+    let bluetooth: BluetoothManager
     @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
     @AppStorage(AppSettings.Key.hoverStyle) private var hoverStyle = HoverStyle.breathe
 
@@ -71,7 +73,8 @@ private struct DebugMenu: View {
             Button("Simulate Plug-In") { power.show(.pluggedIn(level: 82)) }
             Button("Simulate 10 % Battery") { power.show(.lowBattery(level: 10)) }
             Button("Simulate 5 % Battery") { power.show(.lowBattery(level: 5)) }
-            Button("Send Bluetooth Event") { store.post(SampleActivities.bluetoothEvent) }
+            Button("Simulate AirPods Connect") { bluetooth.show(.airPods, name: "AirPods", connected: true) }
+            Button("Simulate Headphones Disconnect") { bluetooth.show(.headphones, name: "Headphones", connected: false) }
             Divider()
             Button("Expand") { store.expand() }
             Button("Collapse") { store.collapse() }
@@ -162,6 +165,28 @@ private struct DownloadsFolderMenu: View {
             Button("Change Downloads Folder…") { Task { await downloads.chooseFolder() } }
         } else {
             Button("Choose Downloads Folder…") { Task { await downloads.chooseFolder() } }
+        }
+    }
+}
+
+/// Bluetooth permission: allow, or how to turn it back on.
+private struct BluetoothAccessMenu: View {
+    let bluetooth: BluetoothManager
+
+    var body: some View {
+        switch bluetooth.access {
+        case .granted:
+            EmptyView()
+        case .notDetermined:
+            Divider()
+            Button("Allow Bluetooth…") {
+                NSApp.activate()
+                Task { await bluetooth.requestAccess() }
+            }
+        case .denied:
+            Divider()
+            Text("Bluetooth events are off")
+            Button("Allow in System Settings…") { NSWorkspace.shared.open(BluetoothManager.settingsURL) }
         }
     }
 }
