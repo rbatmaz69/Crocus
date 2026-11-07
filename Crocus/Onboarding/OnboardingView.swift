@@ -56,7 +56,8 @@ struct OnboardingView: View {
                 eyebrow: "Welcome",
                 title: "Your notch can do more now",
                 text: "Crocus shows what's going on right now: music, timers, events, builds. Click to open it, click anywhere else to close it.",
-                checks: ["Also on external displays, as a floating pill"]
+                checks: ["Also on external displays, as a floating pill"],
+                showsAppIcon: true
             ) {
                 IslandDemoView()
             }
@@ -201,11 +202,14 @@ private struct OnboardingPageContent<Header: View, Footer: View>: View {
     let title: String
     let text: String
     let checks: [String]
+    /// The app icon above the eyebrow (welcome page).
+    let showsAppIcon: Bool
     @ViewBuilder var footer: Footer
     @ViewBuilder var header: Header
 
     init(
         eyebrow: String, title: String, text: String, checks: [String],
+        showsAppIcon: Bool = false,
         @ViewBuilder footer: () -> Footer = { EmptyView() },
         @ViewBuilder header: () -> Header
     ) {
@@ -213,6 +217,7 @@ private struct OnboardingPageContent<Header: View, Footer: View>: View {
         self.title = title
         self.text = text
         self.checks = checks
+        self.showsAppIcon = showsAppIcon
         self.footer = footer()
         self.header = header()
     }
@@ -221,7 +226,14 @@ private struct OnboardingPageContent<Header: View, Footer: View>: View {
         VStack(spacing: 0) {
             header
                 .frame(height: 112)
-                .padding(.bottom, 22)
+                .padding(.bottom, showsAppIcon ? 14 : 22)
+            if showsAppIcon {
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .frame(width: 44, height: 44)
+                    .padding(.bottom, 6)
+                    .accessibilityHidden(true)
+            }
             Text(eyebrow.uppercased())
                 .font(.system(size: 11, weight: .semibold))
                 .tracking(0.6)

@@ -7,7 +7,9 @@ struct CrocusApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        MenuBarExtra("Crocus", systemImage: "capsule.fill") {
+        // Template image: macOS tints it for light/dark menu bars and the
+        // highlighted state. The title stays the VoiceOver label.
+        MenuBarExtra("Crocus", image: "MenuBarIcon") {
             SettingsLink {
                 Text("Settings…")
             }
