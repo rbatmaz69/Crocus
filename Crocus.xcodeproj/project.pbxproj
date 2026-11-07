@@ -139,6 +139,7 @@
 		CCB83CA655D9889E1CB16293 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BF2CF77BAC930E9FC5AB8C /* AppDelegate.swift */; };
 		CF4987BB3686E6879FA1E547 /* PointerScreenDebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */; };
 		CF77CE5857CD95E3AB7710F4 /* NotchIslandMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9348CC5F7BA76C89C3CBE138 /* NotchIslandMetrics.swift */; };
+		D0DB056BE60110B0B5F1848A /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5AD358CA32690A51A9650F /* MenuBarController.swift */; };
 		D1F62F8A2540EF5EE6E19647 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */; };
 		D45D334FDC1FFEF25E336D1A /* CrocusSprings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A16FF870167FB621B64308 /* CrocusSprings.swift */; };
 		D8054E366896EB04D5A8E45D /* SwipeRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */; };
@@ -308,6 +309,7 @@
 		DA6E4305ED985805356F2FEA /* TargetScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetScreen.swift; sourceTree = "<group>"; };
 		DA87CCD5234EF855911B0256 /* PlayerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerBridge.swift; sourceTree = "<group>"; };
 		DB5A51764601E79BB475F931 /* LiveActivityURLParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityURLParserTests.swift; sourceTree = "<group>"; };
+		DC5AD358CA32690A51A9650F /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
 		DCD6099818EBCC0929EB25A5 /* LiveActivityIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityIntentHandler.swift; sourceTree = "<group>"; };
 		DDD083D8D4B003B78178DB94 /* IslandComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandComponents.swift; sourceTree = "<group>"; };
 		DF693E912852307EB0F6D82C /* NowPlayingViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingViews.swift; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 				BBEB610FA7B7E2297B26C0B8 /* MenuBarActivityRows.swift */,
 				14C13429AE3006541FA47F4E /* MenuBarAttention.swift */,
 				0F6BA747D0E14B6871496F46 /* MenuBarComponents.swift */,
+				DC5AD358CA32690A51A9650F /* MenuBarController.swift */,
 				CD41AE21F68B81FC39B2C39D /* MenuBarPanel.swift */,
 			);
 			path = MenuBar;
@@ -922,6 +925,7 @@
 				912608BB154A2A9227BB3FB5 /* MenuBarAttention.swift in Sources */,
 				962B0E95F32F6B698534E658 /* MenuBarClearance.swift in Sources */,
 				5573310C8DA30CF9A8EC2734 /* MenuBarComponents.swift in Sources */,
+				D0DB056BE60110B0B5F1848A /* MenuBarController.swift in Sources */,
 				5DA9445F28001C081963AAEA /* MenuBarPanel.swift in Sources */,
 				09F4CD51B39EC55B66F3FA6B /* MinimalLayout.swift in Sources */,
 				8CB4BAC1AB2AF48ED2EA4D01 /* MouseTracker.swift in Sources */,

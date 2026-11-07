@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     lazy var privacy = PrivacyManager(store: store)
     lazy var downloads = DownloadsManager(store: store)
     lazy var bluetooth = BluetoothManager(store: store)
+    lazy var menuBar = MenuBarController(app: self)
     lazy var onboarding = OnboardingWindowController { [unowned self] in
         OnboardingModel(calendar: calendar, nowPlaying: nowPlaying, downloads: downloads, bluetooth: bluetooth)
     }
@@ -50,6 +51,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Don't put windows on screen while running as a unit test host.
         guard !Self.isRunningTests else { return }
         overlay.start()
+        menuBar.start()
         timers.start()
         nowPlaying.start()
         power.start()
@@ -63,6 +65,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        menuBar.stop()
         overlay.stop()
     }
 

@@ -1,16 +1,15 @@
 import AppKit
 import SwiftUI
 
-/// The panel behind the crocus in the menu bar (#61, board G): opens centred
-/// under the icon (`MenuBarExtra` with `.window` style) and shows the running
-/// activities, a quick timer, missing permissions and the usual Settings /
-/// Quit.
+/// The panel behind the crocus in the menu bar (#61, board G), shown in a
+/// popover by `MenuBarController`: the running activities, a quick timer,
+/// missing permissions and the usual Settings / Quit.
 struct MenuBarPanel: View {
     let app: AppDelegate
+    let menuBar: MenuBarController
     @AppStorage(AppSettings.Key.islandHidden) private var islandHidden = false
     @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
     @Environment(\.openSettings) private var openSettings
-    @State private var window = PanelWindow()
 
     var body: some View {
         let activities = app.store.cardActivities
@@ -54,9 +53,7 @@ struct MenuBarPanel: View {
         .padding(MenuBarMetrics.padding)
         .padding(.top, 4)
         .frame(width: MenuBarMetrics.panelWidth)
-        .background(WindowReader { window.attach($0) })
-        .onAppear { window.onDismiss = { [app] in app.returnFocus() } }
-        .onExitCommand { window.close() }
+        .onExitCommand { menuBar.close() }
     }
 
     // MARK: - Header
@@ -99,7 +96,7 @@ struct MenuBarPanel: View {
     private func perform(_ item: MenuBarAttentionItem) {
         // Asking or the folder picker needs Crocus in front; the others hand
         // focus on to System Settings anyway.
-        window.close(returningFocus: item.action == .openSystemSettings)
+        menuBar.close(returningFocus: item.action == .openSystemSettings)
         switch (item.subject, item.action) {
         case (.calendar, .request):
             NSApp.activate()
@@ -148,7 +145,7 @@ struct MenuBarPanel: View {
     private func chip(accessibilityLabel: String, action: @escaping () -> Void, @ViewBuilder label: () -> some View) -> some View {
         Button {
             action()
-            window.close()
+            menuBar.close()
         } label: {
             label()
                 .font(.system(size: 12, weight: .semibold))
@@ -189,11 +186,11 @@ struct MenuBarPanel: View {
         VStack(spacing: 0) {
             Divider().padding(.horizontal, 4).padding(.bottom, 4)
             FooterButton(title: "Set Up Crocus…") {
-                window.close(returningFocus: false)
+                menuBar.close(returningFocus: false)
                 app.onboarding.show()
             }
             FooterButton(title: "Settings…", shortcut: "⌘,") {
-                window.close(returningFocus: false)
+                menuBar.close(returningFocus: false)
                 NSApp.activate()
                 openSettings()
             }
@@ -265,70 +262,3 @@ private struct DeveloperSection: View {
     }
 }
 #endif
-
-// MARK: - Window
-
-/// The panel's own window: `MenuBarExtra` has no API to close it, so the
-/// panel finds its window and closes it after an action.
-///
-/// Opening the panel makes Crocus the active app. Once it closes – by an
-/// action, Esc, or a click on the icon – focus goes back to the previous
-/// app, unless the action opens a Crocus window (Settings, onboarding,
-/// a system prompt). While open, the window passes mouse moves on, so the
-/// island still notices the pointer.
-@MainActor
-final class PanelWindow {
-    private(set) weak var window: NSWindow?
-    var onDismiss: (() -> Void)?
-    private var returnsFocus = true
-    private var observer: NSObjectProtocol?
-
-    func attach(_ window: NSWindow?) {
-        guard let window, window !== self.window else { return }
-        if let observer { NotificationCenter.default.removeObserver(observer) }
-        self.window = window
-        window.acceptsMouseMovedEvents = true
-        observer = NotificationCenter.default.addObserver(
-            forName: NSWindow.didResignKeyNotification, object: window, queue: .main
-        ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.resigned() }
-        }
-    }
-
-    func close(returningFocus: Bool = true) {
-        returnsFocus = returningFocus
-        window?.close()
-    }
-
-    private func resigned() {
-        let returns = returnsFocus
-        returnsFocus = true
-        guard returns else { return }
-        // A turn later, once the panel is gone and any window it opened is up.
-        Task { @MainActor [weak self] in self?.onDismiss?() }
-    }
-}
-
-/// Reports the window the view is in.
-private struct WindowReader: NSViewRepresentable {
-    let onWindow: (NSWindow?) -> Void
-
-    func makeNSView(context: Context) -> ReportingView {
-        let view = ReportingView()
-        view.onWindow = onWindow
-        return view
-    }
-
-    func updateNSView(_ nsView: ReportingView, context: Context) {
-        nsView.onWindow = onWindow
-    }
-
-    final class ReportingView: NSView {
-        var onWindow: ((NSWindow?) -> Void)?
-
-        override func viewDidMoveToWindow() {
-            super.viewDidMoveToWindow()
-            onWindow?(window)
-        }
-    }
-}
