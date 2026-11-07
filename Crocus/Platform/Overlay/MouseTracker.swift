@@ -9,6 +9,7 @@ import AppKit
 @MainActor
 final class MouseTracker {
     private var monitors: [Any] = []
+    private var appObservers: [NSObjectProtocol] = []
     private let panels: () -> [OverlayPanel]
     /// Called with the pointer location (screen coordinates) on every move.
     var onPointerMove: ((CGPoint) -> Void)?
@@ -32,12 +33,21 @@ final class MouseTracker {
         }) {
             monitors.append(local)
         }
+        // Switching apps changes which monitor sees the moves; catch up at
+        // once instead of waiting for the next move (#61).
+        for name in [NSApplication.didBecomeActiveNotification, NSApplication.didResignActiveNotification] {
+            appObservers.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.update() }
+            })
+        }
         update()
     }
 
     func stop() {
         monitors.forEach(NSEvent.removeMonitor)
         monitors.removeAll()
+        appObservers.forEach(NotificationCenter.default.removeObserver)
+        appObservers.removeAll()
     }
 
     private func pointerMoved() {

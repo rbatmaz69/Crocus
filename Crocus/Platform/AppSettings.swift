@@ -25,6 +25,9 @@ enum AppSettings {
         static let animationStrength = "animationStrength"
         /// C5: the island flies to the other screen (UI in #27).
         static let animateScreenChange = "animateScreenChange"
+        /// "Show island" switch in the menu bar panel (#61): off hides the
+        /// island everywhere until it is switched back on.
+        static let islandHidden = "islandHidden"
         /// Debug only: storyboard timings 5× slower.
         static let debugSlowAnimations = "debugSlowAnimations"
     }
@@ -99,6 +102,14 @@ enum AppSettings {
 
     static func animateScreenChange(in defaults: UserDefaults = .standard) -> Bool {
         defaults.bool(forKey: Key.animateScreenChange)
+    }
+
+    static func islandHidden(in defaults: UserDefaults = .standard) -> Bool {
+        defaults.bool(forKey: Key.islandHidden)
+    }
+
+    static func setIslandHidden(_ hidden: Bool, in defaults: UserDefaults = .standard) {
+        defaults.set(hidden, forKey: Key.islandHidden)
     }
 
     static func hapticFeedback(in defaults: UserDefaults = .standard) -> Bool {

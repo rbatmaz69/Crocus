@@ -16,6 +16,12 @@ final class OverlayController {
     /// The screen that currently shows the island.
     private(set) var targetScreenID: CGDirectDisplayID?
 
+    /// Name of that screen, e.g. for the menu bar panel's status line.
+    var targetScreenName: String? {
+        guard let targetScreenID else { return nil }
+        return screens.first { $0.displayID == targetScreenID }?.name
+    }
+
     /// What the island shows comes from here.
     let store: IslandStore
 
@@ -63,7 +69,10 @@ final class OverlayController {
         observeStore()
         mouseTracker.onPointerMove = { [weak self] location in self?.pointerMoved(to: location) }
         menuBarAppearance.onChange = { [weak self] _ in self?.applyMenuBarAppearance() }
-        hotKey.onPress = { [weak self] in self?.store.toggle() }
+        hotKey.onPress = { [weak self] in
+            guard let self, OverlayVisibility.shortcutToggles(islandHidden: AppSettings.islandHidden(in: self.defaults)) else { return }
+            self.store.toggle()
+        }
         hotKey.register(AppSettings.globalShortcut(in: defaults))
         mouseTracker.start()
 
@@ -175,6 +184,10 @@ final class OverlayController {
         updateMenuBarClearance()
         menuBarAppearance.attach()
         applyInputSettings()
+        // Switched off while open: close it, so nothing keeps keyboard focus.
+        if AppSettings.islandHidden(in: defaults), store.presentation == .expanded {
+            store.collapse()
+        }
         updateVisibility()
     }
 
@@ -323,6 +336,7 @@ final class OverlayController {
     /// (any full-screen app in pill mode, full-screen video in notch mode).
     private func updateVisibility() {
         let hideEnabled = AppSettings.hideDuringFullScreenVideo(in: defaults)
+        let islandHidden = AppSettings.islandHidden(in: defaults)
         let entries = Array(panels)
         let result = detector.screensPlayingFullScreenVideo(entries.map { CGDisplayBounds($0.key) })
 
@@ -336,7 +350,11 @@ final class OverlayController {
                 isPlayingFullScreenVideo: isVideo,
                 hideDuringFullScreenVideo: hideEnabled
             )
-            let show = entry.key == targetScreenID && !hiddenByFullScreen
+            let show = OverlayVisibility.showsIsland(
+                isTargetScreen: entry.key == targetScreenID,
+                hiddenByFullScreen: hiddenByFullScreen,
+                islandHidden: islandHidden
+            )
 
             if !show, panel.isVisible {
                 panel.orderOut(nil)
@@ -545,7 +563,7 @@ final class OverlayController {
     /// Only the expanded island on the target screen takes keyboard focus
     /// (Esc, arrows, Tab); it hands focus back on collapse.
     private func applyKeyboardFocus() {
-        let expanded = store.presentation == .expanded
+        let expanded = store.presentation == .expanded && !AppSettings.islandHidden(in: defaults)
         for (displayID, panel) in panels {
             panel.setAcceptsKeyboard(expanded && displayID == targetScreenID)
         }

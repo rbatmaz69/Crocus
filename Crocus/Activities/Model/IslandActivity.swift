@@ -34,12 +34,27 @@ protocol IslandActivity: AnyObject {
     var expandedStatus: AnyView { get }
     /// Expanded rows below the header.
     var expandedContent: AnyView { get }
+
+    // Menu bar panel (#61): one row per activity under "Now".
+    /// Symbol in the row's coloured tile.
+    var panelSymbol: String { get }
+    var panelTint: Color { get }
+    var panelTitle: String { get }
+    /// Second line, e.g. "04:32 remaining"; may tick.
+    var panelDetail: AnyView { get }
+    /// The activity's main controls on the right (pause, stop, progress …).
+    var panelControls: AnyView { get }
 }
 
 extension IslandActivity {
     var accessibilityTitle: String { kind.title }
     var compactTrailingReduced: AnyView { compactTrailing }
     var minimal: AnyView { compactLeading }
+    var panelSymbol: String { kind.panelSymbol }
+    var panelTint: Color { kind.panelTint }
+    var panelTitle: String { accessibilityTitle }
+    var panelDetail: AnyView { AnyView(EmptyView()) }
+    var panelControls: AnyView { AnyView(EmptyView()) }
 
     /// The value the state machine works with.
     var entry: ActivityEntry {

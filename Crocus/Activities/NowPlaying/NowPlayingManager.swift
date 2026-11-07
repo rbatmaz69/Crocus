@@ -25,6 +25,7 @@ final class NowPlayingManager {
     @ObservationIgnored private let now: () -> Date
     @ObservationIgnored private let loadData: @Sendable (URL) async -> Data?
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
+    @ObservationIgnored private var playerReceivers: [PlayerNotificationReceiver] = []
     @ObservationIgnored private var pending: [MusicPlayer: NowPlayingUpdate] = [:]
     /// Last cover per player, so it is back at once after a switch.
     @ObservationIgnored private var artwork: [MusicPlayer: (trackKey: String, image: NSImage)] = [:]
@@ -50,15 +51,24 @@ final class NowPlayingManager {
     }
 
     func start() {
-        let distributed = DistributedNotificationCenter.default()
+        // Delivered immediately: AppKit suspends distributed notifications
+        // while an app is inactive once it has been active – after the menu
+        // bar panel, Settings or the onboarding the player updates would
+        // otherwise queue up and the island would show a stale state (#61).
         for player in MusicPlayer.allCases {
-            observers.append(distributed.addObserver(forName: player.notificationName, object: nil, queue: .main) { [weak self] note in
-                guard let update = note.userInfo.flatMap({ NowPlayingUpdate(player: player, userInfo: $0) }) else { return }
-                MainActor.assumeIsolated {
-                    guard let self else { return }
-                    Task { await self.handle(update, from: player) }
-                }
-            })
+            let receiver = PlayerNotificationReceiver { [weak self] userInfo in
+                guard let update = userInfo.flatMap({ NowPlayingUpdate(player: player, userInfo: $0) }) else { return }
+                guard let self else { return }
+                Task { await self.handle(update, from: player) }
+            }
+            DistributedNotificationCenter.default().addObserver(
+                receiver,
+                selector: #selector(PlayerNotificationReceiver.received(_:)),
+                name: player.notificationName,
+                object: nil,
+                suspensionBehavior: .deliverImmediately
+            )
+            playerReceivers.append(receiver)
         }
         let workspace = NSWorkspace.shared.notificationCenter
         observers.append(workspace.addObserver(forName: NSWorkspace.didTerminateApplicationNotification, object: nil, queue: .main) { [weak self] note in
@@ -94,7 +104,11 @@ final class NowPlayingManager {
             return
         }
         guard await isAllowed(player, asking: false) else { return }
+        apply(update, from: player)
+    }
 
+    /// Takes over a notification's state (permission already checked).
+    func apply(_ update: NowPlayingUpdate, from player: MusicPlayer) {
         let time = now()
         let previousKey = states[player]?.trackKey
         if var state = states[player] {
@@ -254,14 +268,18 @@ final class NowPlayingManager {
 
     func send(_ command: PlayerCommand) {
         guard let player = activity?.state.player, permissions[player] == .granted else { return }
+        let before = states[player]?.playback
         bridge.send(command, to: player)
-        // Answer right away; the player's notification confirms it.
-        if command == .playPause, var state = states[player] {
+        // Answer right away; the player's notification confirms it. The
+        // Apple Event waits for the reply and lets notifications in – if the
+        // player's own one already arrived, the state is right as it is and
+        // toggling again would flip it back (#61).
+        if command == .playPause, let before, var state = states[player], state.playback == before {
             let time = now()
             let position = state.position(now: time)
             state.apply(NowPlayingUpdate(
                 title: state.title, artist: state.artist, album: state.album, duration: state.duration,
-                position: position, playback: state.isPlaying ? .paused : .playing, trackKey: state.trackKey
+                position: position, playback: before == .playing ? .paused : .playing, trackKey: state.trackKey
             ), now: time)
             states[player] = state
             refresh()
@@ -276,4 +294,20 @@ final class NowPlayingManager {
 
     /// Privacy & Security → Automation, to allow a denied player later.
     static let automationSettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation")!
+}
+
+/// Target for a player's distributed notification: the selector-based API is
+/// the only one that takes a suspension behaviour. Registered on the main
+/// thread, so it is called there.
+@MainActor
+private final class PlayerNotificationReceiver: NSObject {
+    private let onReceive: @MainActor ([AnyHashable: Any]?) -> Void
+
+    init(onReceive: @escaping @MainActor ([AnyHashable: Any]?) -> Void) {
+        self.onReceive = onReceive
+    }
+
+    @objc func received(_ notification: Notification) {
+        onReceive(notification.userInfo)
+    }
 }

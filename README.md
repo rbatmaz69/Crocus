@@ -29,7 +29,7 @@ xcodebuild -project Crocus.xcodeproj -scheme Crocus -destination 'platform=macOS
 xcodebuild -project Crocus.xcodeproj -scheme Crocus -destination 'platform=macOS' test
 ```
 
-Crocus runs as a menu bar agent (no Dock icon) inside the App Sandbox. Look for the crocus icon in the menu bar to open Settings or quit. Try a Live Activity: `open -g "crocus://start?id=demo&title=Demo&symbol=hammer&progress=0.5"`.
+Crocus runs as a menu bar agent (no Dock icon) inside the App Sandbox. Click the crocus icon in the menu bar: a panel opens centred under it with the running activities and their controls, a quick timer, missing permissions, the screen for the island, and Settings / Quit. Its switch hides the island until you switch it back on. Try a Live Activity: `open -g "crocus://start?id=demo&title=Demo&symbol=hammer&progress=0.5"`.
 
 Builds are signed with an Apple Development certificate of the team in `project.yml` (`DEVELOPMENT_TEAM`). To build with your own account, change it to your team ID. The Shortcuts actions need a team-signed build – with an ad-hoc signature ("Sign to Run Locally"), Shortcuts fails with "couldn't communicate with the app".
 

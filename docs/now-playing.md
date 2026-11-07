@@ -25,7 +25,7 @@ Crocus shows what Spotify or the Music app is playing and lets you control it fr
 
 ## Permissions
 
-The first time a player starts playing, macOS asks whether Crocus may control it. Denying turns off Now Playing for that player only; the menu bar menu then shows **Allow in System Settings…** (Privacy & Security → Automation).
+The first time a player starts playing, macOS asks whether Crocus may control it. Denying turns off Now Playing for that player only; the menu bar panel then lists the player under **Needs your permission** with **Open…** (Privacy & Security → Automation).
 
 To ask again from scratch:
 

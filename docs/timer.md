@@ -4,7 +4,7 @@ Crocus has a built-in timer (counts down) and stopwatch (counts up). One of each
 
 ## Start
 
-- **Menu bar**: Crocus icon → **Timer** → 1, 5, 10, 15 or 25 min, or **Stopwatch**. The same menu pauses, resumes and stops them.
+- **Menu bar**: Crocus icon → **Start timer** → 1, 5, 10, 15 or 25 min, or the stopwatch. Under **Now** the panel pauses, resumes and stops them.
 - **Shortcuts, Spotlight, Siri**:
 
 | Action | Parameters |

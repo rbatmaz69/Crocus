@@ -4,7 +4,7 @@ Crocus shows downloads from Safari, Chrome and Firefox (and browsers built on th
 
 ## Setup
 
-Until the onboarding (#26) asks for it, use the menu bar: **Choose Downloads Folder…** and confirm the folder (`~/Downloads` is preselected). Crocus keeps access as a security-scoped bookmark, so it survives relaunches; the menu then shows the folder and **Change Downloads Folder…**. Only file names and sizes are read.
+Until the onboarding (#26) asks for it, use the menu bar panel: **Needs your permission** → Downloads → **Choose…** and confirm the folder (`~/Downloads` is preselected). Crocus keeps access as a security-scoped bookmark, so it survives relaunches; to change the folder later, use Settings › Activities. Only file names and sizes are read.
 
 ## In the island
 

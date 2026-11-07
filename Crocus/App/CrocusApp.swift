@@ -7,34 +7,16 @@ struct CrocusApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        // Template image: macOS tints it for light/dark menu bars and the
-        // highlighted state. The title stays the VoiceOver label.
-        MenuBarExtra("Crocus", image: "MenuBarIcon") {
-            SettingsLink {
-                Text("Settings…")
-            }
-            .keyboardShortcut(",")
-            Button("Set Up Crocus…") { appDelegate.onboarding.show() }
-
-            Divider()
-            TimerMenu(timers: appDelegate.timers)
-            NowPlayingPermissionHint(nowPlaying: appDelegate.nowPlaying)
-            CalendarAccessMenu(calendar: appDelegate.calendar)
-            DownloadsFolderMenu(downloads: appDelegate.downloads)
-            BluetoothAccessMenu(bluetooth: appDelegate.bluetooth)
-
-            #if DEBUG
-            Divider()
-            DebugMenu(overlay: appDelegate.overlay, store: appDelegate.store, power: appDelegate.power, bluetooth: appDelegate.bluetooth)
-            #endif
-
-            Divider()
-
-            Button("Quit Crocus") {
-                NSApplication.shared.terminate(nil)
-            }
-            .keyboardShortcut("q")
+        // A panel centred under the icon instead of a plain menu (#61). The
+        // icon is a template image; it carries a dot while a permission is
+        // missing. The label stays "Crocus" for VoiceOver.
+        MenuBarExtra {
+            MenuBarPanel(app: appDelegate)
+        } label: {
+            Image(appDelegate.menuBarAttention.isEmpty ? "MenuBarIcon" : "MenuBarIconBadge")
+                .accessibilityLabel(appDelegate.menuBarAttention.isEmpty ? "Crocus" : "Crocus, needs your permission")
         }
+        .menuBarExtraStyle(.window)
 
         Settings {
             SettingsView(app: appDelegate)
@@ -44,7 +26,7 @@ struct CrocusApp: App {
 }
 
 #if DEBUG
-private struct DebugMenu: View {
+struct DebugMenu: View {
     @Bindable var overlay: OverlayController
     let store: IslandStore
     let power: PowerManager
@@ -83,113 +65,8 @@ private struct DebugMenu: View {
 }
 #endif
 
-/// Start a timer or the stopwatch; pause, resume or stop them.
-private struct TimerMenu: View {
-    let timers: TimerManager
 
-    static let presets: [Int] = [1, 5, 10, 15, 25]
 
-    var body: some View {
-        Menu("Timer") {
-            ForEach(Self.presets, id: \.self) { minutes in
-                Button("\(minutes) min") { timers.startTimer(duration: TimeInterval(minutes * 60)) }
-            }
-            Button("Stopwatch") { timers.startStopwatch() }
-            ForEach(TimerState.Kind.allCases, id: \.self) { kind in
-                if let state = timers.state(kind) {
-                    Divider()
-                    let title = TimerFormat.title(kind)
-                    if state.isRunning {
-                        Button("Pause \(title)") { timers.pause(kind) }
-                    } else if state.isPaused {
-                        Button("Resume \(title)") { timers.resume(kind) }
-                    }
-                    Button("Stop \(title)") { timers.stop(kind) }
-                }
-            }
-        }
-    }
-}
 
-/// Shown only when a player isn't allowed: how to turn it back on.
-private struct NowPlayingPermissionHint: View {
-    let nowPlaying: NowPlayingManager
 
-    var body: some View {
-        let denied = MusicPlayer.allCases.filter { nowPlaying.permissions[$0] == .denied }
-        let undecided = MusicPlayer.allCases.filter { nowPlaying.permissions[$0] == .notDetermined }
-        if !denied.isEmpty {
-            Divider()
-            Text("Now Playing is off for \(denied.map(\.displayName).joined(separator: " and "))")
-            Button("Allow in System Settings…") { NSWorkspace.shared.open(NowPlayingManager.automationSettingsURL) }
-        }
-        // Skipped in the onboarding (or not asked yet): allow from here.
-        ForEach(undecided, id: \.self) { player in
-            Button("Allow \(player.displayName)…") {
-                NSApp.activate()
-                Task { await nowPlaying.requestPermission(player) }
-            }
-        }
-    }
-}
-
-/// Calendar access until onboarding (#26) asks for it: allow, or how to
-/// turn it back on.
-private struct CalendarAccessMenu: View {
-    let calendar: CalendarManager
-
-    var body: some View {
-        switch calendar.authorization {
-        case .granted:
-            EmptyView()
-        case .notDetermined:
-            Divider()
-            Button("Allow Calendar…") {
-                NSApp.activate()
-                Task { await calendar.requestAccess() }
-            }
-        case .denied:
-            Divider()
-            Text("Calendar events are off")
-            Button("Allow in System Settings…") { NSWorkspace.shared.open(CalendarManager.settingsURL) }
-        }
-    }
-}
-
-/// The downloads folder until onboarding (#26) asks for it.
-private struct DownloadsFolderMenu: View {
-    let downloads: DownloadsManager
-
-    var body: some View {
-        Divider()
-        if let folder = downloads.access.folder {
-            Text("Downloads: \(folder.lastPathComponent)")
-            Button("Change Downloads Folder…") { Task { await downloads.chooseFolder() } }
-        } else {
-            Button("Choose Downloads Folder…") { Task { await downloads.chooseFolder() } }
-        }
-    }
-}
-
-/// Bluetooth permission: allow, or how to turn it back on.
-private struct BluetoothAccessMenu: View {
-    let bluetooth: BluetoothManager
-
-    var body: some View {
-        switch bluetooth.access {
-        case .granted:
-            EmptyView()
-        case .notDetermined:
-            Divider()
-            Button("Allow Bluetooth…") {
-                NSApp.activate()
-                Task { await bluetooth.requestAccess() }
-            }
-        case .denied:
-            Divider()
-            Text("Bluetooth events are off")
-            Button("Allow in System Settings…") { NSWorkspace.shared.open(BluetoothManager.settingsURL) }
-        }
-    }
-}
 
