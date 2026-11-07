@@ -15,8 +15,10 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
     /// What a click does; `nil` expands the main activity.
     var onTap: (() -> Void)?
 
-    /// The current press already opened the island.
-    @State private var opened = false
+    /// The current press already opened the island. SwiftUI resets it when
+    /// the gesture ends or is cancelled – also when opening switches it off
+    /// mid-press – so no click is ever swallowed.
+    @GestureState private var opened = false
     @State private var breathPhase = false
     @Environment(\.openSettings) private var openSettings
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -57,9 +59,6 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
                     NSApp.terminate(nil)
                 }
             }
-            // Opening switches the gesture off mid-press, so its end never
-            // arrives – reset here, or the next click would be swallowed.
-            .onChange(of: presentation) { opened = false }
             .onChange(of: breathes, initial: true) { _, breathes in
                 if breathes {
                     withAnimation(.easeInOut(duration: HoverHint.breathPeriod / 2).repeatForever(autoreverses: true)) {
@@ -77,12 +76,11 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
     /// the expansion (feels like part of the system). Once per press.
     private var press: some Gesture {
         DragGesture(minimumDistance: 0)
-            .onChanged { _ in
+            .updating($opened) { _, opened, _ in
                 guard !opened else { return }
                 opened = true
                 if let onTap { onTap() } else { model.store.expand() }
             }
-            .onEnded { _ in opened = false }
     }
 }
 

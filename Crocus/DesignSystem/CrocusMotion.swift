@@ -45,8 +45,85 @@ enum CrocusMotion {
         static let compactOutScale: CGFloat = 1.1
         /// Expanded content grows out of the top edge from this.
         static let expandedInScale: CGFloat = 0.9
+        /// Opened from the drop (#22): the shape has come ≈ halfway from the
+        /// drop when the content starts, so it never shows ahead of it.
+        static let fromDropContentDelay = 0.12
         /// Reduce Motion: the panel fades in/out at its final size.
         static let reducedMotionFade = 0.20
+    }
+
+    /// C3 – a second activity detaches as a drop (notch) or circle (pill),
+    /// like the Dynamic Island's metaball. Driven by one progress value
+    /// 0 → 1 on `CrocusSprings.dropDetach` (its overshoot is the drop's
+    /// ≈ 2 pt overshoot), 1 → 0 on `dropMerge` when it flows back.
+    /// - 0: the drop sits inside the island's right end, small (bud)
+    /// - the bud grows while it moves out; a gooey bridge (blur + alpha
+    ///   threshold) draws the neck between island and drop
+    /// - from 0.98 plain shapes again (the neck is long gone)
+    /// - its content fades in over the last 10 %
+    enum C3 {
+        static let blur: CGFloat = 5
+        static let budScale: CGFloat = 0.35
+        /// Progress at which the bud has its full size.
+        static let fullSizeAt: CGFloat = 0.6
+        static let gooeyUntil: CGFloat = 0.98
+        static let contentFrom: CGFloat = 0.9
+        /// Strip at the island's right edge that the drop's neck grows from.
+        static let bridgeWidth: CGFloat = 12
+        static let reducedMotionFade = 0.20
+
+        /// Horizontal offset from the drop's final position.
+        static func offset(progress: CGFloat, travel: CGFloat) -> CGFloat {
+            -(1 - progress) * travel
+        }
+
+        static func scale(progress: CGFloat) -> CGFloat {
+            budScale + (1 - budScale) * min(max(progress / fullSizeAt, 0), 1)
+        }
+
+        static func isGooey(progress: CGFloat) -> Bool { progress < gooeyUntil }
+
+        static func contentOpacity(progress: CGFloat) -> Double {
+            Double(min(max((progress - contentFrom) / (1 - contentFrom), 0), 1))
+        }
+
+        /// Only between compact and minimal; expanding or collapsing, the
+        /// drop just fades with the island.
+        static func detaches(from old: IslandPresentation, to new: IslandPresentation) -> Bool {
+            Set([old, new]) == [.compact, .minimal]
+        }
+
+        /// Progress `elapsed` seconds (unscaled) into detaching (0 → 1, on
+        /// `dropDetach`) or merging back (1 → 0, on `dropMerge`).
+        static func progress(detaching: Bool, elapsed: Double) -> CGFloat {
+            let value = CGFloat(spring(detaching: detaching).value(target: 1.0, time: max(elapsed, 0)))
+            return detaching ? value : 1 - value
+        }
+
+        /// Until the drop is at rest (detaching) or gone (merging), unscaled.
+        static func duration(detaching: Bool) -> Double {
+            spring(detaching: detaching).settlingDuration
+        }
+
+        private static func spring(detaching: Bool) -> Spring {
+            let spec = detaching ? CrocusSprings.dropDetach : CrocusSprings.dropMerge
+            return Spring(response: spec.response, dampingRatio: spec.dampingFraction)
+        }
+
+        /// Moves and scales the drop's path around its top centre.
+        static func transform(anchor: CGPoint, offsetX: CGFloat, scale: CGFloat) -> CGAffineTransform {
+            CGAffineTransform(translationX: anchor.x + offsetX, y: anchor.y)
+                .scaledBy(x: scale, y: scale)
+                .translatedBy(x: -anchor.x, y: -anchor.y)
+        }
+    }
+
+    /// Whether the island grows out of the drop/circle: opened by a click on
+    /// it, from minimal; still so while it collapses back. Any other change
+    /// ends it.
+    static func expandsFromDrop(from old: IslandPresentation, to new: IslandPresentation, tappedDrop: Bool, wasFromDrop: Bool) -> Bool {
+        if new == .expanded { return old == .minimal && tappedDrop }
+        return old == .expanded && wasFromDrop
     }
 
     /// Whether the arriving content's symbol bounces: only for an activity
@@ -117,5 +194,30 @@ extension AnyTransition {
             insertion: AnyTransition.modifier(active: hidden, identity: identity).animation(CrocusSprings.expand.animation),
             removal: AnyTransition.modifier(active: hidden, identity: identity).animation(CrocusSprings.collapse.animation)
         )
+    }
+}
+
+extension EnvironmentValues {
+    /// C3 progress of the drop/circle view (1 = at rest).
+    @Entry var dropDetachProgress: CGFloat = 1
+}
+
+/// The gooey neck between the island's right end and the drop: both drawn
+/// black, blurred and cut at half alpha – where they are close, they merge.
+/// Only while detaching; the island itself is drawn crisply elsewhere.
+struct GooeyDrop: View {
+    let bridge: CGRect
+    let drop: (CGRect) -> Path
+
+    var body: some View {
+        Canvas { context, size in
+            context.addFilter(.alphaThreshold(min: 0.5, color: CrocusColors.island))
+            context.addFilter(.blur(radius: CrocusMotion.C3.blur))
+            context.drawLayer { layer in
+                layer.fill(Path(bridge), with: .color(.black))
+                layer.fill(drop(CGRect(origin: .zero, size: size)), with: .color(.black))
+            }
+        }
+        .allowsHitTesting(false)
     }
 }

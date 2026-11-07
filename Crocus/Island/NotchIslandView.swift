@@ -14,25 +14,42 @@ struct NotchIslandView: View {
             let spring: Animation? = reduceMotion ? nil : model.transitionSpring.animation
             let metrics = IslandLayoutMetrics.notch(notchSize: notch.size, rightWingReduced: model.rightWingReduced)
             let secondary = model.presentation == .minimal ? model.store.secondaryActivity : nil
-            let dropCenterX = MinimalLayout.notchDropCenterX(main: parameters, centerX: centerX)
-            let dropParameters = MinimalLayout.notchDropParameters(main: parameters)
+            // Opened from the drop (#22): the drop grows into the expanded
+            // island; the main one stays as it was underneath until covered.
+            let fromDrop = model.expandedFromDrop
+            let isExpanded = model.presentation == .expanded
+            let mainStays = fromDrop && isExpanded
+            let dropActivity = mainStays ? model.store.expandedContentActivity : secondary
+            let dropForm: DropForm<NotchShapeParameters> = fromDrop && model.presentation != .minimal
+                ? .island(parameters, centerX: centerX, showsExpanded: isExpanded)
+                : .drop
+            let dropMain = model.notchDropMainParameters ?? parameters
+            let dropCenterX = MinimalLayout.notchDropCenterX(main: dropMain, centerX: centerX)
+            let dropParameters = MinimalLayout.notchDropParameters(main: dropMain)
             let dropRect = secondary.map { _ in dropParameters.bodyRect(centerX: dropCenterX) }
 
             ZStack(alignment: .topLeading) {
-                mainShape(parameters: parameters, metrics: metrics, centerX: centerX)
+                mainShape(
+                    parameters: mainStays ? (model.notchDropMainParameters ?? parameters) : parameters,
+                    presentation: mainStays ? .minimal : model.presentation,
+                    metrics: metrics, centerX: centerX
+                )
 
-                if let secondary {
-                    NotchDropView(model: model, activity: secondary, centerX: dropCenterX, parameters: dropParameters)
-                        .transition(
-                            .scale(scale: 0.2, anchor: UnitPoint(x: (dropCenterX - dropParameters.leading) / OverlayLayout.panelSize.width, y: 0))
-                                .combined(with: .opacity)
-                        )
+                DropPresence(activity: dropActivity, detaches: model.detachesDrop, spring: model.transitionSpring) { activity in
+                    NotchDropView(
+                        model: model, activity: activity, centerX: dropCenterX, parameters: dropParameters,
+                        mainRight: centerX + dropMain.trailing, mainHeight: dropMain.height,
+                        form: dropForm, metrics: metrics
+                    )
                 }
+                // Over the island while it detaches/merges or grows into the
+                // expanded island; behind it while the island expands over it
+                // (it swallows the drop).
+                .zIndex(model.detachesDrop || fromDrop ? 1 : -1)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .animation(spring, value: parameters)
             .animation(spring, value: model.presentation)
-            .animation(reduceMotion ? nil : CrocusSprings.dropDetach.animation, value: secondary?.id)
             .onChange(of: parameters, initial: true) { _, newValue in
                 model.islandFrameInWindow = newValue.bodyRect(centerX: centerX)
             }
@@ -42,13 +59,13 @@ struct NotchIslandView: View {
         }
     }
 
-    private func mainShape(parameters: NotchShapeParameters, metrics: IslandLayoutMetrics, centerX: CGFloat) -> some View {
+    private func mainShape(parameters: NotchShapeParameters, presentation: IslandPresentation, metrics: IslandLayoutMetrics, centerX: CGFloat) -> some View {
         ZStack(alignment: .topLeading) {
             NotchIslandShape(parameters: parameters, centerX: centerX)
                 .fill(CrocusColors.island)
 
             Group {
-                switch model.presentation {
+                switch presentation {
                 case .idle:
                     EmptyView()
                 case .compact, .minimal:
