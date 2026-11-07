@@ -42,3 +42,7 @@ Builds are signed with an Apple Development certificate of the team in `project.
 | `Crocus/DesignSystem` | Colors, typography, springs and sizes from the spec |
 | `Crocus/Intents` | App Intents for Shortcuts |
 | `CrocusTests` | Unit tests |
+
+## License
+
+© 2026 Bilal Batmaz. All rights reserved. The source is available for viewing and personal testing only – copying, modifying, redistributing or selling it requires written permission. See [LICENSE](LICENSE).
