@@ -24,8 +24,12 @@ struct IslandCompactContent: View {
                 reduced ? activity.compactTrailingReduced : activity.compactTrailing
             }
         }
+        // One button: "Timer, 4 minutes 32 seconds remaining. Press to expand."
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(store.accessibilityLabel)
+        .accessibilityHint("Press to expand")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { store.expand() }
     }
 }
 
@@ -59,7 +63,7 @@ struct IslandExpandedContent: View {
             CardStrip(model: model, metrics: metrics, activity: activity, position: position)
 
             if isStack, let position {
-                PageDots(index: position.index, count: position.count) { model.showCard(at: $0) }
+                PageDots(index: position.index, titles: model.store.cardActivities.map(\.accessibilityTitle)) { model.showCard(at: $0) }
                     .frame(maxWidth: .infinity)
             }
         }

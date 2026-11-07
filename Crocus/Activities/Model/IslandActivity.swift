@@ -13,6 +13,9 @@ protocol IslandActivity: AnyObject {
     /// What VoiceOver reads for the compact island, e.g. "Timer, 4 minutes
     /// 32 seconds remaining".
     var accessibilityLabel: String { get }
+    /// Short name for VoiceOver where the activities are listed (page dots:
+    /// "Activity 2 of 3, Deploy"). Defaults to the kind's name.
+    var accessibilityTitle: String { get }
 
     /// Symbol in the left wing.
     var compactLeading: AnyView { get }
@@ -34,6 +37,7 @@ protocol IslandActivity: AnyObject {
 }
 
 extension IslandActivity {
+    var accessibilityTitle: String { kind.title }
     var compactTrailingReduced: AnyView { compactTrailing }
     var minimal: AnyView { compactLeading }
 

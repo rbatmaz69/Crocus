@@ -31,6 +31,8 @@ final class LiveActivity: IslandActivity {
     var kind: ActivityKind { .liveActivity }
     var startedAt: Date { state.startedAt }
 
+    var accessibilityTitle: String { state.title }
+
     var accessibilityLabel: String {
         var parts = [state.title]
         switch state.phase {

@@ -43,7 +43,7 @@ struct TimerCompactReadout: View {
         TimerTicking(state: state) { date in
             IslandCompactValue(
                 text: TimerFormat.readout(state, now: date),
-                color: state.isPaused ? CrocusColors.secondary : CrocusColors.primary
+                dimmed: state.isPaused
             )
         }
     }
@@ -78,11 +78,11 @@ struct TimerCard: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(TimerFormat.readout(state, now: date))
                             .islandFont(CrocusTypography.display)
-                            .foregroundStyle(state.isPaused ? CrocusColors.secondary : CrocusColors.primary)
+                            .foregroundStyle(state.isPaused ? AnyShapeStyle(IslandSecondaryStyle()) : AnyShapeStyle(CrocusColors.primary))
                             .lineLimit(1)
                         Text(TimerFormat.subtitle(state, now: date))
                             .islandFont(CrocusTypography.status)
-                            .foregroundStyle(CrocusColors.secondary)
+                            .foregroundStyle(.islandSecondary)
                             .lineLimit(1)
                     }
                     .accessibilityElement(children: .combine)

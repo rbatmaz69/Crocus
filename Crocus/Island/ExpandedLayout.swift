@@ -19,7 +19,7 @@ struct ExpandedLayout<Source: View, Status: View, Content: View>: View {
                 status.frame(maxWidth: .infinity, alignment: .trailing)
             }
             .islandFont(CrocusTypography.header)
-            .foregroundStyle(CrocusColors.secondary)
+            .foregroundStyle(.islandSecondary)
             .lineLimit(1)
             .frame(height: metrics.headerHeight)
 

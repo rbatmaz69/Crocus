@@ -6,10 +6,11 @@ import SwiftUI
 struct IslandProgressRing: View {
     let progress: Double
     var tint: Color = CrocusColors.progress
+    @Environment(\.colorSchemeContrast) private var contrast
 
     var body: some View {
         ZStack {
-            Circle().stroke(tint.opacity(CrocusColors.progressTrackOpacity), lineWidth: 3)
+            Circle().stroke(tint.opacity(CrocusColors.progressTrackOpacity(increasedContrast: contrast == .increased)), lineWidth: 3)
             Circle()
                 .trim(from: 0, to: min(max(progress, 0), 1))
                 .stroke(tint, style: StrokeStyle(lineWidth: 3, lineCap: .round))
@@ -24,10 +25,11 @@ struct IslandProgressRing: View {
 struct IslandSpinner: View {
     var tint: Color = CrocusColors.progress
     @State private var rotation: Double = 0
+    @Environment(\.colorSchemeContrast) private var contrast
 
     var body: some View {
         ZStack {
-            Circle().stroke(tint.opacity(CrocusColors.progressTrackOpacity), lineWidth: 3)
+            Circle().stroke(tint.opacity(CrocusColors.progressTrackOpacity(increasedContrast: contrast == .increased)), lineWidth: 3)
             Circle()
                 .trim(from: 0, to: 0.28)
                 .stroke(tint, style: StrokeStyle(lineWidth: 3, lineCap: .round))
@@ -100,12 +102,14 @@ struct IslandCompactSymbol: View {
 struct IslandCompactValue: View {
     let text: String
     var color: Color = CrocusColors.primary
+    /// Secondary instead of `color` (e.g. a paused timer); follows Increase Contrast.
+    var dimmed = false
 
     var body: some View {
         Text(text)
             .islandFont(CrocusTypography.title, inCompactIsland: true)
             .monospacedDigit()
-            .foregroundStyle(color)
+            .foregroundStyle(dimmed ? AnyShapeStyle(IslandSecondaryStyle()) : AnyShapeStyle(color))
             .lineLimit(1)
             .minimumScaleFactor(0.8)
     }

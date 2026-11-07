@@ -67,7 +67,7 @@ enum SampleActivities {
                     Text("04:32").islandFont(CrocusTypography.display)
                     Text("Timer · 10:00 · ends 14:37")
                         .islandFont(CrocusTypography.status)
-                        .foregroundStyle(CrocusColors.secondary)
+                        .foregroundStyle(.islandSecondary)
                 }
                 Spacer()
                 IslandButton(title: "Pause")
@@ -88,7 +88,7 @@ enum SampleActivities {
                 Cover(size: 60, radius: 14)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Midnight Avenue").islandFont(CrocusTypography.title)
-                    Text("Lumen Park").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
+                    Text("Lumen Park").islandFont(CrocusTypography.status).foregroundStyle(.islandSecondary)
                 }
                 Spacer()
                 Visualizer()
@@ -109,7 +109,7 @@ enum SampleActivities {
                 IslandCompactSymbol(systemName: "video.fill", color: CrocusColors.positive)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Camera active").islandFont(CrocusTypography.title)
-                    Text("For 12 min · used by an app").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
+                    Text("For 12 min · used by an app").islandFont(CrocusTypography.status).foregroundStyle(.islandSecondary)
                 }
                 Spacer()
                 Circle().fill(CrocusColors.positive).frame(width: 6, height: 6)
@@ -130,7 +130,7 @@ enum SampleActivities {
                 TerminalIcon(size: 34)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Build running").islandFont(CrocusTypography.title)
-                    Text("Compiling 128 of 320 files").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
+                    Text("Compiling 128 of 320 files").islandFont(CrocusTypography.status).foregroundStyle(.islandSecondary)
                 }
                 Spacer()
                 Text("40 %").islandFont(CrocusTypography.value)
@@ -156,7 +156,7 @@ enum SampleActivities {
                 RoundedRectangle(cornerRadius: 2).fill(Color.purple).frame(width: 4, height: 36)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Sprint Review").islandFont(CrocusTypography.title)
-                    Text("14:30–15:00 · Video call").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
+                    Text("14:30–15:00 · Video call").islandFont(CrocusTypography.status).foregroundStyle(.islandSecondary)
                 }
                 Spacer()
                 IslandButton(title: "Join", primary: true)

@@ -11,6 +11,18 @@ enum ActivityKind: String, CaseIterable, Sendable {
 
     /// Always shown first, whatever the user's order.
     var isFixedOnTop: Bool { self == .cameraMicrophone }
+
+    /// Spoken name, e.g. for the page dots.
+    var title: String {
+        switch self {
+        case .cameraMicrophone: "Camera and microphone"
+        case .calendar: "Calendar"
+        case .timer: "Timer"
+        case .liveActivity: "Live Activity"
+        case .download: "Downloads"
+        case .music: "Music"
+        }
+    }
 }
 
 /// Short events (2–4 s) that briefly overlay the island and then return to

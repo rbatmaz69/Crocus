@@ -46,6 +46,28 @@ enum CrocusColors {
     /// Opacity of the progress track; 35 % with Increase Contrast.
     static let progressTrackOpacity = 0.20
     static let progressTrackOpacityHighContrast = 0.35
+
+    /// Secondary text: #98989D, #C7C7CC with Increase Contrast.
+    static func secondaryToken(increasedContrast: Bool) -> ColorToken {
+        increasedContrast ? Spec.secondaryHighContrast : Spec.secondary
+    }
+
+    static func progressTrackOpacity(increasedContrast: Bool) -> Double {
+        increasedContrast ? progressTrackOpacityHighContrast : progressTrackOpacity
+    }
+}
+
+/// Secondary text and glyphs that follow Increase Contrast (system setting):
+/// `.foregroundStyle(.islandSecondary)`. Resolved from the environment, so
+/// the island updates the moment the setting changes.
+struct IslandSecondaryStyle: ShapeStyle {
+    func resolve(in environment: EnvironmentValues) -> Color {
+        CrocusColors.secondaryToken(increasedContrast: environment.colorSchemeContrast == .increased).color
+    }
+}
+
+extension ShapeStyle where Self == IslandSecondaryStyle {
+    static var islandSecondary: IslandSecondaryStyle { IslandSecondaryStyle() }
 }
 
 extension View {

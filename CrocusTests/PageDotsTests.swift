@@ -42,4 +42,10 @@ import Testing
         #expect(PageDotsLayout.index(at: 500, count: 3) == 2)
         #expect(PageDotsLayout.index(at: 10, count: 0) == 0)
     }
+
+    @Test func accessibilityLabels() {
+        #expect(PageDotsLayout.accessibilityLabel(index: 1, count: 3, title: "Deploy") == "Activity 2 of 3, Deploy")
+        #expect(PageDotsLayout.accessibilityLabel(index: 0, count: 2, title: nil) == "Activity 1 of 2")
+        #expect(PageDotsLayout.accessibilityLabel(index: 0, count: 2, title: "") == "Activity 1 of 2")
+    }
 }
