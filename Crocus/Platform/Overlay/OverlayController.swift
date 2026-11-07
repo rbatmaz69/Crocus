@@ -1,5 +1,6 @@
 import AppKit
 import os
+import SwiftUI
 
 /// Owns one `OverlayPanel` per connected screen, keeps them in sync with the
 /// screen configuration, shows the island only on the target screen and hides
@@ -41,6 +42,11 @@ final class OverlayController {
     @ObservationIgnored private let clickOutside = ClickOutsideMonitor()
     @ObservationIgnored private let haptics = HapticFeedback()
     @ObservationIgnored private let hotKey = GlobalHotKey()
+    /// C5: panels a running screen change shows and hides itself.
+    @ObservationIgnored private var screenChangePanels: Set<CGDirectDisplayID> = []
+    @ObservationIgnored private var flightWindows: [ScreenFlightPanel] = []
+    /// The target screen changed while expanded: move once it is collapsed.
+    @ObservationIgnored private var screenChangeDeferred = false
 
     private static let logger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Overlay")
     private static let screenLogger = Logger(subsystem: "com.rbatmaz69.crocus", category: "Screens")
@@ -141,17 +147,30 @@ final class OverlayController {
     /// Picks the target screen and updates which panels are visible.
     func refresh() {
         let option = AppSettings.targetScreen(in: defaults)
-        let target = TargetScreenResolver.resolve(
+        var target = TargetScreenResolver.resolve(
             option,
             screens: screens,
             pointerScreenID: pointerDebounce.settled,
             activeMenuBarScreenID: NSScreen.main?.displayID
         )
+        if target != targetScreenID, let current = targetScreenID, panels[current] != nil {
+            if !screenChangePanels.isEmpty {
+                // Mid-flight: the island never turns around in the air; look
+                // again once it has landed.
+                target = current
+            } else if store.presentation == .expanded {
+                // Don't pull the open island away from under the pointer.
+                screenChangeDeferred = true
+                target = current
+            }
+        }
         if target != targetScreenID {
+            let previous = targetScreenID
             targetScreenID = target
             let name = screens.first { $0.displayID == target }?.name ?? "none"
             Self.screenLogger.info("Target screen (\(option.rawValue, privacy: .public)): \(name, privacy: .public)")
             applyKeyboardFocus()
+            beginScreenChange(from: previous, to: target)
         }
         updateMenuBarClearance()
         menuBarAppearance.attach()
@@ -213,6 +232,14 @@ final class OverlayController {
         #endif
         updateMenuBarClearance()
         applyKeyboardFocus()
+        if screenChangeDeferred, presentation != .expanded {
+            // Moves once the island has closed (collapse spring).
+            screenChangeDeferred = false
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .seconds(CrocusMotion.seconds(0.45)))
+                self?.refresh()
+            }
+        }
         updateClickOutside()
         if presentation == .expanded {
             if AppSettings.hapticFeedback(in: defaults) { haptics.scheduleExpandedSettled() }
@@ -299,7 +326,7 @@ final class OverlayController {
         let entries = Array(panels)
         let result = detector.screensPlayingFullScreenVideo(entries.map { CGDisplayBounds($0.key) })
 
-        for (index, entry) in entries.enumerated() {
+        for (index, entry) in entries.enumerated() where !screenChangePanels.contains(entry.key) {
             let panel = entry.value
             let isFullScreen = result.fullScreen.contains(index)
             let isVideo = result.video.contains(index)
@@ -334,6 +361,183 @@ final class OverlayController {
             }
         }
         mouseTracker.update()
+    }
+
+    // MARK: - Screen change (C5)
+
+    /// Moves the island to the new target screen: it flies (compact or
+    /// minimal), cross-fades (idle, Reduce Motion) or – with the setting off,
+    /// or when the old screen is gone – simply appears there.
+    private func beginScreenChange(from old: CGDirectDisplayID?, to new: CGDirectDisplayID?) {
+        guard AppSettings.animateScreenChange(in: defaults),
+              let old, let new, old != new,
+              let source = panels[old], let destination = panels[new], source.isVisible,
+              let sourceScreen = screens.first(where: { $0.displayID == old }),
+              let destinationScreen = screens.first(where: { $0.displayID == new }),
+              !isHiddenByFullScreen(new, panel: destination)
+        else { return }
+
+        screenChangePanels = [old, new]
+        let presentation = store.presentation
+        if ScreenFlight.flies(presentation: presentation, enabled: true, reduceMotion: CrocusMotion.reduceMotion) {
+            Self.screenLogger.info("Screen change: flying \(sourceScreen.name, privacy: .public) → \(destinationScreen.name, privacy: .public)")
+            fly(from: source, on: sourceScreen, to: destination, on: destinationScreen, presentation: presentation)
+        } else {
+            crossFade(from: source, to: destination)
+        }
+    }
+
+    /// Reduce Motion and the idle island: out on the old screen (150 ms), in
+    /// on the new one (200 ms).
+    private func crossFade(from source: OverlayPanel, to destination: OverlayPanel) {
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = CrocusMotion.seconds(0.15)
+            source.animator().alphaValue = 0
+        } completionHandler: {
+            MainActor.assumeIsolated {
+                source.orderOut(nil)
+                source.alphaValue = 1
+            }
+        }
+        destination.alphaValue = 0
+        destination.orderFrontRegardless()
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = CrocusMotion.seconds(0.20)
+            destination.animator().alphaValue = 1
+        } completionHandler: {
+            MainActor.assumeIsolated { self.endScreenChange() }
+        }
+    }
+
+    /// C5: the content goes out (120 ms), the flight windows take over the
+    /// island's exact outline, fly it across and hand it to the destination
+    /// panel, whose content then comes in like C1.
+    private func fly(
+        from source: OverlayPanel, on sourceScreen: ScreenDescriptor,
+        to destination: OverlayPanel, on destinationScreen: ScreenDescriptor,
+        presentation: IslandPresentation
+    ) {
+        let start = ScreenFlight.form(on: sourceScreen.geometry, presentation: presentation, rightWingReduced: source.model.rightWingReduced)
+        let end = ScreenFlight.form(on: destinationScreen.geometry, presentation: presentation, rightWingReduced: destination.model.rightWingReduced)
+        let flight = ScreenFlight(
+            from: start.form, fromAttached: start.attached, fromScreen: sourceScreen.frame,
+            to: end.form, toAttached: end.attached, toScreen: destinationScreen.frame
+        )
+        let dark = menuBarIsDark
+        // The destination draws along, invisibly, from now on: when the
+        // island lands it is already rendered – no cold first frame. Its
+        // own island stays hidden while the flight draws it.
+        destination.model.flightIslandHidden = true
+        destination.model.flightContentHidden = true
+        destination.model.flightDropHidden = true
+        destination.model.flightShadowHidden = true
+        destination.alphaValue = 0
+        destination.orderFrontRegardless()
+        let sourceContent = AnyView(Self.flightContent(model: source.model, on: sourceScreen.geometry))
+        let content = AnyView(Self.flightContent(model: destination.model, on: destinationScreen.geometry))
+
+        // The flight windows draw their first frame (the island exactly as it
+        // is, content and all) invisibly before anything moves – no cold start.
+        let clock = FlightClock()
+        flightWindows = [sourceScreen, destinationScreen].map {
+            let isSource = $0.displayID == sourceScreen.displayID
+            return ScreenFlightPanel(
+                screenFrame: $0.frame, flight: flight, clock: clock, menuBarIsDark: dark,
+                sourceContent: isSource ? sourceContent : nil,
+                content: isSource ? nil : content
+            )
+        }
+        flightWindows.forEach {
+            $0.alphaValue = 0
+            $0.orderFrontRegardless()
+        }
+
+        Task { @MainActor [weak self, weak source, weak destination] in
+            try? await Task.sleep(for: .milliseconds(60))
+            guard let self else { return }
+            let startDate = Date()
+            /// Waits until `time` (flight seconds, unscaled) after the start.
+            func wait(until time: Double) async {
+                let left = CrocusMotion.seconds(time) - Date().timeIntervalSince(startDate)
+                if left > 0 { try? await Task.sleep(for: .seconds(left)) }
+            }
+            @MainActor func isLive(_ panel: OverlayPanel?) -> OverlayPanel? {
+                panel.flatMap { panel in self.panels.values.contains { $0 === panel } ? panel : nil }
+            }
+
+            // Go: the flight covers the island exactly and starts to move;
+            // the island fades out underneath while the flight's shadow comes in.
+            clock.start = startDate
+            self.flightWindows.forEach { $0.alphaValue = 1 }
+            #if DEBUG
+            if let view = self.flightWindows.last?.contentView {
+                self.frameMonitor.measure("screen flight", on: view)
+            }
+            #endif
+            if let source {
+                NSAnimationContext.runAnimationGroup { context in
+                    context.duration = CrocusMotion.seconds(ScreenFlight.departure)
+                    source.animator().alphaValue = 0
+                } completionHandler: {
+                    MainActor.assumeIsolated {
+                        source.orderOut(nil)
+                        source.alphaValue = 1
+                    }
+                }
+            }
+
+            // Arriving: the destination shows its drop/circle, coming in with
+            // the content the flight draws (its island is still hidden).
+            await wait(until: ScreenFlight.contentStart)
+            if let destination = isLive(destination) {
+                destination.alphaValue = 1
+                withAnimation(.easeOut(duration: CrocusMotion.seconds(0.32))) {
+                    destination.model.flightDropHidden = false
+                }
+            }
+
+            // Handover: the island appears in full right under the flight –
+            // the same opaque image, so nothing changes on screen. Only the
+            // see-through shadow moves over: the island's comes in while the
+            // flight's goes, on the same linear curve. Then the flight goes.
+            await wait(until: ScreenFlight.handover)
+            if let destination = isLive(destination) {
+                destination.model.flightContentHidden = false
+                destination.model.flightIslandHidden = false
+                withAnimation(.linear(duration: CrocusMotion.seconds(ScreenFlight.handoverFade))) {
+                    destination.model.flightShadowHidden = false
+                }
+            }
+            await wait(until: ScreenFlight.duration)
+            self.flightWindows.forEach { $0.close() }
+            self.flightWindows.removeAll()
+            self.endScreenChange()
+        }
+    }
+
+    /// The destination island's compact content at its final size, for the
+    /// flight to draw while it lands.
+    private static func flightContent(model: OverlayPanelModel, on geometry: ScreenGeometry) -> some View {
+        let metrics: IslandLayoutMetrics = geometry.notchRect.map {
+            .notch(notchSize: $0.size, rightWingReduced: model.rightWingReduced)
+        } ?? .pill
+        return IslandCompactContent(model: model, metrics: metrics)
+    }
+
+    /// Done: normal visibility again, and any change that waited.
+    private func endScreenChange() {
+        screenChangePanels = []
+        refresh()
+    }
+
+    private func isHiddenByFullScreen(_ displayID: CGDirectDisplayID, panel: OverlayPanel) -> Bool {
+        let result = detector.screensPlayingFullScreenVideo([CGDisplayBounds(displayID)])
+        return OverlayVisibility.isHidden(
+            mode: panel.model.geometry.mode,
+            hasFullScreenWindow: result.fullScreen.contains(0),
+            isPlayingFullScreenVideo: result.video.contains(0),
+            hideDuringFullScreenVideo: AppSettings.hideDuringFullScreenVideo(in: defaults)
+        )
     }
 
     // MARK: - Helpers

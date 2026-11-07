@@ -385,9 +385,12 @@ final class FakePlayerBridge: PlayerBridge {
         let manager = manager()
         // Music sends "Paused" and "Playing" within milliseconds; the second
         // arrives while the first is still waiting for the permission check.
-        async let first: Void = manager.handle(music("Paused"), from: .music)
-        async let second: Void = manager.handle(music("Playing"), from: .music)
-        _ = await (first, second)
+        // `async let` would leave the order open; start "Paused" first and
+        // let it reach the permission check before "Playing" comes in.
+        let first = Task { await manager.handle(music("Paused"), from: .music) }
+        await Task.yield()
+        await manager.handle(music("Playing"), from: .music)
+        await first.value
         #expect(manager.activity?.state.isPlaying == true)
     }
 

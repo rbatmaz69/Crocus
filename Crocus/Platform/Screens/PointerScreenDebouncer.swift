@@ -10,7 +10,11 @@ struct PointerScreenDebounce: Sendable {
     private(set) var settled: CGDirectDisplayID?
     private var candidate: (id: CGDirectDisplayID, since: Instant)?
 
-    init(delay: Duration = .seconds(1), settled: CGDirectDisplayID? = nil) {
+    /// Short enough that the island follows right away (C5: users found 1 s
+    /// sluggish), long enough that crossing a screen on the way doesn't move it.
+    static let defaultDelay: Duration = .milliseconds(300)
+
+    init(delay: Duration = defaultDelay, settled: CGDirectDisplayID? = nil) {
         self.delay = delay
         self.settled = settled
     }

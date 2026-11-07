@@ -14,6 +14,8 @@ enum AppSettings {
         static let timers = "timers"
         /// Security-scoped bookmark of the downloads folder (#18).
         static let downloadsBookmark = "downloadsBookmark"
+        /// C5: the island flies to the other screen (UI in #27).
+        static let animateScreenChange = "animateScreenChange"
         /// Debug only: storyboard timings 5× slower.
         static let debugSlowAnimations = "debugSlowAnimations"
     }
@@ -25,6 +27,7 @@ enum AppSettings {
             Key.hoverStyle: HoverStyle.breathe.rawValue,
             Key.hapticFeedback: true,
             Key.globalShortcut: KeyboardShortcutSpec.default.stringValue,
+            Key.animateScreenChange: true,
         ])
     }
 
@@ -46,6 +49,10 @@ enum AppSettings {
 
     static func hoverStyle(in defaults: UserDefaults = .standard) -> HoverStyle {
         defaults.string(forKey: Key.hoverStyle).flatMap(HoverStyle.init(rawValue:)) ?? .breathe
+    }
+
+    static func animateScreenChange(in defaults: UserDefaults = .standard) -> Bool {
+        defaults.bool(forKey: Key.animateScreenChange)
     }
 
     static func hapticFeedback(in defaults: UserDefaults = .standard) -> Bool {
