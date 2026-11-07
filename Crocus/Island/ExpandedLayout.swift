@@ -18,7 +18,7 @@ struct ExpandedLayout<Source: View, Status: View, Content: View>: View {
                 Color.clear.frame(width: metrics.headerGapWidth)
                 status.frame(maxWidth: .infinity, alignment: .trailing)
             }
-            .font(.system(size: 11))
+            .islandFont(CrocusTypography.header)
             .foregroundStyle(CrocusColors.secondary)
             .lineLimit(1)
             .frame(height: metrics.headerHeight)

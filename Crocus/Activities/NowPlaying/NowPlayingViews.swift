@@ -78,11 +78,11 @@ struct NowPlayingCard: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(state.title)
-                    .font(CrocusTypography.title.font())
+                    .islandFont(CrocusTypography.title)
                     .lineLimit(1)
                 if let artist = state.artist {
                     Text(artist)
-                        .font(CrocusTypography.status.font())
+                        .islandFont(CrocusTypography.status)
                         .foregroundStyle(CrocusColors.secondary)
                         .lineLimit(1)
                 }
@@ -131,7 +131,7 @@ struct NowPlayingProgress: View {
                 IslandProgressBar(progress: state.progress(now: now) ?? 0, tint: CrocusColors.primary, height: 4)
                 Text("−" + NowPlayingFormat.time(state.remaining(now: now) ?? 0))
             }
-            .font(CrocusTypography.caption.font())
+            .islandFont(CrocusTypography.caption)
             .foregroundStyle(CrocusColors.secondary)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(NowPlayingFormat.time(state.position(now: now))) of \(NowPlayingFormat.time(state.duration ?? 0))")

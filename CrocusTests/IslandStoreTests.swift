@@ -129,3 +129,48 @@ private final class TestActivity: IslandActivity {
         #expect(store.primaryActivity?.id == "music")
     }
 }
+
+@MainActor
+@Suite struct IslandStoreSettingsTests {
+    let suite = "IslandStoreSettingsTests.\(UUID().uuidString)"
+    var defaults: UserDefaults { UserDefaults(suiteName: suite)! }
+
+    /// Settings changes arrive through the defaults notification.
+    func settle() { NotificationCenter.default.post(name: UserDefaults.didChangeNotification, object: defaults) }
+
+    @Test func switchedOffTypesAreHiddenAndComeBack() {
+        let defaults = defaults
+        let store = IslandStore(defaults: defaults)
+        store.upsert(TestActivity("timer", .timer))
+        store.upsert(TestActivity("music", .music))
+        #expect(store.presentation == .minimal)
+
+        AppSettings.setActivity(.music, enabled: false, in: defaults)
+        NotificationCenter.default.post(name: UserDefaults.didChangeNotification, object: defaults)
+        #expect(store.presentation == .compact)
+        #expect(store.primaryActivity?.id == "timer")
+        // Updates while off stay hidden.
+        store.upsert(TestActivity("music", .music))
+        #expect(store.presentation == .compact)
+
+        AppSettings.setActivity(.music, enabled: true, in: defaults)
+        NotificationCenter.default.post(name: UserDefaults.didChangeNotification, object: defaults)
+        #expect(store.presentation == .minimal)
+    }
+
+    @Test func switchedOffEventsAreDropped() {
+        let defaults = defaults
+        AppSettings.setEvents([.charging, .lowBattery], enabled: false, in: defaults)
+        let store = IslandStore(defaults: defaults)
+        store.post(IslandEvent(kind: .charging, accessibilityLabel: "Charging", compactLeading: AnyView(EmptyView()), compactTrailing: AnyView(EmptyView())))
+        #expect(store.currentEvent == nil)
+        store.post(IslandEvent(kind: .bluetooth, accessibilityLabel: "AirPods", compactLeading: AnyView(EmptyView()), compactTrailing: AnyView(EmptyView())))
+        #expect(store.currentEvent?.kind == .bluetooth)
+    }
+
+    @Test func everythingIsOnByDefault() {
+        #expect(AppSettings.disabledActivities(in: defaults).isEmpty)
+        #expect(AppSettings.disabledEvents(in: defaults).isEmpty)
+        #expect(AppSettings.textSize(in: defaults) == .standard)
+    }
+}

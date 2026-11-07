@@ -86,9 +86,9 @@ struct PrivacyCard: View {
                             .overlay(Image(systemName: device.symbol).font(.system(size: 14, weight: .semibold)).foregroundStyle(device.color))
                         VStack(alignment: .leading, spacing: 2) {
                             Text(PrivacyFormat.title(device))
-                                .font(CrocusTypography.title.font())
+                                .islandFont(CrocusTypography.title)
                             Text(PrivacyFormat.subtitle(since: state.use(device)?.since, now: context.date))
-                                .font(CrocusTypography.status.font())
+                                .islandFont(CrocusTypography.status)
                                 .foregroundStyle(CrocusColors.secondary)
                         }
                         Spacer(minLength: 8)

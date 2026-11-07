@@ -58,6 +58,7 @@
 		58E54A21642953CE438963D7 /* TargetScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6E4305ED985805356F2FEA /* TargetScreen.swift */; };
 		5BBD94D479464F8D6F86632A /* CaptureDeviceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8412A1E709E9D35BB150984B /* CaptureDeviceMonitor.swift */; };
 		5C0DACE22FA09062F366272B /* CalendarActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB8D60C769F8BB2ADD8F11 /* CalendarActivity.swift */; };
+		6098658CD2CC8E893DD7A479 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D8B08DCA0AED20BAA8DFC5 /* SettingsTests.swift */; };
 		633CEA579F4346EA3B3D3CA5 /* ActivityKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F61E78CB8FEB388A42A37B5 /* ActivityKind.swift */; };
 		670707B29B641667BCF1563A /* PageDotsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ACE80280D8420E5B7470C0 /* PageDotsTests.swift */; };
 		67CC2F666DB2A9F536B74947 /* LiveActivityCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E946438329B255445FA1DF /* LiveActivityCommandTests.swift */; };
@@ -146,8 +147,10 @@
 		E83CD653AC620891372B412C /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F507ECDEEF5EBD875AE5CD36 /* OnboardingFlow.swift */; };
 		EA6677A8B621FED5AFABED1F /* IslandHitRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971984A2DC13827CA2954C35 /* IslandHitRegionTests.swift */; };
 		EA771A0D50511EA5A2FACF06 /* CrocusMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A400DD441946920DB7DFFF2 /* CrocusMetrics.swift */; };
+		EB2D9A5AC7CA910B06EA876D /* SettingsComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FC7A61BF43CE539AC1B760 /* SettingsComponents.swift */; };
 		ECB61806EA86DE75FF1F5C5F /* HoverHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F258C883BBC0DFA681488ABA /* HoverHint.swift */; };
 		EDFFCF0F370917157FEA0078 /* BluetoothLEInputMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102D4EC37EA0D17367A92AD4 /* BluetoothLEInputMonitor.swift */; };
+		EE57940339C4FC6B1E436E71 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE5A58FF0B6ED6655EF983F /* SettingsView.swift */; };
 		EF618B490F2E1145E4B25C76 /* PrivacyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC85C916F5459FB9DF37EE0 /* PrivacyState.swift */; };
 		F0A49963E9BDB148F8B5A568 /* GlobalHotKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4EB42DAE067ABF3BDE0F0A /* GlobalHotKey.swift */; };
 		F32C57B837A2832E2299B341 /* PillIslandMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F258D47FC9594F3B539040CB /* PillIslandMetrics.swift */; };
@@ -188,6 +191,7 @@
 		203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenGeometryTests.swift; sourceTree = "<group>"; };
 		205D4022614CAA3BD99E6EDB /* PillIslandMetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillIslandMetricsTests.swift; sourceTree = "<group>"; };
 		245CE9C56D51E3F3824AD7D0 /* NowPlayingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingState.swift; sourceTree = "<group>"; };
+		26D8B08DCA0AED20BAA8DFC5 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		2716776B7F3248C00D2A5986 /* IslandStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandStoreTests.swift; sourceTree = "<group>"; };
 		28589CB97835C5D738141A59 /* CrocusTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusTypography.swift; sourceTree = "<group>"; };
 		2924AD087FB56BC9CC0872E7 /* PointerScreenDebouncerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncerTests.swift; sourceTree = "<group>"; };
@@ -218,6 +222,7 @@
 		53AE1BD6FF9DE4CA259B134C /* LiveActivityURLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityURLParser.swift; sourceTree = "<group>"; };
 		54420DE041EC2704B4251F6B /* OverlayLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayLayoutTests.swift; sourceTree = "<group>"; };
 		54CCF72D2BCBAF316D7CEA78 /* LiveActivityCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityCommand.swift; sourceTree = "<group>"; };
+		59FC7A61BF43CE539AC1B760 /* SettingsComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsComponents.swift; sourceTree = "<group>"; };
 		5D7FE096770DC4557243A299 /* PowerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerManager.swift; sourceTree = "<group>"; };
 		6099359532F962FCAA76593F /* TimerFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFormat.swift; sourceTree = "<group>"; };
 		64DCDBA9EE036083065720CF /* TimerStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerStateTests.swift; sourceTree = "<group>"; };
@@ -320,6 +325,7 @@
 		F99E043A81632BFE7AFCA870 /* MenuBarClearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarClearance.swift; sourceTree = "<group>"; };
 		F9E61AC2DE388E5CD5AEB3DF /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		FB536A415C6010D3F2B0CFDF /* LiveActivityState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityState.swift; sourceTree = "<group>"; };
+		FFE5A58FF0B6ED6655EF983F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -444,6 +450,7 @@
 				CBDB74467A09E308752EF9DD /* PrivacyTests.swift */,
 				536CA7F5DEFCC79F7AFD3136 /* ScreenFlightTests.swift */,
 				203C62631FE016B97393F4D9 /* ScreenGeometryTests.swift */,
+				26D8B08DCA0AED20BAA8DFC5 /* SettingsTests.swift */,
 				2A5677007E9FE386E422581A /* SwipeRecognizerTests.swift */,
 				A67676FFA9BE5C6CD6BED8D2 /* TargetScreenResolverTests.swift */,
 				0A95F4696DA9CFE45485A00F /* TimerManagerTests.swift */,
@@ -499,6 +506,7 @@
 				F0105E2A1B3F7F2F679D3144 /* Onboarding */,
 				FD78296A0443467EA86CBC01 /* Platform */,
 				590BFFE7FFFBFAFB7DDF3704 /* Resources */,
+				C52E1868385B243969652104 /* Settings */,
 			);
 			path = Crocus;
 			sourceTree = "<group>";
@@ -518,6 +526,15 @@
 				330F179C2035C6D77CA4F79D /* Timer */,
 			);
 			path = Activities;
+			sourceTree = "<group>";
+		};
+		C52E1868385B243969652104 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				59FC7A61BF43CE539AC1B760 /* SettingsComponents.swift */,
+				FFE5A58FF0B6ED6655EF983F /* SettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		C80E6845C52E9AF77D557E16 /* Bluetooth */ = {
@@ -800,6 +817,7 @@
 				38233DBB4F4CFC6D9B3DC035 /* PrivacyTests.swift in Sources */,
 				10D0E7AC792C85CBDD8808D4 /* ScreenFlightTests.swift in Sources */,
 				975C4B3F82C948E9B5C152B2 /* ScreenGeometryTests.swift in Sources */,
+				6098658CD2CC8E893DD7A479 /* SettingsTests.swift in Sources */,
 				D8054E366896EB04D5A8E45D /* SwipeRecognizerTests.swift in Sources */,
 				1699F1FE61F5840227250BA2 /* TargetScreenResolverTests.swift in Sources */,
 				AA17F0761076423222C933DC /* TimerManagerTests.swift in Sources */,
@@ -910,6 +928,8 @@
 				7DBF4F945118850FB5EFF823 /* ScreenFlight.swift in Sources */,
 				0CA884A26245B88A8F7BE93D /* ScreenFlightPanel.swift in Sources */,
 				04030FEE34D9C250D99C4417 /* ScreenGeometry.swift in Sources */,
+				EB2D9A5AC7CA910B06EA876D /* SettingsComponents.swift in Sources */,
+				EE57940339C4FC6B1E436E71 /* SettingsView.swift in Sources */,
 				0A5E5BFDB6981C906314F9C8 /* SwipeRecognizer.swift in Sources */,
 				58E54A21642953CE438963D7 /* TargetScreen.swift in Sources */,
 				AE350320C713564EA758FE54 /* TimerActivity.swift in Sources */,

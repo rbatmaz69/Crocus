@@ -1,7 +1,8 @@
+import AppKit
 import Carbon.HIToolbox
 
 /// A global keyboard shortcut: virtual key code plus modifiers. Stored as a
-/// string like "ctrl+opt+49"; the recorder UI comes with settings (#27).
+/// string like "ctrl+opt+49"; recorded in Settings › General.
 struct KeyboardShortcutSpec: Equatable, Sendable {
     struct Modifiers: OptionSet, Sendable {
         let rawValue: Int
@@ -24,6 +25,17 @@ struct KeyboardShortcutSpec: Equatable, Sendable {
     init(keyCode: UInt32, modifiers: Modifiers) {
         self.keyCode = keyCode
         self.modifiers = modifiers
+    }
+
+    /// A key pressed in the recorder; needs at least one of ⌃⌥⇧⌘.
+    init?(keyCode: UInt16, modifierFlags: NSEvent.ModifierFlags) {
+        var modifiers: Modifiers = []
+        if modifierFlags.contains(.control) { modifiers.insert(.control) }
+        if modifierFlags.contains(.option) { modifiers.insert(.option) }
+        if modifierFlags.contains(.shift) { modifiers.insert(.shift) }
+        if modifierFlags.contains(.command) { modifiers.insert(.command) }
+        guard !modifiers.isEmpty else { return nil }
+        self.init(keyCode: UInt32(keyCode), modifiers: modifiers)
     }
 
     /// Parses "ctrl+opt+49"; needs at least one modifier.

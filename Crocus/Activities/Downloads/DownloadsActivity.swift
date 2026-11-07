@@ -67,18 +67,18 @@ struct DownloadsCard: View {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(item.name)
-                            .font(CrocusTypography.title.font())
+                            .islandFont(CrocusTypography.title)
                             .lineLimit(1)
                             .truncationMode(.middle)
                         Text(DownloadsFormat.sizeLine(item))
-                            .font(CrocusTypography.status.font())
+                            .islandFont(CrocusTypography.status)
                             .foregroundStyle(CrocusColors.secondary)
                     }
                     Spacer(minLength: 8)
                     if item.finishedAt != nil {
                         LiveActivityResultSymbol(result: item.isCancelled ? .failure : .success)
                     } else if let fraction = item.fraction {
-                        Text(DownloadsFormat.percent(fraction)).font(CrocusTypography.value.font())
+                        Text(DownloadsFormat.percent(fraction)).islandFont(CrocusTypography.value)
                     } else {
                         IslandSpinner()
                     }
@@ -92,7 +92,7 @@ struct DownloadsCard: View {
         }
         if items.count > Self.maxRows {
             Text("+\(items.count - Self.maxRows) more")
-                .font(CrocusTypography.status.font())
+                .islandFont(CrocusTypography.status)
                 .foregroundStyle(CrocusColors.secondary)
         }
     }
