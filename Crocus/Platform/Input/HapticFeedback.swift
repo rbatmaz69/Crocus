@@ -9,7 +9,7 @@ final class HapticFeedback {
 
     /// Settling time of the expand spring.
     static var expandSettlingDuration: TimeInterval {
-        Spring(response: CrocusSprings.expand.response, dampingRatio: CrocusSprings.expand.dampingFraction).settlingDuration
+        CrocusSprings.expand.spring.settlingDuration
     }
 
     func scheduleExpandedSettled() {

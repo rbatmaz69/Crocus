@@ -301,7 +301,7 @@ struct DropPresence<Content: View>: View {
         switch phase {
         case .detaching: C3.duration(detaching: true)
         case .merging: C3.duration(detaching: false)
-        case .covered(let spec): Spring(response: spec.response, dampingRatio: spec.dampingFraction).settlingDuration
+        case .covered(let spec): spec.spring.settlingDuration
         }
     }
 

@@ -1,8 +1,8 @@
 import AppKit
 import SwiftUI
 
-/// Timings from the animation storyboards (board 09), in one place. The
-/// strength setting (Subtle / Lively, #25) is applied on top later.
+/// Timings from the animation storyboards (board 09), in one place. Springs
+/// live in `CrocusSprings`, which applies the animation strength.
 enum CrocusMotion {
     /// Debug menu "Slow Animations (5×)": every storyboard timing and spring
     /// 5× slower, to judge them by eye.
@@ -107,7 +107,7 @@ enum CrocusMotion {
 
         private static func spring(detaching: Bool) -> Spring {
             let spec = detaching ? CrocusSprings.dropDetach : CrocusSprings.dropMerge
-            return Spring(response: spec.response, dampingRatio: spec.dampingFraction)
+            return spec.spring
         }
 
         /// Moves and scales the drop's path around its top centre.

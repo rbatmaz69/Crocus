@@ -35,9 +35,12 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
         let canExpand = presentation == .compact || presentation == .minimal
         let isHovered = model.hoveredPart == part
         let hoverScale = HoverHint.scale(
-            style: model.hoverStyle, isHovered: isHovered, presentation: presentation, breathPhase: false, width: width
+            style: model.hoverStyle, isHovered: isHovered, presentation: presentation, breathPhase: false, width: width,
+            reduceMotion: reduceMotion
         )
-        let breathes = HoverHint.breathes(style: model.hoverStyle, isHovered: isHovered, presentation: presentation)
+        let breathes = HoverHint.breathes(
+            style: model.hoverStyle, isHovered: isHovered, presentation: presentation, reduceMotion: reduceMotion
+        )
 
         content
             .contentShape(shape)

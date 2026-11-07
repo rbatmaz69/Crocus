@@ -193,3 +193,58 @@ import Testing
         #expect(CGPoint(x: 120, y: 40).applying(t) == CGPoint(x: 100, y: 20))
     }
 }
+
+@Suite struct MotionStrengthTests {
+    @Test func standardKeepsTheSpringsAsTheyAre() {
+        #expect(MotionStrength.standard.adjust(CrocusSprings.expand) == CrocusSprings.expand)
+    }
+
+    @Test func subtleDampsMoreButNeverPastCritical() {
+        #expect(abs(MotionStrength.subtle.dampingFraction(for: 0.8) - 0.9) < 1e-9)
+        #expect(MotionStrength.subtle.dampingFraction(for: 0.95) == 1)
+        #expect(MotionStrength.subtle.dampingFraction(for: 1) == 1)
+    }
+
+    @Test(arguments: [CrocusSprings.idleToCompact, CrocusSprings.expand, CrocusSprings.dropDetach, CrocusSprings.cardSwipe, CrocusSprings.cardHeight, CrocusSprings.hoverHint])
+    func subtleAtLeastHalvesTheOvershoot(_ spec: SpringSpec) {
+        func overshoot(_ spec: SpringSpec) -> Double {
+            let spring = Spring(response: spec.response, dampingRatio: spec.dampingFraction)
+            return stride(from: 0.0, through: 2.0, by: 0.001).map { spring.value(target: 1.0, time: $0) }.max()! - 1
+        }
+        #expect(overshoot(MotionStrength.subtle.adjust(spec)) <= overshoot(spec) / 2 + 1e-6)
+    }
+
+    @Test func livelyBouncesMoreOnlyWhereItBouncesAnyway() {
+        #expect(abs(MotionStrength.lively.dampingFraction(for: 0.8) - 0.74) < 1e-9)
+        // Tuned to never overshoot – stays so.
+        for spec in [CrocusSprings.collapse, CrocusSprings.dropMerge, CrocusSprings.expandFromDrop, CrocusSprings.screenChange] {
+            #expect(MotionStrength.lively.adjust(spec) == spec)
+        }
+    }
+
+    @Test func thePaceNeverChanges() {
+        for strength in MotionStrength.allCases {
+            #expect(strength.adjust(CrocusSprings.dropDetach).response == CrocusSprings.dropDetach.response)
+        }
+    }
+
+    @Test func defaultsToStandard() {
+        let defaults = UserDefaults(suiteName: "MotionStrengthTests")!
+        defaults.removePersistentDomain(forName: "MotionStrengthTests")
+        #expect(AppSettings.animationStrength(in: defaults) == .standard)
+        defaults.set("lively", forKey: AppSettings.Key.animationStrength)
+        #expect(AppSettings.animationStrength(in: defaults) == .lively)
+    }
+}
+
+@Suite struct ReduceMotionTests {
+    @Test func noHoverHint() {
+        #expect(HoverHint.scale(style: .enlarge, isHovered: true, presentation: .compact, breathPhase: false, width: 216, reduceMotion: true) == 1)
+        #expect(!HoverHint.breathes(style: .breathe, isHovered: true, presentation: .compact, reduceMotion: true))
+    }
+
+    @Test func noTimerBounce() {
+        #expect(TimerSymbol.bounceTrigger(finishCount: 3, reduceMotion: true) == TimerSymbol.bounceTrigger(finishCount: 4, reduceMotion: true))
+        #expect(TimerSymbol.bounceTrigger(finishCount: 3, reduceMotion: false) != TimerSymbol.bounceTrigger(finishCount: 4, reduceMotion: false))
+    }
+}

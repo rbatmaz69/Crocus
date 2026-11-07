@@ -49,11 +49,17 @@ private struct DebugMenu: View {
     @AppStorage(AppSettings.Key.hoverStyle) private var hoverStyle = HoverStyle.breathe
     @AppStorage(AppSettings.Key.debugSlowAnimations) private var slowAnimations = false
     @AppStorage(AppSettings.Key.animateScreenChange) private var animateScreenChange = true
+    @AppStorage(AppSettings.Key.animationStrength) private var animationStrength = MotionStrength.standard
 
     var body: some View {
         Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
         Toggle("Slow Animations (5×)", isOn: $slowAnimations)
         Toggle("Animate Screen Change", isOn: $animateScreenChange)
+        Picker("Animation Strength", selection: $animationStrength) {
+            ForEach(MotionStrength.allCases) { strength in
+                Text(strength.title).tag(strength)
+            }
+        }
         Picker("Hover Style", selection: $hoverStyle) {
             ForEach(HoverStyle.allCases) { style in
                 Text(style.title).tag(style)

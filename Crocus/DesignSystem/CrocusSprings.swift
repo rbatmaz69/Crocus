@@ -1,16 +1,73 @@
 import SwiftUI
 
+/// A spring token. Every animation reads it through `animation` or
+/// `spring`, which apply the animation strength setting (and the debug slow
+/// motion) – one place for all springs.
 struct SpringSpec: Equatable, Sendable {
     let response: Double
     let dampingFraction: Double
 
+    /// As set by the user's animation strength.
+    var effective: SpringSpec { MotionStrength.current.adjust(self) }
+
     var animation: Animation {
-        .spring(response: CrocusMotion.seconds(response), dampingFraction: dampingFraction)
+        let spec = effective
+        return .spring(response: CrocusMotion.seconds(spec.response), dampingFraction: spec.dampingFraction)
+    }
+
+    /// For curves computed frame by frame (unscaled time).
+    var spring: Spring {
+        let spec = effective
+        return Spring(response: spec.response, dampingRatio: spec.dampingFraction)
+    }
+
+    /// For SwiftUI animations built by hand, e.g. with an initial velocity
+    /// (slow motion applied).
+    var scaledSpring: Spring {
+        let spec = effective
+        return Spring(response: CrocusMotion.seconds(spec.response), dampingRatio: spec.dampingFraction)
     }
 }
 
-/// Springs from the spec (`design/README.md`, board 01). The animation
-/// strength setting (Subtle / Lively) is applied on top in #25.
+/// The animation strength setting (UI in #27, debug menu until then).
+enum MotionStrength: String, CaseIterable, Identifiable, Sendable {
+    case standard
+    /// Calmer: damping +0.1 (at most 1), which at least halves every overshoot.
+    case subtle
+    /// Livelier: damping −0.06 – only for springs that bounce anyway. Those
+    /// tuned to never overshoot (collapse, merge, opening from the drop, the
+    /// screen flight) stay so: they were set that way from testing.
+    case lively
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .standard: "Standard"
+        case .subtle: "Subtle"
+        case .lively: "Lively"
+        }
+    }
+
+    static var current: MotionStrength { AppSettings.animationStrength() }
+
+    func dampingFraction(for damping: Double) -> Double {
+        switch self {
+        case .standard: damping
+        case .subtle: min(damping + 0.1, 1)
+        case .lively: damping < 1 ? damping - 0.06 : damping
+        }
+    }
+
+    /// Same pace (response) in every strength; only the bounce changes.
+    func adjust(_ spec: SpringSpec) -> SpringSpec {
+        SpringSpec(response: spec.response, dampingFraction: dampingFraction(for: spec.dampingFraction))
+    }
+}
+
+/// Springs from the spec (`design/README.md`, board 01), tuned where testing
+/// asked for it. All of Crocus' springs live here; the animation strength
+/// is applied when they are used (`SpringSpec.animation` / `.spring`).
 enum CrocusSprings {
     static let idleToCompact = SpringSpec(response: 0.40, dampingFraction: 0.80)
     /// Calmer than the spec's 0.42 / 0.72 (≈ 4 % overshoot): the floating
@@ -28,7 +85,15 @@ enum CrocusSprings {
     static let cardSwipe = SpringSpec(response: 0.30, dampingFraction: 0.86)
     /// The island's height following the new card after a swipe (C4).
     static let cardHeight = SpringSpec(response: 0.40, dampingFraction: 0.85)
-    static let screenChange = SpringSpec(response: 0.55, dampingFraction: 0.82)
+    /// C5, the island flying to another screen:
+    /// - detach – calmer than the spec's 0.3 / 0.9, which pulled the
+    ///   shoulders in within ≈ 50 ms
+    /// - flight – critically damped, unlike the spec's 0.55 / 0.82: over a
+    ///   screen's width that overshot ≈ 16 pt past the landing spot
+    /// - attach – into the notch, calm enough to read as one motion
+    static let screenDetach = SpringSpec(response: 0.40, dampingFraction: 1.00)
+    static let screenChange = SpringSpec(response: 0.50, dampingFraction: 1.00)
+    static let screenAttach = SpringSpec(response: 0.50, dampingFraction: 1.00)
     static let hoverHint = SpringSpec(response: 0.30, dampingFraction: 0.90)
 
     /// Scale of the island while the hover hint is shown.

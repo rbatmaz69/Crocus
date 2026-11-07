@@ -41,13 +41,14 @@ enum HoverHint {
         1 + (enlargedScale(forWidth: width) - 1) / 2
     }
 
-    /// Only compact and minimal can be opened, so only they hint.
-    static func isActive(style: HoverStyle, isHovered: Bool, presentation: IslandPresentation) -> Bool {
-        style != .off && isHovered && (presentation == .compact || presentation == .minimal)
+    /// Only compact and minimal can be opened, so only they hint. With
+    /// Reduce Motion the island neither grows nor breathes.
+    static func isActive(style: HoverStyle, isHovered: Bool, presentation: IslandPresentation, reduceMotion: Bool = false) -> Bool {
+        !reduceMotion && style != .off && isHovered && (presentation == .compact || presentation == .minimal)
     }
 
-    static func breathes(style: HoverStyle, isHovered: Bool, presentation: IslandPresentation) -> Bool {
-        style == .breathe && isActive(style: style, isHovered: isHovered, presentation: presentation)
+    static func breathes(style: HoverStyle, isHovered: Bool, presentation: IslandPresentation, reduceMotion: Bool = false) -> Bool {
+        style == .breathe && isActive(style: style, isHovered: isHovered, presentation: presentation, reduceMotion: reduceMotion)
     }
 
     /// Extra scale on top of the enlargement at the low point of breathing.
@@ -59,9 +60,10 @@ enum HoverHint {
     /// Combined scale for the hint; `breathPhase` is the low point of the
     /// breathing cycle.
     static func scale(
-        style: HoverStyle, isHovered: Bool, presentation: IslandPresentation, breathPhase: Bool, width: CGFloat
+        style: HoverStyle, isHovered: Bool, presentation: IslandPresentation, breathPhase: Bool, width: CGFloat,
+        reduceMotion: Bool = false
     ) -> CGFloat {
-        guard isActive(style: style, isHovered: isHovered, presentation: presentation) else { return 1 }
+        guard isActive(style: style, isHovered: isHovered, presentation: presentation, reduceMotion: reduceMotion) else { return 1 }
         if style == .breathe, breathPhase { return breathLowScale(forWidth: width) }
         return enlargedScale(forWidth: width)
     }
