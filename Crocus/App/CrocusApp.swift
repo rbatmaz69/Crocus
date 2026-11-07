@@ -1,23 +1,13 @@
 import SwiftUI
 
 /// Crocus runs as a menu bar agent (`LSUIElement = YES`): no Dock icon and no
-/// main window. The island overlay itself is added in later issues (#3).
+/// main window. The menu bar icon and its panel come from
+/// `MenuBarController` (#61), the island from `OverlayController`.
 @main
 struct CrocusApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        // A panel centred under the icon instead of a plain menu (#61). The
-        // icon is a template image; it carries a dot while a permission is
-        // missing. The label stays "Crocus" for VoiceOver.
-        MenuBarExtra {
-            MenuBarPanel(app: appDelegate)
-        } label: {
-            Image(appDelegate.menuBarAttention.isEmpty ? "MenuBarIcon" : "MenuBarIconBadge")
-                .accessibilityLabel(appDelegate.menuBarAttention.isEmpty ? "Crocus" : "Crocus, needs your permission")
-        }
-        .menuBarExtraStyle(.window)
-
         Settings {
             SettingsView(app: appDelegate)
         }
