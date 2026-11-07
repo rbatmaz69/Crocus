@@ -89,7 +89,7 @@ struct PrivacyCard: View {
                                 .islandFont(CrocusTypography.title)
                             Text(PrivacyFormat.subtitle(since: state.use(device)?.since, now: context.date))
                                 .islandFont(CrocusTypography.status)
-                                .foregroundStyle(CrocusColors.secondary)
+                                .foregroundStyle(.islandSecondary)
                         }
                         Spacer(minLength: 8)
                         Circle().fill(device.color).frame(width: 6, height: 6).accessibilityHidden(true)

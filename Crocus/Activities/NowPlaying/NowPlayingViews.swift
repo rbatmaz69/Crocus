@@ -17,7 +17,7 @@ struct NowPlayingCover: View {
                     .overlay {
                         Image(systemName: "music.note")
                             .font(.system(size: size * 0.45, weight: .semibold))
-                            .foregroundStyle(CrocusColors.secondary)
+                            .foregroundStyle(.islandSecondary)
                     }
             }
         }
@@ -83,7 +83,7 @@ struct NowPlayingCard: View {
                 if let artist = state.artist {
                     Text(artist)
                         .islandFont(CrocusTypography.status)
-                        .foregroundStyle(CrocusColors.secondary)
+                        .foregroundStyle(.islandSecondary)
                         .lineLimit(1)
                 }
             }
@@ -132,7 +132,7 @@ struct NowPlayingProgress: View {
                 Text("−" + NowPlayingFormat.time(state.remaining(now: now) ?? 0))
             }
             .islandFont(CrocusTypography.caption)
-            .foregroundStyle(CrocusColors.secondary)
+            .foregroundStyle(.islandSecondary)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(NowPlayingFormat.time(state.position(now: now))) of \(NowPlayingFormat.time(state.duration ?? 0))")
         }

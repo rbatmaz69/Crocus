@@ -80,7 +80,7 @@ struct BatteryGlyph: View {
         HStack(spacing: 1) {
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 3.5, style: .continuous)
-                    .strokeBorder(CrocusColors.secondary, lineWidth: 1)
+                    .strokeBorder(.islandSecondary, lineWidth: 1)
                 GeometryReader { proxy in
                     RoundedRectangle(cornerRadius: 2, style: .continuous)
                         .fill(color)
@@ -89,7 +89,7 @@ struct BatteryGlyph: View {
                 .padding(2)
             }
             .frame(width: 22, height: 12)
-            RoundedRectangle(cornerRadius: 1).fill(CrocusColors.secondary).frame(width: 1.5, height: 4)
+            RoundedRectangle(cornerRadius: 1).fill(.islandSecondary).frame(width: 1.5, height: 4)
         }
         .accessibilityHidden(true)
     }

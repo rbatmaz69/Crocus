@@ -72,7 +72,7 @@ struct DownloadsCard: View {
                             .truncationMode(.middle)
                         Text(DownloadsFormat.sizeLine(item))
                             .islandFont(CrocusTypography.status)
-                            .foregroundStyle(CrocusColors.secondary)
+                            .foregroundStyle(.islandSecondary)
                     }
                     Spacer(minLength: 8)
                     if item.finishedAt != nil {
@@ -93,7 +93,7 @@ struct DownloadsCard: View {
         if items.count > Self.maxRows {
             Text("+\(items.count - Self.maxRows) more")
                 .islandFont(CrocusTypography.status)
-                .foregroundStyle(CrocusColors.secondary)
+                .foregroundStyle(.islandSecondary)
         }
     }
 }

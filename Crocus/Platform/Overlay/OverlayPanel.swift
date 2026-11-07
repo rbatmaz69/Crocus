@@ -115,7 +115,11 @@ final class OverlayPanelModel {
         if let position = store.cardPosition, position.index != target {
             store.showCard(at: target)
             cardsSwitched = true
-            AccessibilityNotification.Announcement("Activity \(target + 1) of \(position.count)").post()
+            let cards = store.cardActivities
+            let title = cards.indices.contains(target) ? cards[target].accessibilityTitle : nil
+            AccessibilityNotification.Announcement(
+                PageDotsLayout.accessibilityLabel(index: target, count: position.count, title: title)
+            ).post()
         }
         cardStripTarget = target
         guard !CrocusMotion.reduceMotion else {

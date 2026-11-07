@@ -69,7 +69,7 @@ struct CalendarCard: View {
                     .lineLimit(1)
                 Text(CalendarFormat.subtitle(event))
                     .islandFont(CrocusTypography.status)
-                    .foregroundStyle(CrocusColors.secondary)
+                    .foregroundStyle(.islandSecondary)
                     .lineLimit(1)
             }
             Spacer(minLength: 8)

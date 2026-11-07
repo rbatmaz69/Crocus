@@ -16,6 +16,13 @@ enum PageDotsLayout {
         Metrics.hitSize / 2 + CGFloat(index) * Metrics.spacing
     }
 
+    /// "Activity 2 of 3, Deploy" – VoiceOver adds "selected" from the trait.
+    static func accessibilityLabel(index: Int, count: Int, title: String?) -> String {
+        let position = "Activity \(index + 1) of \(count)"
+        guard let title, !title.isEmpty else { return position }
+        return "\(position), \(title)"
+    }
+
     /// The dot nearest to `x` (row coordinates); clamps outside the row.
     static func index(at x: CGFloat, count: Int) -> Int {
         guard count > 0 else { return 0 }
@@ -25,19 +32,31 @@ enum PageDotsLayout {
 }
 
 /// Page dots under the expanded card stack: show and pick the current card.
+/// Every dot is its own VoiceOver element with a full 28 pt target, although
+/// only 6 pt of it is visible.
 struct PageDots: View {
     let index: Int
-    let count: Int
+    let titles: [String]
     let onSelect: (Int) -> Void
+
+    private var count: Int { titles.count }
 
     var body: some View {
         let metrics = CrocusMetrics.PageDots.self
         ZStack(alignment: .leading) {
             ForEach(0..<count, id: \.self) { dot in
-                Circle()
-                    .fill(dot == index ? CrocusColors.primary : CrocusColors.secondary.opacity(metrics.inactiveOpacity))
-                    .frame(width: metrics.dotSize, height: metrics.dotSize)
+                Color.clear
+                    .frame(width: metrics.hitSize, height: metrics.hitSize)
+                    .overlay {
+                        Circle()
+                            .fill(dot == index ? CrocusColors.primary : CrocusColors.secondary.opacity(metrics.inactiveOpacity))
+                            .frame(width: metrics.dotSize, height: metrics.dotSize)
+                    }
                     .position(x: PageDotsLayout.centerX(of: dot), y: metrics.hitSize / 2)
+                    .accessibilityElement()
+                    .accessibilityLabel(PageDotsLayout.accessibilityLabel(index: dot, count: count, title: titles[dot]))
+                    .accessibilityAddTraits(dot == index ? [.isButton, .isSelected] : .isButton)
+                    .accessibilityAction { onSelect(dot) }
             }
         }
         .frame(width: PageDotsLayout.rowWidth(count: count), height: metrics.hitSize)
@@ -46,14 +65,6 @@ struct PageDots: View {
             onSelect(PageDotsLayout.index(at: location.x, count: count))
         }
         .animation(.easeInOut(duration: 0.15), value: index)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Activity \(index + 1) of \(count)")
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment: if index + 1 < count { onSelect(index + 1) }
-            case .decrement: if index > 0 { onSelect(index - 1) }
-            @unknown default: break
-            }
-        }
+        .accessibilityElement(children: .contain)
     }
 }

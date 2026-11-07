@@ -102,7 +102,7 @@ struct LiveActivityCard: View {
                 if let status = statusText {
                     Text(status)
                         .islandFont(CrocusTypography.status)
-                        .foregroundStyle(CrocusColors.secondary)
+                        .foregroundStyle(.islandSecondary)
                         .lineLimit(2)
                 }
             }
@@ -110,6 +110,9 @@ struct LiveActivityCard: View {
             trailing
         }
         .foregroundStyle(CrocusColors.primary)
+        // One element: "Build running, 40 percent, compiling 128 of 320 files".
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(activity.accessibilityLabel)
 
         if case .value(let value) = state.progress {
             IslandProgressBar(progress: value, tint: activity.isStale ? CrocusColors.secondary : CrocusColors.progress)

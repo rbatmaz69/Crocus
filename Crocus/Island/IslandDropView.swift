@@ -81,7 +81,7 @@ struct NotchDropView: View {
             width: shape.parameters.width,
             onTap: isDrop ? { model.expandFromDrop(id: activity.id) } : nil
         )
-        .modifier(DropAccessibility(isDrop: isDrop, label: activity.accessibilityLabel))
+        .modifier(DropAccessibility(isDrop: isDrop, label: activity.accessibilityLabel, expand: { model.expandFromDrop(id: activity.id) }))
     }
 }
 
@@ -177,7 +177,7 @@ struct PillCircleView: View {
             part: isDrop ? .drop : .main, width: shape.parameters.width,
             onTap: isDrop ? { model.expandFromDrop(id: activity.id) } : nil
         )
-        .modifier(DropAccessibility(isDrop: isDrop, label: activity.accessibilityLabel))
+        .modifier(DropAccessibility(isDrop: isDrop, label: activity.accessibilityLabel, expand: { model.expandFromDrop(id: activity.id) }))
     }
 }
 
@@ -187,12 +187,15 @@ struct PillCircleView: View {
 private struct DropAccessibility: ViewModifier {
     let isDrop: Bool
     let label: String
+    let expand: () -> Void
 
     func body(content: Content) -> some View {
         content
             .accessibilityElement(children: isDrop ? .ignore : .contain)
             .accessibilityLabel(isDrop ? label : "")
+            .accessibilityHint(isDrop ? "Press to expand" : "")
             .accessibilityAddTraits(isDrop ? .isButton : [])
+            .accessibilityAction { if isDrop { expand() } }
     }
 }
 

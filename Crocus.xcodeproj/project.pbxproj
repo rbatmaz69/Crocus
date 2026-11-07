@@ -58,6 +58,7 @@
 		58E54A21642953CE438963D7 /* TargetScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6E4305ED985805356F2FEA /* TargetScreen.swift */; };
 		5BBD94D479464F8D6F86632A /* CaptureDeviceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8412A1E709E9D35BB150984B /* CaptureDeviceMonitor.swift */; };
 		5C0DACE22FA09062F366272B /* CalendarActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEB8D60C769F8BB2ADD8F11 /* CalendarActivity.swift */; };
+		5F32DBF87D476C00B13D2C57 /* AccessibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EB98DEA94D62389CA9576B /* AccessibilityTests.swift */; };
 		6098658CD2CC8E893DD7A479 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D8B08DCA0AED20BAA8DFC5 /* SettingsTests.swift */; };
 		633CEA579F4346EA3B3D3CA5 /* ActivityKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F61E78CB8FEB388A42A37B5 /* ActivityKind.swift */; };
 		670707B29B641667BCF1563A /* PageDotsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ACE80280D8420E5B7470C0 /* PageDotsTests.swift */; };
@@ -226,6 +227,7 @@
 		5D7FE096770DC4557243A299 /* PowerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerManager.swift; sourceTree = "<group>"; };
 		6099359532F962FCAA76593F /* TimerFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFormat.swift; sourceTree = "<group>"; };
 		64DCDBA9EE036083065720CF /* TimerStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerStateTests.swift; sourceTree = "<group>"; };
+		65EB98DEA94D62389CA9576B /* AccessibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityTests.swift; sourceTree = "<group>"; };
 		66A85EA6B0C04B331F6F12DD /* CrocusMotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrocusMotion.swift; sourceTree = "<group>"; };
 		683B04C4437F6170B2B5EFF1 /* PointerScreenDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerScreenDebouncer.swift; sourceTree = "<group>"; };
 		685E2B16CA43EEBD87A11381 /* BluetoothDeviceKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceKind.swift; sourceTree = "<group>"; };
@@ -417,6 +419,7 @@
 		7AF5FCB944A13A1CCC543B41 /* CrocusTests */ = {
 			isa = PBXGroup;
 			children = (
+				65EB98DEA94D62389CA9576B /* AccessibilityTests.swift */,
 				B6E376B3AAB7A255D43DB114 /* ActivityPriorityTests.swift */,
 				7BE827B6A00C5BD4197BF357 /* BluetoothTests.swift */,
 				B3D51A8D8AE481DAD6EB52F7 /* CalendarTests.swift */,
@@ -784,6 +787,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F32DBF87D476C00B13D2C57 /* AccessibilityTests.swift in Sources */,
 				34E56E1F7442366B359E3B6A /* ActivityPriorityTests.swift in Sources */,
 				9F8FA14AB803F2BFBBDD8386 /* BluetoothTests.swift in Sources */,
 				48FF9EB6F94B458F02CF2EF3 /* CalendarTests.swift in Sources */,
