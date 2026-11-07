@@ -131,6 +131,14 @@ final class OverlayPanelModel {
         withAnimation(animation) { cardStripPosition = CGFloat(target) }
     }
 
+    /// C5: the content is out while the island flies to another screen –
+    /// on the screen it leaves, and on the one it lands on until it landed.
+    var flightContentHidden = false
+    /// The drop/circle, likewise; it comes in as the island touches down.
+    var flightDropHidden = false
+    /// The main island itself, while the flight draws it on this screen.
+    var flightIslandHidden = false
+
     /// Menu bar items need the space: the right wing shrinks to 44 pt.
     var rightWingReduced = false
     /// Natural height of the expanded content, reported by `ExpandedLayout`.

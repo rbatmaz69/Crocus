@@ -35,6 +35,8 @@ struct PillIslandView: View {
 
         ZStack(alignment: .topLeading) {
             mainPill(parameters: mainParameters, presentation: mainStays ? .minimal : model.presentation, centerX: mainCenterX)
+                // C5: the flight draws the pill while it lands here.
+                .opacity(model.flightIslandHidden ? 0 : 1)
 
             DropPresence(activity: dropActivity, detaches: model.detachesDrop, spring: model.transitionSpring) { activity in
                 PillCircleView(
@@ -50,6 +52,7 @@ struct PillIslandView: View {
             // outline) or grows into the expanded pill; behind it while the
             // pill expands over the circle.
             .zIndex(model.detachesDrop || fromDrop ? 1 : -1)
+            .opacity(model.flightDropHidden ? 0 : 1)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .animation(spring, value: parameters)
@@ -72,6 +75,7 @@ struct PillIslandView: View {
             content(metrics: .pill, presentation: presentation, centerX: centerX, top: parameters.top)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .mask { shape }
+                .opacity(model.flightContentHidden ? 0 : 1)
             shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

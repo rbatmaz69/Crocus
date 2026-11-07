@@ -34,6 +34,8 @@ struct NotchIslandView: View {
                     presentation: mainStays ? .minimal : model.presentation,
                     metrics: metrics, centerX: centerX
                 )
+                // C5: the flight draws the island while it lands here.
+                .opacity(model.flightIslandHidden ? 0 : 1)
 
                 DropPresence(activity: dropActivity, detaches: model.detachesDrop, spring: model.transitionSpring) { activity in
                     NotchDropView(
@@ -46,6 +48,7 @@ struct NotchIslandView: View {
                 // expanded island; behind it while the island expands over it
                 // (it swallows the drop).
                 .zIndex(model.detachesDrop || fromDrop ? 1 : -1)
+                .opacity(model.flightDropHidden ? 0 : 1)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .animation(spring, value: parameters)
@@ -84,6 +87,7 @@ struct NotchIslandView: View {
             // Content never shows outside the (moving) shape – no silhouette
             // of the expanded panel while it collapses.
             .mask { NotchIslandShape(parameters: parameters, centerX: centerX) }
+            .opacity(model.flightContentHidden ? 0 : 1)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .islandInteraction(
