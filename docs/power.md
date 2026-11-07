@@ -23,4 +23,4 @@ On MacBooks, Crocus briefly shows power events in the island and then returns to
 
 Low battery: the warning symbol pulses once. With **Reduce Motion**, the content appears with its final value – no fill, no bounce, no pulse.
 
-Debug builds can trigger the events from the menu bar: Activities → Simulate Plug-In / 10 % / 5 % Battery.
+Debug builds can trigger the events from the menu bar panel: Developer → Activities → Simulate Plug-In / 10 % / 5 % Battery.

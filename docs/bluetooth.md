@@ -28,7 +28,7 @@ When a Bluetooth device connects or disconnects, Crocus shows a short event (2 s
 
 ## Permission
 
-macOS asks before an app may use Bluetooth. Crocus never asks on its own: use the menu bar, **Allow Bluetooth…** (until the onboarding asks for it). Denied, the events are off and the menu shows **Allow in System Settings…** (Privacy & Security → Bluetooth).
+macOS asks before an app may use Bluetooth. Crocus never asks on its own: use the menu bar panel, **Needs your permission** → Bluetooth → **Allow** (until the onboarding asks for it). Denied, the events are off and the row offers **Open…** (Privacy & Security → Bluetooth).
 
 Entitlement: `com.apple.security.device.bluetooth`; `NSBluetoothAlwaysUsageDescription` in Info.plist.
 

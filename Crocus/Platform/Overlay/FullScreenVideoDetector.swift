@@ -99,4 +99,16 @@ enum OverlayVisibility {
         if mode == .pill && hasFullScreenWindow { return true }
         return hideDuringFullScreenVideo && isPlayingFullScreenVideo
     }
+
+    /// Whether a panel shows the island: only on the target screen, never
+    /// while full screen hides it or the user switched the island off (#61).
+    static func showsIsland(isTargetScreen: Bool, hiddenByFullScreen: Bool, islandHidden: Bool) -> Bool {
+        isTargetScreen && !hiddenByFullScreen && !islandHidden
+    }
+
+    /// The global shortcut does nothing while the island is switched off;
+    /// only the switch in the menu bar panel brings it back (#61).
+    static func shortcutToggles(islandHidden: Bool) -> Bool {
+        !islandHidden
+    }
 }

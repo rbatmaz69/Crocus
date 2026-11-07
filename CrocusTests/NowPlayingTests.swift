@@ -175,7 +175,13 @@ final class FakePlayerBridge: PlayerBridge {
         running.insert(player)
         return true
     }
-    func send(_ command: PlayerCommand, to player: MusicPlayer) { sent.append((command, player)) }
+    /// Runs while the command is "sent", like a notification arriving
+    /// during the Apple Event.
+    var whileSending: ((PlayerCommand, MusicPlayer) -> Void)?
+    func send(_ command: PlayerCommand, to player: MusicPlayer) {
+        sent.append((command, player))
+        whileSending?(command, player)
+    }
     func open(_ player: MusicPlayer) { opened.append(player) }
 }
 
@@ -395,6 +401,19 @@ final class FakePlayerBridge: PlayerBridge {
 
         manager.openPlayer()
         #expect(bridge.opened == [.music])
+    }
+
+    @Test func notificationDuringTheCommandIsNotFlippedBack() async {
+        let manager = manager()
+        await manager.handle(spotify("Playing"), from: .spotify)
+        // Spotify pauses and says so before the Apple Event returns.
+        bridge.whileSending = { _, _ in manager.apply(self.spotify("Paused"), from: .spotify) }
+        manager.send(.playPause)
+        #expect(manager.activity?.state.isPlaying == false)
+
+        bridge.whileSending = { _, _ in manager.apply(self.spotify("Playing"), from: .spotify) }
+        manager.send(.playPause)
+        #expect(manager.activity?.state.isPlaying == true)
     }
 
     @Test func noAppleEventsToPlayersThatAreNotRunning() async {

@@ -18,7 +18,7 @@ Crocus shows your next event in the island **5 minutes before** it starts and ke
 
 ## Permission
 
-Until the onboarding (#26) asks for it, use the menu bar: **Allow Calendar…**. Denied, the calendar activity is off and the menu shows **Allow in System Settings…** (Privacy & Security → Calendars).
+Until the onboarding (#26) asks for it, use the menu bar panel: **Needs your permission** → Calendar → **Allow**. Denied, the calendar activity is off and the row offers **Open…** (Privacy & Security → Calendars).
 
 To ask again from scratch:
 

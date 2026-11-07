@@ -18,6 +18,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         OnboardingModel(calendar: calendar, nowPlaying: nowPlaying, downloads: downloads, bluetooth: bluetooth)
     }
 
+    /// Permissions and setup the menu bar panel asks for (#61); while any is
+    /// missing, the menu bar icon carries a dot.
+    var menuBarAttention: [MenuBarAttentionItem] {
+        MenuBarAttention.items(
+            calendar: calendar.authorization,
+            players: nowPlaying.permissions.filter { nowPlaying.isInstalled($0.key) },
+            bluetooth: bluetooth.access,
+            downloadsFolder: downloads.access.folder,
+            disabledActivities: AppSettings.disabledActivities(),
+            disabledEvents: AppSettings.disabledEvents()
+        )
+    }
+
     /// The app that was frontmost before Crocus; `open crocus://…` activates
     /// Crocus, and focus goes back there afterwards.
     private var previousApp: NSRunningApplication?
@@ -64,8 +77,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Hands focus back to the previous app unless one of Crocus' own windows
     /// (e.g. Settings) is open, so a script calling `open crocus://…` doesn't
-    /// steal the keyboard from the Terminal.
-    private func returnFocus() {
+    /// steal the keyboard from the Terminal. Also after the menu bar panel
+    /// closes: while Crocus stays active without a window, no mouse moves
+    /// reach `MouseTracker` and the island stops reacting (#61).
+    func returnFocus() {
         guard NSApp.isActive else { return }
         let hasOwnWindow = NSApp.windows.contains { $0.isVisible && $0.canBecomeMain }
         guard !hasOwnWindow, let previousApp, !previousApp.isTerminated else { return }
