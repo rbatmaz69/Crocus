@@ -7,8 +7,9 @@ import os
 /// controls. Nothing is polled. Music's cover comes from the iTunes Search
 /// API (`ITunesArtwork`).
 ///
-/// Permission: asked the first time a player starts playing. Denied turns
-/// off only that player; the menu bar menu shows how to allow it later.
+/// Permission: never asked out of the blue – only from the onboarding's
+/// explainer page or the menu ("Allow Spotify…"). Until then, and when
+/// denied, only that player is off.
 @MainActor
 @Observable
 final class NowPlayingManager {
@@ -92,7 +93,7 @@ final class NowPlayingManager {
             refresh()
             return
         }
-        guard await isAllowed(player, asking: update.playback == .playing) else { return }
+        guard await isAllowed(player, asking: false) else { return }
 
         let time = now()
         let previousKey = states[player]?.trackKey
@@ -113,6 +114,26 @@ final class NowPlayingManager {
             artworkTask = Task { await loadArtwork(for: player, trackKey: update.trackKey) }
         }
     }
+
+    /// Onboarding and menu: asks macOS (after the explainer). Starts the
+    /// player in the background first if needed – macOS only asks about
+    /// running apps.
+    @discardableResult
+    func requestPermission(_ player: MusicPlayer) async -> PlayerPermission {
+        guard await bridge.launchInBackground(player) else { return .unavailable }
+        let permission = await bridge.permission(player, askIfNeeded: true)
+        permissions[player] = permission
+        Self.logger.info("\(player.displayName, privacy: .public) permission asked: \(String(describing: permission), privacy: .public)")
+        return permission
+    }
+
+    /// Without asking: `unavailable` while the player isn't running.
+    func currentPermission(_ player: MusicPlayer) async -> PlayerPermission {
+        if let known = permissions[player], known == .granted || known == .denied { return known }
+        return await bridge.permission(player, askIfNeeded: false)
+    }
+
+    func isInstalled(_ player: MusicPlayer) -> Bool { bridge.isInstalled(player) }
 
     private func isAllowed(_ player: MusicPlayer, asking: Bool) async -> Bool {
         switch permissions[player] {

@@ -15,6 +15,10 @@ protocol PlayerBridge {
     func artworkURL(_ player: MusicPlayer) -> URL?
     func send(_ command: PlayerCommand, to player: MusicPlayer)
     func open(_ player: MusicPlayer)
+    func isInstalled(_ player: MusicPlayer) -> Bool
+    /// Starts the player without bringing it forward, so macOS can ask for
+    /// permission (it only asks about running apps). `false` if it didn't start.
+    func launchInBackground(_ player: MusicPlayer) async -> Bool
 }
 
 /// The real bridge: short AppleScripts via `NSAppleScript` (main thread),
@@ -24,6 +28,25 @@ struct AppleScriptPlayerBridge: PlayerBridge {
 
     func isRunning(_ player: MusicPlayer) -> Bool {
         !NSRunningApplication.runningApplications(withBundleIdentifier: player.bundleID).isEmpty
+    }
+
+    func isInstalled(_ player: MusicPlayer) -> Bool {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: player.bundleID) != nil
+    }
+
+    func launchInBackground(_ player: MusicPlayer) async -> Bool {
+        if isRunning(player) { return true }
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: player.bundleID) else { return false }
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.activates = false
+        configuration.hides = true
+        guard (try? await NSWorkspace.shared.openApplication(at: url, configuration: configuration)) != nil else { return false }
+        // Give it a moment to answer Apple Events.
+        for _ in 0..<20 where !isRunning(player) {
+            try? await Task.sleep(for: .milliseconds(100))
+        }
+        try? await Task.sleep(for: .milliseconds(500))
+        return isRunning(player)
     }
 
     func permission(_ player: MusicPlayer, askIfNeeded: Bool) async -> PlayerPermission {

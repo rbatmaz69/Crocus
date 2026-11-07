@@ -1,8 +1,7 @@
-#if DEBUG
 import SwiftUI
 
-/// Debug-only sample activities and events to exercise priorities, minimal
-/// state and event overlays before the real sources (#13–#19) exist.
+/// Sample activities: the debug menu uses them to exercise priorities, the
+/// minimal state and event overlays; the onboarding's island demo shows them.
 @MainActor
 final class SampleActivity: IslandActivity {
     let id: String
@@ -214,4 +213,3 @@ private struct TerminalIcon: View {
             .overlay(Image(systemName: "terminal.fill").font(.system(size: size * 0.45)).foregroundStyle(CrocusColors.primary))
     }
 }
-#endif

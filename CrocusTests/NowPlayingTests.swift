@@ -166,7 +166,15 @@ final class FakePlayerBridge: PlayerBridge {
         return positionValue
     }
 
+    var installed: Set<MusicPlayer> = [.spotify, .music]
+
     func artworkURL(_ player: MusicPlayer) -> URL? { player == .spotify && running.contains(player) ? artwork : nil }
+    func isInstalled(_ player: MusicPlayer) -> Bool { installed.contains(player) }
+    func launchInBackground(_ player: MusicPlayer) async -> Bool {
+        guard installed.contains(player) else { return false }
+        running.insert(player)
+        return true
+    }
     func send(_ command: PlayerCommand, to player: MusicPlayer) { sent.append((command, player)) }
     func open(_ player: MusicPlayer) { opened.append(player) }
 }
@@ -297,17 +305,33 @@ final class FakePlayerBridge: PlayerBridge {
         #expect(requests.urls.count == 1) // no image request
     }
 
-    @Test func askedOnlyWhenPlaybackStarts() async {
+    @Test func neverAsksByItself() async {
+        // Asking needs the explainer first (onboarding or menu).
         bridge.permission[.music] = .notDetermined
         let manager = manager()
-        await manager.handle(music("Paused"), from: .music)
+        await manager.handle(music(), from: .music)
         #expect(bridge.askedWithPrompt.isEmpty)
         #expect(manager.activity == nil)
+        #expect(manager.permissions[.music] == .notDetermined)
+    }
 
-        bridge.permission[.music] = .granted // the user clicks OK
-        await manager.handle(music(), from: .music)
-        #expect(bridge.askedWithPrompt == [.music])
-        #expect(manager.activity != nil)
+    @Test func asksWhenRequestedStartingThePlayerIfNeeded() async {
+        bridge.permission[.spotify] = .notDetermined
+        bridge.running = []
+        let manager = manager()
+        bridge.permission[.spotify] = .granted // the user clicks OK
+        #expect(await manager.requestPermission(.spotify) == .granted)
+        #expect(bridge.askedWithPrompt == [.spotify])
+        #expect(bridge.running.contains(.spotify))
+        #expect(manager.permissions[.spotify] == .granted)
+    }
+
+    @Test func cannotAskForAPlayerThatIsNotInstalled() async {
+        bridge.installed = [.music]
+        bridge.running = []
+        let manager = manager()
+        #expect(await manager.requestPermission(.spotify) == .unavailable)
+        #expect(bridge.askedWithPrompt.isEmpty)
     }
 
     @Test func deniedTurnsOffOnlyThatPlayer() async {

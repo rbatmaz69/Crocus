@@ -95,6 +95,8 @@ enum CrocusSprings {
     static let screenChange = SpringSpec(response: 0.50, dampingFraction: 1.00)
     static let screenAttach = SpringSpec(response: 0.50, dampingFraction: 1.00)
     static let hoverHint = SpringSpec(response: 0.30, dampingFraction: 0.90)
+    /// Onboarding page change (board 10): a horizontal push.
+    static let onboardingPage = SpringSpec(response: 0.40, dampingFraction: 0.90)
 
     /// Scale of the island while the hover hint is shown.
     static let hoverScale: CGFloat = 1.03
