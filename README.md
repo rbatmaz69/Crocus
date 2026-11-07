@@ -1,3 +1,5 @@
+<img src="design/icon/app-icon-1024.png" alt="" width="128">
+
 # Crocus
 
 Crocus brings a Dynamic-Island-style live activity area to the Mac: a black island that grows out of the notch (or floats as a pill on external displays) and shows timers, now playing, charging, calendar, downloads and more – with springy animations and full keyboard and VoiceOver support.
@@ -27,7 +29,7 @@ xcodebuild -project Crocus.xcodeproj -scheme Crocus -destination 'platform=macOS
 xcodebuild -project Crocus.xcodeproj -scheme Crocus -destination 'platform=macOS' test
 ```
 
-Crocus runs as a menu bar agent (no Dock icon) inside the App Sandbox. Look for the capsule icon in the menu bar to open Settings or quit. Try a Live Activity: `open -g "crocus://start?id=demo&title=Demo&symbol=hammer&progress=0.5"`.
+Crocus runs as a menu bar agent (no Dock icon) inside the App Sandbox. Look for the crocus icon in the menu bar to open Settings or quit. Try a Live Activity: `open -g "crocus://start?id=demo&title=Demo&symbol=hammer&progress=0.5"`.
 
 Builds are signed with an Apple Development certificate of the team in `project.yml` (`DEVELOPMENT_TEAM`). To build with your own account, change it to your team ID. The Shortcuts actions need a team-signed build – with an ad-hoc signature ("Sign to Run Locally"), Shortcuts fails with "couldn't communicate with the app".
 
