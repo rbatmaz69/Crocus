@@ -26,6 +26,8 @@ enum CrocusSprings {
     /// The drop flowing back into the island (not in the spec): calm, no overshoot.
     static let dropMerge = SpringSpec(response: 0.32, dampingFraction: 1.00)
     static let cardSwipe = SpringSpec(response: 0.30, dampingFraction: 0.86)
+    /// The island's height following the new card after a swipe (C4).
+    static let cardHeight = SpringSpec(response: 0.40, dampingFraction: 0.85)
     static let screenChange = SpringSpec(response: 0.55, dampingFraction: 0.82)
     static let hoverHint = SpringSpec(response: 0.30, dampingFraction: 0.90)
 

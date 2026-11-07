@@ -142,7 +142,7 @@ struct IslandState: Sendable {
     }
 
     /// While expanded, moves to the next activity in priority order (stops at
-    /// the end; the rubber band comes with #23).
+    /// the end; the strip rubber-bands there, C4).
     @discardableResult
     mutating func showNextCard() -> Bool { moveCard(by: 1) }
 

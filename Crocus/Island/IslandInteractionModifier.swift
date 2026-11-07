@@ -86,14 +86,22 @@ struct IslandInteractionModifier<S: Shape>: ViewModifier {
 
 extension IslandInteractionModifier {
     /// Click and drag sideways while expanded (mice have no two-finger
-    /// swipe). A plain click stays a click: the drag needs 10 pt to start and
-    /// 40 pt to switch.
+    /// swipe): the cards follow the mouse 1:1 and settle like a swipe (C4).
+    /// With Reduce Motion a drag past 40 pt switches once. A plain click
+    /// stays a click: the drag needs 10 pt to start.
     private var cardDrag: some Gesture {
         DragGesture(minimumDistance: 10)
+            .onChanged { value in
+                guard !reduceMotion else { return }
+                model.dragCards(translation: value.translation.width)
+            }
             .onEnded { value in
-                guard let direction = CardDrag.direction(translation: value.translation) else { return }
-                let step = CardNavigation.step(forSwipe: direction)
-                if step > 0 { model.store.showNextCard() } else if step < 0 { model.store.showPreviousCard() }
+                if reduceMotion {
+                    guard let direction = CardDrag.direction(translation: value.translation) else { return }
+                    model.stepCard(CardNavigation.step(forSwipe: direction))
+                } else {
+                    model.releaseCards(translation: value.translation.width, velocity: value.velocity.width)
+                }
             }
     }
 }

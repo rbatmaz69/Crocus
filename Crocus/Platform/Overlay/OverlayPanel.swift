@@ -21,6 +21,7 @@ final class OverlayPanelModel {
                 from: oldValue, to: presentation, tappedDrop: dropTapPending, wasFromDrop: expandedFromDrop
             )
             dropTapPending = false
+            cardsSwitched = false
             if CrocusMotion.bouncesOnArrival(from: oldValue, to: presentation, isEvent: store.currentEvent != nil, reduceMotion: CrocusMotion.reduceMotion) {
                 scheduleArrivalBounce()
             }
@@ -53,6 +54,83 @@ final class OverlayPanelModel {
             self?.arrivalBounce += 1
         }
     }
+    // MARK: - Cards (C4)
+
+    /// Where the card strip is, as a card index – between two while a swipe
+    /// moves it. Animated on the card spring when it settles.
+    var cardStripPosition: CGFloat = 0
+    /// The card the strip rests on or is heading to.
+    @ObservationIgnored private(set) var cardStripTarget = 0
+    /// A card was switched in this expanded session: the height follows the
+    /// card spring from then on.
+    private(set) var cardsSwitched = false
+
+    /// One card step on the strip: the expanded island's width (each card
+    /// keeps its 22 pt insets, so 44 pt lie between two cards).
+    var cardWidth: CGFloat {
+        switch geometry.mode {
+        case .notch: CrocusMetrics.notch.expanded.width
+        case .pill: CrocusMetrics.pill.expanded.width
+        }
+    }
+
+    /// Fingers or mouse moved the strip `translation` points (1:1).
+    func dragCards(translation: CGFloat) {
+        guard presentation == .expanded, !CrocusMotion.reduceMotion, let position = store.cardPosition else { return }
+        cardStripPosition = CardSwipe.position(index: position.index, count: position.count, translation: translation, width: cardWidth)
+    }
+
+    /// Released: settle on the next, previous or same card, carrying on
+    /// with the fingers' speed.
+    func releaseCards(translation: CGFloat, velocity: CGFloat) {
+        guard presentation == .expanded, let position = store.cardPosition else { return }
+        let target = CardSwipe.target(index: position.index, count: position.count, translation: translation, velocity: velocity, width: cardWidth)
+        settleCards(on: target, velocity: velocity)
+    }
+
+    /// Arrow keys: one card on (+1) or back (-1).
+    func stepCard(_ step: Int) {
+        guard presentation == .expanded, let position = store.cardPosition else { return }
+        let target = position.index + step
+        guard (0..<position.count).contains(target) else { return }
+        settleCards(on: target, velocity: 0)
+    }
+
+    /// A page dot.
+    func showCard(at index: Int) {
+        guard presentation == .expanded, let position = store.cardPosition, (0..<position.count).contains(index) else { return }
+        settleCards(on: index, velocity: 0)
+    }
+
+    /// The card index changed by itself (an activity came or went): jump
+    /// there without moving.
+    func snapCards(to index: Int) {
+        cardStripTarget = index
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) { cardStripPosition = CGFloat(index) }
+    }
+
+    private func settleCards(on target: Int, velocity: CGFloat) {
+        if let position = store.cardPosition, position.index != target {
+            store.showCard(at: target)
+            cardsSwitched = true
+            AccessibilityNotification.Announcement("Activity \(target + 1) of \(position.count)").post()
+        }
+        cardStripTarget = target
+        guard !CrocusMotion.reduceMotion else {
+            snapCards(to: target)
+            return
+        }
+        let spec = CrocusSprings.cardSwipe
+        let relative = CardSwipe.relativeVelocity(velocity, width: cardWidth, from: cardStripPosition, to: CGFloat(target))
+        let animation = Animation.interpolatingSpring(
+            Spring(response: CrocusMotion.seconds(spec.response), dampingRatio: spec.dampingFraction),
+            initialVelocity: relative / CrocusMotion.slowFactor
+        )
+        withAnimation(animation) { cardStripPosition = CGFloat(target) }
+    }
+
     /// Menu bar items need the space: the right wing shrinks to 44 pt.
     var rightWingReduced = false
     /// Natural height of the expanded content, reported by `ExpandedLayout`.
@@ -118,6 +196,8 @@ final class OverlayPanelModel {
     /// collapse out of it, idle → compact otherwise.
     var transitionSpring: SpringSpec {
         switch (previousPresentation, presentation) {
+        // C4: after a card switch the height follows the new card.
+        case (_, .expanded) where cardsSwitched: CrocusSprings.cardHeight
         case (_, .expanded): expandedFromDrop ? CrocusSprings.expandFromDrop : CrocusSprings.expand
         case (.expanded, _): CrocusSprings.collapse
         // C3: the pill shifts with the drop, on the same spring.
@@ -146,6 +226,7 @@ final class OverlayPanel: NSPanel {
     /// A recognised two-finger swipe over the island.
     var onSwipe: ((SwipeDirection) -> Void)?
     private var swipeRecognizer = SwipeRecognizer()
+    private var cardTracker = CardSwipeTracker()
 
     init(displayID: CGDirectDisplayID, geometry: ScreenGeometry, store: IslandStore) {
         self.displayID = displayID
@@ -219,9 +300,23 @@ final class OverlayPanel: NSPanel {
             isPrecise: event.hasPreciseScrollingDeltas,
             phase: ScrollSample.Phase(event.phase),
             isMomentum: !event.momentumPhase.isEmpty,
-            isDirectionInverted: event.isDirectionInvertedFromDevice
+            isDirectionInverted: event.isDirectionInvertedFromDevice,
+            time: event.timestamp
         )
+        // C4: sideways the cards follow the fingers. With Reduce Motion a
+        // swipe just switches once it passes the threshold, as before.
+        let followsFingers = !CrocusMotion.reduceMotion
+        if followsFingers {
+            switch cardTracker.handle(sample) {
+            case .changed(let translation): model.dragCards(translation: translation)
+            case .ended(let translation, let velocity): model.releaseCards(translation: translation, velocity: velocity)
+            case nil: break
+            }
+        }
         if let direction = swipeRecognizer.handle(sample) {
+            let sideways = direction == .left || direction == .right
+            // The tracker owns sideways gestures – and any gesture it locked.
+            if followsFingers && (sideways || cardTracker.isTracking) { return }
             onSwipe?(direction)
         }
     }

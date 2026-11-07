@@ -56,21 +56,69 @@ struct IslandExpandedContent: View {
                 activity?.expandedStatus
             }
         } content: {
-            Group {
-                if let activity {
-                    VStack(alignment: .leading, spacing: CrocusMetrics.Expanded.rowSpacing) {
-                        activity.expandedContent
-                    }
-                    .id(activity.id)
-                    .transition(.opacity)
-                }
-            }
-            .animation(.easeInOut(duration: 0.15), value: activity?.id)
+            CardStrip(model: model, metrics: metrics, activity: activity, position: position)
 
             if isStack, let position {
-                PageDots(index: position.index, count: position.count) { store.showCard(at: $0) }
+                PageDots(index: position.index, count: position.count) { model.showCard(at: $0) }
                     .frame(maxWidth: .infinity)
             }
+        }
+    }
+}
+
+/// The cards of the expanded island side by side (C4): the strip sits at
+/// `cardStripPosition` – it follows the fingers while swiping and settles on
+/// the card spring. Only the current card sets the height, so the island
+/// follows the new card once it has switched; the others hang beside it,
+/// cut off by the island's shape. Reduce Motion: cards cross-fade (150 ms).
+private struct CardStrip: View {
+    let model: OverlayPanelModel
+    let metrics: IslandLayoutMetrics
+    let activity: (any IslandActivity)?
+    let position: (index: Int, count: Int)?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Group {
+            if reduceMotion || position == nil {
+                Group {
+                    if let activity {
+                        card(activity)
+                            .id(activity.id)
+                            .transition(.opacity)
+                    }
+                }
+                .animation(.easeInOut(duration: CrocusMotion.seconds(CrocusMotion.C4.reducedMotionFade)), value: activity?.id)
+            } else if let position {
+                let cards = model.store.cardActivities
+                let width = model.cardWidth
+                ZStack(alignment: .topLeading) {
+                    ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
+                        let isCurrent = index == position.index
+                        self.card(card)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            // Only the current card takes up height.
+                            .frame(height: isCurrent ? nil : 0, alignment: .top)
+                            .offset(x: (CGFloat(index) - model.cardStripPosition) * width)
+                            .allowsHitTesting(isCurrent)
+                            .accessibilityHidden(!isCurrent)
+                    }
+                }
+            }
+        }
+        .onChange(of: position?.index, initial: true) { old, new in
+            guard let new else { return }
+            // Switched by an activity coming or going – not by a swipe, key
+            // or dot, which already move the strip there.
+            if old == nil || old == new || new != model.cardStripTarget {
+                model.snapCards(to: new)
+            }
+        }
+    }
+
+    private func card(_ activity: any IslandActivity) -> some View {
+        VStack(alignment: .leading, spacing: CrocusMetrics.Expanded.rowSpacing) {
+            activity.expandedContent
         }
     }
 }

@@ -234,7 +234,8 @@ final class OverlayController {
     /// +1 = next card, -1 = previous; only while expanded.
     private func stepCard(_ step: Int) {
         guard store.presentation == .expanded else { return }
-        if step > 0 { store.showNextCard() } else if step < 0 { store.showPreviousCard() }
+        let panel = targetScreenID.flatMap { panels[$0] } ?? panels.values.first
+        panel?.model.stepCard(step)
     }
 
     /// While expanded, a click outside the island collapses it.

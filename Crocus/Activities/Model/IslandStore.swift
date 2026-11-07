@@ -130,6 +130,11 @@ final class IslandStore {
         return (index, state.activities.count)
     }
 
+    /// All cards in priority order (C4: the strip the cards slide on).
+    var cardActivities: [any IslandActivity] {
+        state.activities.compactMap { activities[$0.id] }
+    }
+
     func showNextCard() {
         update { $0.showNextCard() }
     }
