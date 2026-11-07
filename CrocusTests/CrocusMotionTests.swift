@@ -106,3 +106,90 @@ import Testing
         #expect(Interaction.handOff(.expanded, reduceMotion: true) == nil)
     }
 }
+
+@Suite struct CrocusMotionC3Tests {
+    typealias C3 = CrocusMotion.C3
+
+    /// The drop's progress over time on its spring.
+    func progress(at time: Double, spec: SpringSpec = CrocusSprings.dropDetach) -> CGFloat {
+        CGFloat(Spring(response: spec.response, dampingRatio: spec.dampingFraction).value(target: 1.0, time: time))
+    }
+
+    @Test func overshootsAboutTwoPointsInTheNotch() {
+        // 40 pt drop + 6 pt gap = 46 pt of travel.
+        let travel: CGFloat = 46
+        let peak = stride(from: 0.0, through: 1.0, by: 0.001).map { C3.offset(progress: progress(at: $0), travel: travel) }.max()!
+        #expect(peak > 1.8 && peak < 2.4)
+    }
+
+    @Test func budGrowsThenDetaches() {
+        #expect(C3.scale(progress: 0) == 0.35)
+        #expect(C3.scale(progress: 0.6) == 1)
+        #expect(C3.offset(progress: 0, travel: 46) == -46) // inside the island's right end
+        #expect(C3.offset(progress: 1, travel: 46) == 0)
+    }
+
+    @Test func gooeyOnlyWhileDetaching() {
+        #expect(C3.isGooey(progress: 0.5))
+        #expect(!C3.isGooey(progress: 0.98))
+        // Plain shapes from ≈ 0.2 s on, and the spring never dips back below.
+        let switchTime = stride(from: 0.0, through: 1.0, by: 0.001).first { !C3.isGooey(progress: progress(at: $0)) }!
+        #expect(switchTime > 0.15 && switchTime < 0.3)
+        let later = stride(from: switchTime, through: 1.5, by: 0.001).map { progress(at: $0) }
+        #expect(later.allSatisfy { !C3.isGooey(progress: $0) })
+    }
+
+    @Test func contentFadesInOverTheLastTenPercent() {
+        #expect(C3.contentOpacity(progress: 0.85) == 0)
+        #expect(abs(C3.contentOpacity(progress: 0.95) - 0.5) < 1e-9)
+        #expect(C3.contentOpacity(progress: 1.04) == 1)
+    }
+
+    @Test func mergeNeverOvershoots() {
+        let samples = stride(from: 0.0, through: 1.0, by: 0.001).map { progress(at: $0, spec: CrocusSprings.dropMerge) }
+        #expect(samples.allSatisfy { $0 <= 1.0001 })
+    }
+
+    @Test func detachesOnlyBetweenCompactAndMinimal() {
+        #expect(C3.detaches(from: .compact, to: .minimal))
+        #expect(C3.detaches(from: .minimal, to: .compact))
+        #expect(!C3.detaches(from: .minimal, to: .expanded))
+        #expect(!C3.detaches(from: .expanded, to: .minimal))
+    }
+
+    @Test func expandingFromTheDropNeverOvershoots() {
+        let samples = stride(from: 0.0, through: 1.5, by: 0.001).map { progress(at: $0, spec: CrocusSprings.expandFromDrop) }
+        #expect(samples.allSatisfy { $0 <= 1.0001 })
+        #expect(CrocusSprings.expandFromDrop.response == CrocusSprings.expand.response)
+    }
+
+    @Test func expandsFromTheDropOnlyAfterATapOnIt() {
+        #expect(CrocusMotion.expandsFromDrop(from: .minimal, to: .expanded, tappedDrop: true, wasFromDrop: false))
+        #expect(!CrocusMotion.expandsFromDrop(from: .minimal, to: .expanded, tappedDrop: false, wasFromDrop: true))
+        #expect(!CrocusMotion.expandsFromDrop(from: .compact, to: .expanded, tappedDrop: true, wasFromDrop: false))
+    }
+
+    @Test func collapsesBackIntoTheDropThenEnds() {
+        // Kept while collapsing, so the expanded island shrinks into the drop …
+        #expect(CrocusMotion.expandsFromDrop(from: .expanded, to: .minimal, tappedDrop: false, wasFromDrop: true))
+        #expect(CrocusMotion.expandsFromDrop(from: .expanded, to: .compact, tappedDrop: false, wasFromDrop: true))
+        #expect(!CrocusMotion.expandsFromDrop(from: .expanded, to: .minimal, tappedDrop: false, wasFromDrop: false))
+        // … and over with the next change.
+        #expect(!CrocusMotion.expandsFromDrop(from: .minimal, to: .compact, tappedDrop: false, wasFromDrop: true))
+    }
+
+    @Test func detachesFromZeroAndMergesToZero() {
+        let detached = C3.progress(detaching: true, elapsed: C3.duration(detaching: true))
+        let merged = C3.progress(detaching: false, elapsed: C3.duration(detaching: false))
+        #expect(C3.progress(detaching: true, elapsed: 0) == 0)
+        #expect(C3.progress(detaching: false, elapsed: 0) == 1)
+        #expect(abs(detached - 1) < 0.01)
+        #expect(abs(merged) < 0.01)
+    }
+
+    @Test func transformScalesAroundTheAnchor() {
+        let t = C3.transform(anchor: CGPoint(x: 100, y: 0), offsetX: -10, scale: 0.5)
+        #expect(CGPoint(x: 100, y: 0).applying(t) == CGPoint(x: 90, y: 0))
+        #expect(CGPoint(x: 120, y: 40).applying(t) == CGPoint(x: 100, y: 20))
+    }
+}

@@ -6,7 +6,8 @@ import SwiftUI
 /// width, height and radii together.
 struct NotchIslandShape: Shape {
     var parameters: NotchShapeParameters
-    /// Horizontal centre of the notch in the shape's rect. Not animated.
+    /// Horizontal centre in the shape's rect – the notch, or the drop's
+    /// centre. Animated too: the drop grows into the expanded island (#22).
     var centerX: CGFloat
 
     /// Circle approximation constant for the shoulder arcs.
@@ -14,12 +15,12 @@ struct NotchIslandShape: Shape {
 
     var animatableData: AnimatablePair<
         AnimatablePair<CGFloat, CGFloat>,
-        AnimatablePair<CGFloat, AnimatablePair<CGFloat, CGFloat>>
+        AnimatablePair<CGFloat, AnimatablePair<CGFloat, AnimatablePair<CGFloat, CGFloat>>>
     > {
         get {
             AnimatablePair(
                 AnimatablePair(parameters.leading, parameters.trailing),
-                AnimatablePair(parameters.height, AnimatablePair(parameters.bottomRadius, parameters.shoulderRadius))
+                AnimatablePair(parameters.height, AnimatablePair(parameters.bottomRadius, AnimatablePair(parameters.shoulderRadius, centerX)))
             )
         }
         set {
@@ -27,7 +28,8 @@ struct NotchIslandShape: Shape {
             parameters.trailing = newValue.first.second
             parameters.height = newValue.second.first
             parameters.bottomRadius = newValue.second.second.first
-            parameters.shoulderRadius = newValue.second.second.second
+            parameters.shoulderRadius = newValue.second.second.second.first
+            centerX = newValue.second.second.second.second
         }
     }
 

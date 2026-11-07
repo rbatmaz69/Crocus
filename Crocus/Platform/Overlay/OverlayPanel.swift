@@ -17,12 +17,29 @@ final class OverlayPanelModel {
         didSet {
             guard oldValue != presentation else { return }
             previousPresentation = oldValue
+            expandedFromDrop = CrocusMotion.expandsFromDrop(
+                from: oldValue, to: presentation, tappedDrop: dropTapPending, wasFromDrop: expandedFromDrop
+            )
+            dropTapPending = false
             if CrocusMotion.bouncesOnArrival(from: oldValue, to: presentation, isEvent: store.currentEvent != nil, reduceMotion: CrocusMotion.reduceMotion) {
                 scheduleArrivalBounce()
             }
         }
     }
     private(set) var previousPresentation: IslandPresentation = .idle
+    /// The island was opened from the drop/circle: that one grows into the
+    /// expanded island while the main one stays put underneath, and it
+    /// collapses back into the drop. Kept through the collapse.
+    private(set) var expandedFromDrop = false
+    @ObservationIgnored private var dropTapPending = false
+
+    /// Click on the drop/circle: expand its activity out of it.
+    func expandFromDrop(id: String) {
+        store.expand(id: id)
+        // The overlay controller passes the new presentation on a moment
+        // later; only remember the tap if the store really opened.
+        dropTapPending = store.presentation == .expanded
+    }
     /// Bumped 400 ms after an activity arrives from idle (C1): its symbol
     /// bounces once.
     private(set) var arrivalBounce = 0
@@ -78,12 +95,34 @@ final class OverlayPanelModel {
         )
     }
 
+    /// The main island the drop hangs next to: the minimal one – also while
+    /// expanded or collapsing, so the drop stays put while the island grows
+    /// over it – or the compact one it merges into.
+    var notchDropMainParameters: NotchShapeParameters? {
+        guard let notch = geometry.notchRect else { return nil }
+        return NotchIslandMetrics.parameters(
+            for: presentation == .compact ? .compact : .minimal,
+            notch: notch.size,
+            rightWingReduced: rightWingReduced,
+            expandedContentHeight: expandedContentHeight
+        )
+    }
+
+    /// The drop/circle detaches or merges back (C3) – the island moves
+    /// between compact and minimal, not into or out of the expanded state.
+    var detachesDrop: Bool {
+        CrocusMotion.C3.detaches(from: previousPresentation, to: presentation)
+    }
+
     /// Spring for the current transition: expand into the expanded state,
     /// collapse out of it, idle → compact otherwise.
     var transitionSpring: SpringSpec {
         switch (previousPresentation, presentation) {
-        case (_, .expanded): CrocusSprings.expand
+        case (_, .expanded): expandedFromDrop ? CrocusSprings.expandFromDrop : CrocusSprings.expand
         case (.expanded, _): CrocusSprings.collapse
+        // C3: the pill shifts with the drop, on the same spring.
+        case (.compact, .minimal): CrocusSprings.dropDetach
+        case (.minimal, .compact): CrocusSprings.dropMerge
         default: CrocusSprings.idleToCompact
         }
     }
@@ -259,3 +298,4 @@ private extension ScrollSample.Phase {
         }
     }
 }
+
