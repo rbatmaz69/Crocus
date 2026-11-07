@@ -92,8 +92,26 @@ import Testing
 
     @Test func arcsDownBetweenSideBySideScreens() {
         let flight = flight(from: macBook, to: external)
-        let lowest = samples(flight).map(\.form.rect.midY).min()!
-        #expect(lowest < flight.to.rect.midY - 20)
+        let lowest = samples(flight).map(\.form.rect.maxY).min()!
+        #expect(lowest < flight.to.rect.maxY - 20)
+    }
+
+    @Test func docksInOneMotionWithoutBobbing() {
+        // The real setup too: the MacBook sits 499 pt lower than the external
+        // display. Arriving, the island's top only ever rises into place –
+        // no dip, no second push.
+        let lower = ScreenGeometry(
+            frame: CGRect(x: -1470, y: -499, width: 1470, height: 956), mode: .notch,
+            notchRect: CGRect(x: -824, y: 425, width: 179, height: 32), menuBarHeight: 32
+        )
+        let big = ScreenGeometry(frame: CGRect(x: 0, y: 0, width: 3008, height: 1692), mode: .pill, notchRect: nil, menuBarHeight: 30)
+        for flight in [flight(from: macBook, to: external), flight(from: lower, to: big)] {
+            let tops = stride(from: ScreenFlight.contentStart, through: ScreenFlight.duration, by: 0.004).map {
+                flight.frame(at: $0).form.rect.maxY
+            }
+            #expect(zip(tops, tops.dropFirst()).allSatisfy { $1 >= $0 - 0.001 })
+            #expect(tops.allSatisfy { $0 <= flight.to.rect.maxY + 0.001 })
+        }
     }
 
     @Test func glidesIntoTheLandingSpotWithoutOvershooting() {
@@ -112,18 +130,30 @@ import Testing
         #expect(stretch > 1.12 && stretch <= ScreenFlight.maxStretch + 0.0001)
     }
 
-    @Test func squashesToZeroPointNineOnLanding() {
-        let landing = samples(flight(from: macBook, to: external)).filter { $0.scaleX < 1.001 }
-        let squash = landing.map(\.scaleY).min()!
-        #expect(abs(squash - ScreenFlight.landingSquash) < 0.01)
+    @Test func stretchesAlongItsHeading() {
+        // A display above: it flies up, so it stretches up, not sideways.
+        let above = ScreenGeometry(frame: CGRect(x: 0, y: 982, width: 2560, height: 1440), mode: .pill, notchRect: nil, menuBarHeight: 30)
+        let frames = samples(flight(from: macBook, to: above))
+        #expect(frames.map(\.scaleY).max()! > 1.1)
+        #expect(frames.map(\.scaleX).max()! < 1.05)
     }
 
-    @Test func contentComesInWhileItTouchesDown() {
-        #expect(ScreenFlight.contentOpacity(at: ScreenFlight.landingStart) == 0)
-        #expect(ScreenFlight.contentOpacity(at: ScreenFlight.landingStart + 0.17) > 0.4)
-        // Fully there well before the island takes over.
-        #expect(ScreenFlight.contentOpacity(at: ScreenFlight.landingStart + 0.30) == 1)
-        #expect(ScreenFlight.landingStart + 0.30 < ScreenFlight.duration)
+    @Test func docksWithoutASquash() {
+        // Neither dock squashes: once it stops stretching, nothing scales it.
+        for flight in [flight(from: external, to: macBook), flight(from: macBook, to: external)] {
+            let resting = samples(flight).filter { $0.scaleX == 1 }
+            #expect(!resting.isEmpty)
+            #expect(resting.allSatisfy { $0.scaleY == 1 })
+        }
+    }
+
+    @Test func contentGrowsInAsTheIslandArrives() {
+        // Starts during the approach, well before touchdown …
+        #expect(ScreenFlight.contentStart > ScreenFlight.flightStart + 0.15)
+        #expect(ScreenFlight.contentStart < ScreenFlight.landingStart - 0.2)
+        // … and is all there as the island lands.
+        #expect(ScreenFlight.contentProgress(at: ScreenFlight.landingStart) > 0.97)
+        #expect(ScreenFlight.contentProgress(at: ScreenFlight.handover) > 0.9999)
     }
 
     @Test func leavesInOneMotion() {
@@ -138,12 +168,20 @@ import Testing
         #expect(flight.frame(at: 0.04).form.shoulderRadius > 1)
     }
 
-    @Test func neverTwoShadowsAtTheHandover() {
-        // The flight's shadow is fully there until the island shows beneath
-        // it, and gone before the flight windows close.
-        #expect(ScreenFlight.handoverFade(at: ScreenFlight.handover) == 1)
-        #expect(ScreenFlight.handoverFade(at: ScreenFlight.duration - 0.02) == 0)
-        #expect(ScreenFlight.handover > ScreenFlight.landingStart + 0.30)
+    @Test func handsOverOnceItHasLanded() {
+        // Content fully in before the cross-fade, which ends before the
+        // flight windows go.
+        #expect(ScreenFlight.contentProgress(at: ScreenFlight.handover) > 0.9999)
+        #expect(ScreenFlight.handover + ScreenFlight.handoverFade < ScreenFlight.duration)
+        // The flight's shadow goes linearly while the island's comes in.
+        #expect(ScreenFlight.handoverShadow(at: ScreenFlight.handover) == 1)
+        #expect(abs(ScreenFlight.handoverShadow(at: ScreenFlight.handover + ScreenFlight.handoverFade / 2) - 0.5) < 1e-6)
+        #expect(ScreenFlight.handoverShadow(at: ScreenFlight.handover + ScreenFlight.handoverFade) < 1e-6)
+        // The two images match: the shape has settled by the handover.
+        let flight = flight(from: macBook, to: external)
+        let atHandover = flight.frame(at: ScreenFlight.handover)
+        #expect(abs(atHandover.form.rect.midX - flight.to.rect.midX) < 0.5)
+        #expect(abs(atHandover.scaleY - 1) < 0.015)
     }
 
     @Test func onlyCompactAndMinimalFly() {

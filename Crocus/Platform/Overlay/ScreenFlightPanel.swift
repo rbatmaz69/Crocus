@@ -63,49 +63,63 @@ private struct ScreenFlightView: View {
     let sourceContent: AnyView?
     let content: AnyView?
 
+    /// Room around the island in its layer for the shoulders and shadow.
+    private static let margin: CGFloat = 40
+
     var body: some View {
         TimelineView(.animation) { context in
             let elapsed = min(clock.elapsed(at: context.date), ScreenFlight.duration)
-            let sourceOpacity = ScreenFlight.sourceContentOpacity(at: elapsed)
-            let outline = ScreenFlight.departureFade(at: elapsed) * ScreenFlight.handoverFade(at: elapsed)
             let frame = flight.frame(at: elapsed)
-            let contentOpacity = ScreenFlight.contentOpacity(at: elapsed)
             let rect = localRect(frame.form.rect)
-            let shape = FlightIslandShape(form: frame.form, rect: rect)
-            let scale = UnitPoint(
-                x: rect.midX / max(screenFrame.width, 1),
-                // Squash and stretch around the top edge: the island hangs.
-                y: rect.minY / max(screenFrame.height, 1)
-            )
-
-            ZStack(alignment: .topLeading) {
-                PillShadow.apply(to: shape.fill(CrocusColors.island))
-                    .opacity(frame.form.shadow * outline)
-                shape.fill(CrocusColors.island)
-                if let sourceContent, sourceOpacity > 0 {
-                    sourceContent
-                        .frame(width: flight.from.rect.width, height: flight.from.rect.height)
-                        .position(x: rect.midX, y: rect.midY)
-                        .blur(radius: CGFloat(1 - sourceOpacity) * 4)
-                        .opacity(sourceOpacity)
-                        .mask { shape }
-                }
-                if let content, contentOpacity > 0 {
-                    // Rides along with the landing shape (and its squash).
-                    content
-                        .frame(width: flight.to.rect.width, height: flight.to.rect.height)
-                        .position(x: rect.midX, y: rect.midY)
-                        .blur(radius: CGFloat(1 - contentOpacity) * 4)
-                        .opacity(contentOpacity)
-                        .mask { shape }
-                }
-                shape.stroke(PillOutline.color(menuBarIsDark: menuBarIsDark), lineWidth: PillOutline.width)
-                    .opacity(frame.form.shadow * outline)
-            }
-            .frame(width: screenFrame.width, height: screenFrame.height, alignment: .topLeading)
-            .scaleEffect(x: frame.scaleX, y: frame.scaleY, anchor: scale)
+            let m = Self.margin
+            // The island is drawn in a small layer of its own size (plus
+            // margin) that moves across the screen – shadow, blur and mask
+            // never touch the whole screen, so no frame is dropped.
+            island(frame: frame, elapsed: elapsed, in: CGRect(x: m, y: m, width: rect.width, height: rect.height))
+                .frame(width: rect.width + 2 * m, height: rect.height + 2 * m)
+                // Stretched along its path, around the island's top edge.
+                .scaleEffect(x: frame.scaleX, y: frame.scaleY, anchor: UnitPoint(x: 0.5, y: m / (rect.height + 2 * m)))
+                .position(x: rect.midX, y: rect.midY)
+                .frame(width: screenFrame.width, height: screenFrame.height)
         }
         .allowsHitTesting(false)
+    }
+
+    @ViewBuilder
+    private func island(frame: ScreenFlight.Frame, elapsed: Double, in rect: CGRect) -> some View {
+        let shape = FlightIslandShape(form: frame.form, rect: rect)
+        let outline = ScreenFlight.departureFade(at: elapsed) * ScreenFlight.handoverShadow(at: elapsed)
+        let sourceOpacity = ScreenFlight.sourceContentOpacity(at: elapsed)
+        let contentIn = ScreenFlight.contentProgress(at: elapsed)
+
+        ZStack(alignment: .topLeading) {
+            PillShadow.apply(to: shape.fill(CrocusColors.island))
+                .opacity(frame.form.shadow * outline)
+            shape.fill(CrocusColors.island)
+            if let sourceContent, sourceOpacity > 0 {
+                // Shrinks with the leaving shape while it dissolves.
+                sourceContent
+                    .frame(width: flight.from.rect.width, height: flight.from.rect.height)
+                    .scaleEffect(rect.width / max(flight.from.rect.width, 1))
+                    .position(x: rect.midX, y: rect.midY)
+                    .blur(radius: CGFloat(1 - sourceOpacity) * 4)
+                    .opacity(sourceOpacity)
+                    .mask { shape }
+            }
+            if let content, contentIn > 0 {
+                // Grows with the arriving shape: sized to its width,
+                // sharpening as it docks.
+                content
+                    .frame(width: flight.to.rect.width, height: flight.to.rect.height)
+                    .scaleEffect(rect.width / max(flight.to.rect.width, 1) * (0.92 + 0.08 * contentIn))
+                    .position(x: rect.midX, y: rect.midY)
+                    .blur(radius: (1 - contentIn) * 4)
+                    .opacity(Double(contentIn))
+                    .mask { shape }
+            }
+            shape.stroke(PillOutline.color(menuBarIsDark: menuBarIsDark), lineWidth: PillOutline.width)
+                .opacity(frame.form.shadow * outline)
+        }
     }
 
     /// Global screen coordinates (y up) → this window (top-left origin).

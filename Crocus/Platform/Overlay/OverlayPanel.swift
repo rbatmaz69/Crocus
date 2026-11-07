@@ -138,6 +138,9 @@ final class OverlayPanelModel {
     var flightDropHidden = false
     /// The main island itself, while the flight draws it on this screen.
     var flightIslandHidden = false
+    /// The pill's shadow and outline, cross-faded with the flight's at the
+    /// handover (see-through, so they can be; the island itself can't).
+    var flightShadowHidden = false
 
     /// Menu bar items need the space: the right wing shrinks to 44 pt.
     var rightWingReduced = false

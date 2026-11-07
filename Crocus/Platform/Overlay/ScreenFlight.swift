@@ -29,8 +29,10 @@ enum FlightDirection: Equatable, Sendable {
 /// Storyboard C5, pure and deterministic: the island detaches (shoulders
 /// retract, it rounds, drops 6 pt and gains its shadow), flies along an arc
 /// towards the other display – stretched up to 1.15× in its direction while
-/// fast – and lands, squashed to 0.9 vertically, as the destination's
-/// island. Both overlay windows draw the same path in global coordinates,
+/// fast – and docks as the destination's island: the pill flies straight
+/// into its place and settles; into the notch it rises the last 6 pt while
+/// its shoulders grow back. No landing squash: its rebound read as the
+/// island growing again after it had arrived. Both overlay windows draw the same path in global coordinates,
 /// so the handover at the screen edge is seamless. Times are unscaled
 /// seconds (the slow-motion debug factor is applied by the caller).
 struct ScreenFlight: Sendable {
@@ -40,6 +42,9 @@ struct ScreenFlight: Sendable {
     let fromAttached: Bool
     let toAttached: Bool
     let direction: FlightDirection
+    /// The path from the detached start to the approach point below the
+    /// destination, in global coordinates.
+    let route: Route
 
     /// Detach: shoulders retract, the shape rounds and drops. Calmer than
     /// the spec's 0.3 / 0.9, which pulled the shoulders in within ≈ 50 ms.
@@ -49,24 +54,26 @@ struct ScreenFlight: Sendable {
     /// and holding it there made the island stop dead. Now it glides in.
     static let flightSpring = SpringSpec(response: 0.50, dampingFraction: 1.00)
     /// Into the notch: rise to the edge, flatten, grow the shoulders – no
-    /// overshoot either, so nothing snaps.
-    static let attachSpring = SpringSpec(response: 0.40, dampingFraction: 1.00)
-    /// The landing squash (a damped impulse on this spring).
-    static let landingSpring = SpringSpec(response: 0.50, dampingFraction: 0.70)
+    /// overshoot, and calm enough that docking reads as one motion.
+    static let attachSpring = SpringSpec(response: 0.50, dampingFraction: 1.00)
+    /// Docking into the notch starts on the last stretch of the approach,
+    /// not after it.
+    static let attachStart = landingStart - 0.08
 
     static let detachDrop: CGFloat = 6
     static let flightStart = 0.18
     static let landingStart = 0.76
-    /// The island rests in the destination window from here on.
-    static let duration = 1.20
-    /// The destination island shows from here; the flight's shadow and
-    /// outline fade out by `duration`, so the two never double up.
-    static let handover = duration - 0.06
+    /// The destination island appears under the flight from here (the same
+    /// opaque image); only the shadows cross-fade, linearly, over
+    /// `handoverFade` – never two, never none. The content is fully in by then.
+    static let handover = landingStart + 0.30
+    static let handoverFade = 0.15
+    /// The flight is over (and its windows can go) from here on.
+    static let duration = handover + handoverFade + 0.04
     static let maxStretch: CGFloat = 1.15
-    static let landingSquash: CGFloat = 0.9
 
-    /// One moment of the flight: the outline plus a scale around its centre
-    /// (stretch in flight, squash on landing – anchored at its top edge).
+    /// One moment of the flight: the outline plus a stretch along the flight
+    /// direction (anchored at its top edge).
     struct Frame: Equatable, Sendable {
         var form: FlightForm
         var scaleX: CGFloat
@@ -78,13 +85,19 @@ struct ScreenFlight: Sendable {
         self.to = to
         self.fromAttached = fromAttached
         self.toAttached = toAttached
-        self.direction = FlightDirection.between(source: fromScreen, destination: toScreen)
+        let direction = FlightDirection.between(source: fromScreen, destination: toScreen)
+        self.direction = direction
+        self.route = Self.route(
+            from: CGPoint(x: from.rect.midX, y: from.rect.maxY - Self.detachDrop),
+            to: Self.approach(to: to, attached: toAttached),
+            direction: direction
+        )
     }
 
     func frame(at time: Double) -> Frame {
         let detach = Self.value(Self.detachSpring, time)
         let flight = min(Self.value(Self.flightSpring, time - Self.flightStart), 1)
-        let landing = Self.value(Self.attachSpring, time - Self.landingStart)
+        let landing = Self.value(Self.attachSpring, time - Self.attachStart)
 
         // How much the island hangs from the top edge: fully at a notch
         // start, letting go while it detaches; growing back into the notch.
@@ -106,16 +119,20 @@ struct ScreenFlight: Sendable {
         let shoulders = Self.smoothstep(0.6, 1, attached)
         let onEdge = Self.smoothstep(0, 0.6, attached)
 
-        // Position: along the arc between the detached start and the approach
-        // point; the detach drop and the final attach blend in around it.
-        let start = from.rect.center
-        let end = to.rect.center
+        // Position of the island's top edge (its middle): along the route
+        // between the detached start and the approach point; the detach drop
+        // and the final attach blend in around it. Led by the top edge, the
+        // island grows and shrinks downwards – its top never bobs.
+        let start = from.rect.topCenter
+        let end = to.rect.topCenter
         let p0 = CGPoint(x: start.x, y: start.y - Self.detachDrop)
-        let p3 = toAttached ? CGPoint(x: end.x, y: end.y - Self.detachDrop) : end
-        let onArc = arc(p0, p3).point(at: flight)
+        let p3 = Self.approach(to: to, attached: toAttached)
+        let onArc = route.point(at: flight)
         let stillAtStart = fromAttached ? Self.smoothstep(0, 0.6, Self.clamp(1 - detach)) : 1 - detach
-        let atEnd = toAttached && !(fromAttached && flight < 0.5) ? onEdge : 0
-        let centre = CGPoint(
+        // Into the notch it rises the last 6 pt as it docks; the pill needs
+        // no second motion – it flies straight into its place.
+        let atEnd: CGFloat = toAttached && !(fromAttached && flight < 0.5) ? onEdge : 0
+        let top = CGPoint(
             x: onArc.x + (start.x - p0.x) * stillAtStart + (end.x - p3.x) * atEnd,
             y: onArc.y + (start.y - p0.y) * stillAtStart + (end.y - p3.y) * atEnd
         )
@@ -124,27 +141,39 @@ struct ScreenFlight: Sendable {
         let height = from.rect.height + (to.rect.height - from.rect.height) * flight
         let floating = height / 2
         let form = FlightForm(
-            rect: CGRect(x: centre.x - width / 2, y: centre.y - height / 2, width: width, height: height),
+            rect: CGRect(x: top.x - width / 2, y: top.y - height, width: width, height: height),
             bottomRadius: floating + (hanging.bottomRadius - floating) * onEdge,
             topRadius: floating * (1 - onEdge),
             shoulderRadius: hanging.shoulderRadius * shoulders,
             shadow: 1 - onEdge
         )
 
+        // Stretched along where it is actually heading – sideways, slanted
+        // or straight up when the other screen's top lies much higher.
         let stretch = 1 + (Self.maxStretch - 1) * Self.flightSpeed(at: time)
-        let squash = 1 - (1 - Self.landingSquash) * Self.landingBump(at: time - Self.landingStart)
         let across = 1 / stretch.squareRoot()
+        let heading = route.tangent(at: flight)
         return Frame(
             form: form,
-            scaleX: direction.isHorizontal ? stretch : across,
-            scaleY: (direction.isHorizontal ? across : stretch) * squash
+            scaleX: across + (stretch - across) * heading.dx * heading.dx,
+            scaleY: across + (stretch - across) * heading.dy * heading.dy
         )
     }
 
     // MARK: - Path
 
-    struct Arc: Sendable {
+    struct Arc: Equatable, Sendable {
         let p0, p1, p2, p3: CGPoint
+
+        /// Unit direction of travel at `t`.
+        func tangent(at t: CGFloat) -> CGVector {
+            let u = 1 - t
+            let dx = 3 * u * u * (p1.x - p0.x) + 6 * u * t * (p2.x - p1.x) + 3 * t * t * (p3.x - p2.x)
+            let dy = 3 * u * u * (p1.y - p0.y) + 6 * u * t * (p2.y - p1.y) + 3 * t * t * (p3.y - p2.y)
+            let length = (dx * dx + dy * dy).squareRoot()
+            guard length > 0.0001 else { return CGVector(dx: 1, dy: 0) }
+            return CGVector(dx: dx / length, dy: dy / length)
+        }
 
         func point(at t: CGFloat) -> CGPoint {
             let u = 1 - t
@@ -156,17 +185,58 @@ struct ScreenFlight: Sendable {
         }
     }
 
-    /// A gentle arc: across the top it dips down into the screens; up or
+    /// Cubic pieces with a share of the progress each.
+    struct Route: Sendable {
+        let pieces: [Arc]
+        let shares: [CGFloat]
+
+        init(_ pieces: [Arc], weights: [CGFloat]) {
+            self.pieces = pieces
+            let total = max(weights.reduce(0, +), 0.0001)
+            self.shares = weights.map { $0 / total }
+        }
+
+        private func locate(_ progress: CGFloat) -> (Arc, CGFloat) {
+            var start: CGFloat = 0
+            for (piece, share) in zip(pieces, shares) {
+                if progress <= start + share || piece == pieces.last {
+                    return (piece, ScreenFlight.clamp((progress - start) / max(share, 0.0001)))
+                }
+                start += share
+            }
+            return (pieces[0], 0)
+        }
+
+        func point(at progress: CGFloat) -> CGPoint {
+            let (piece, t) = locate(progress)
+            return piece.point(at: t)
+        }
+
+        func tangent(at progress: CGFloat) -> CGVector {
+            let (piece, t) = locate(progress)
+            return piece.tangent(at: t)
+        }
+    }
+
+    /// Where the arc ends: the pill's own place – it flies straight in and
+    /// settles on one spring (a separate rise on top of the slowing arc made
+    /// it bob up and down); 6 pt below the notch, which it then rises into
+    /// while its shoulders grow.
+    static func approach(to form: FlightForm, attached: Bool) -> CGPoint {
+        CGPoint(x: form.rect.midX, y: form.rect.maxY - (attached ? detachDrop : 0))
+    }
+
+    /// One gentle arc: across the top it dips down into the screens; up or
     /// down it bows to the side.
-    func arc(_ p0: CGPoint, _ p3: CGPoint) -> Arc {
+    static func route(from p0: CGPoint, to p3: CGPoint, direction: FlightDirection) -> Route {
         if direction.isHorizontal {
             let dx = p3.x - p0.x
             let depth = min(max(abs(dx) * 0.08, 40), 140)
-            return Arc(p0: p0, p1: CGPoint(x: p0.x + dx / 3, y: p0.y - depth), p2: CGPoint(x: p3.x - dx / 3, y: p3.y - depth), p3: p3)
+            return Route([Arc(p0: p0, p1: CGPoint(x: p0.x + dx / 3, y: p0.y - depth), p2: CGPoint(x: p3.x - dx / 3, y: p3.y - depth), p3: p3)], weights: [1])
         }
         let dy = p3.y - p0.y
         let side = min(max(abs(dy) * 0.08, 40), 140)
-        return Arc(p0: p0, p1: CGPoint(x: p0.x + side, y: p0.y + dy / 3), p2: CGPoint(x: p3.x + side, y: p3.y - dy / 3), p3: p3)
+        return Route([Arc(p0: p0, p1: CGPoint(x: p0.x + side, y: p0.y + dy / 3), p2: CGPoint(x: p3.x + side, y: p3.y - dy / 3), p3: p3)], weights: [1])
     }
 
     /// The destination's content, drawn inside the flying shape: it comes
@@ -186,14 +256,21 @@ struct ScreenFlight: Sendable {
         smoothstep(0, CGFloat(departure), CGFloat(time))
     }
 
-    /// The flight's own shadow and outline during the handover.
-    static func handoverFade(at time: Double) -> CGFloat {
-        1 - smoothstep(CGFloat(handover), CGFloat(duration - 0.02), CGFloat(time))
+    /// The flight's shadow and outline while the island's come in.
+    static func handoverShadow(at time: Double) -> CGFloat {
+        1 - clamp(CGFloat((time - handover) / handoverFade))
     }
 
-    static func contentOpacity(at time: Double) -> Double {
-        Double(smoothstep(CGFloat(landingStart + 0.04), CGFloat(landingStart + 0.30), CGFloat(time)))
+    /// How far the destination's content has come in, 0…1: it grows in
+    /// over the last 20 % of the approach, so it is there as the island
+    /// arrives and docks – not after.
+    static func contentProgress(at time: Double) -> CGFloat {
+        smoothstep(0.80, 1.0, min(value(flightSpring, time - flightStart), 1))
     }
+
+    /// When the content (and the destination's drop) starts to come in.
+    static let contentStart: Double = stride(from: flightStart, through: duration, by: 0.002)
+        .first { contentProgress(at: $0) > 0 } ?? landingStart
 
     // MARK: - Timing
 
@@ -226,19 +303,6 @@ struct ScreenFlight: Sendable {
             (value(flightSpring, t + h) - value(flightSpring, max(t - h, 0))) / CGFloat(2 * h)
         }.max() ?? 1
     }()
-
-    /// A damped impulse on the landing spring, peaking at 1 shortly after
-    /// touchdown – the squash.
-    static func landingBump(at t: Double) -> CGFloat {
-        guard t > 0 else { return 0 }
-        let omega = 2 * Double.pi / landingSpring.response
-        let zeta = landingSpring.dampingFraction
-        let decay = zeta * omega
-        let damped = omega * (1 - zeta * zeta).squareRoot()
-        func bump(_ t: Double) -> Double { exp(-decay * t) * sin(damped * t) }
-        let peak = bump(atan(damped / decay) / damped)
-        return CGFloat(bump(t) / peak)
-    }
 }
 
 extension ScreenFlight {
@@ -278,5 +342,5 @@ extension ScreenFlight {
 }
 
 private extension CGRect {
-    var center: CGPoint { CGPoint(x: midX, y: midY) }
+    var topCenter: CGPoint { CGPoint(x: midX, y: maxY) }
 }

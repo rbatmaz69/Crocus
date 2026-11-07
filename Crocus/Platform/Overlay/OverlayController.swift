@@ -430,6 +430,7 @@ final class OverlayController {
         destination.model.flightIslandHidden = true
         destination.model.flightContentHidden = true
         destination.model.flightDropHidden = true
+        destination.model.flightShadowHidden = true
         destination.alphaValue = 0
         destination.orderFrontRegardless()
         let sourceContent = AnyView(Self.flightContent(model: source.model, on: sourceScreen.geometry))
@@ -468,6 +469,11 @@ final class OverlayController {
             // the island fades out underneath while the flight's shadow comes in.
             clock.start = startDate
             self.flightWindows.forEach { $0.alphaValue = 1 }
+            #if DEBUG
+            if let view = self.flightWindows.last?.contentView {
+                self.frameMonitor.measure("screen flight", on: view)
+            }
+            #endif
             if let source {
                 NSAnimationContext.runAnimationGroup { context in
                     context.duration = CrocusMotion.seconds(ScreenFlight.departure)
@@ -480,24 +486,29 @@ final class OverlayController {
                 }
             }
 
-            // Touchdown: the destination shows its drop/circle, coming in
-            // with the content the flight draws (its island is still hidden).
-            await wait(until: ScreenFlight.landingStart + 0.04)
+            // Arriving: the destination shows its drop/circle, coming in with
+            // the content the flight draws (its island is still hidden).
+            await wait(until: ScreenFlight.contentStart)
             if let destination = isLive(destination) {
                 destination.alphaValue = 1
-                withAnimation(.easeOut(duration: CrocusMotion.seconds(0.26))) {
+                withAnimation(.easeOut(duration: CrocusMotion.seconds(0.32))) {
                     destination.model.flightDropHidden = false
                 }
             }
 
-            // Handover: the island takes over with its content in place,
-            // while the flight's shadow and outline fade (never two shadows).
+            // Handover: the island appears in full right under the flight –
+            // the same opaque image, so nothing changes on screen. Only the
+            // see-through shadow moves over: the island's comes in while the
+            // flight's goes, on the same linear curve. Then the flight goes.
             await wait(until: ScreenFlight.handover)
             if let destination = isLive(destination) {
-                destination.model.flightIslandHidden = false
                 destination.model.flightContentHidden = false
+                destination.model.flightIslandHidden = false
+                withAnimation(.linear(duration: CrocusMotion.seconds(ScreenFlight.handoverFade))) {
+                    destination.model.flightShadowHidden = false
+                }
             }
-            await wait(until: ScreenFlight.duration + 0.03)
+            await wait(until: ScreenFlight.duration)
             self.flightWindows.forEach { $0.close() }
             self.flightWindows.removeAll()
             self.endScreenChange()

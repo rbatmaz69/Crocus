@@ -72,11 +72,13 @@ struct PillIslandView: View {
         let panel = OverlayLayout.panelSize
         return ZStack(alignment: .topLeading) {
             PillShadow.apply(to: shape.fill(CrocusColors.island))
+                .opacity(model.flightShadowHidden ? 0 : 1)
             content(metrics: .pill, presentation: presentation, centerX: centerX, top: parameters.top)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .mask { shape }
                 .opacity(model.flightContentHidden ? 0 : 1)
             shape.strokeBorder(PillOutline.color(menuBarIsDark: model.menuBarIsDark), lineWidth: PillOutline.width)
+                .opacity(model.flightShadowHidden ? 0 : 1)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .islandInteraction(
