@@ -118,6 +118,14 @@ enum CrocusMotion {
         }
     }
 
+    /// C4 – swiping between stacked cards: the strip follows the fingers
+    /// 1:1 and settles on `CrocusSprings.cardSwipe` with their speed; the
+    /// rules are in `CardSwipe`.
+    enum C4 {
+        /// Reduce Motion: cards cross-fade, no movement.
+        static let reducedMotionFade = 0.15
+    }
+
     /// Whether the island grows out of the drop/circle: opened by a click on
     /// it, from minimal; still so while it collapses back. Any other change
     /// ends it.

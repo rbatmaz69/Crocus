@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 import Testing
 @testable import Crocus
 
@@ -86,5 +87,95 @@ import Testing
         #expect(CardNavigation.step(forSwipe: .left) == 1)    // fingers left → next
         #expect(CardNavigation.step(forSwipe: .right) == -1)
         #expect(CardNavigation.step(forSwipe: .up) == 0)
+    }
+}
+
+@Suite struct CardSwipeTests {
+    let width: CGFloat = 460
+
+    @Test func followsTheFingersOneToOne() {
+        #expect(CardSwipe.position(index: 1, count: 3, translation: -230, width: width) == 1.5)
+        #expect(CardSwipe.position(index: 1, count: 3, translation: 46, width: width) == 0.9)
+    }
+
+    @Test func rubberBandsPastTheEnds() {
+        // 100 % past the last card → 30 %.
+        #expect(abs(CardSwipe.position(index: 2, count: 3, translation: -460, width: width) - 2.3) < 1e-9)
+        #expect(abs(CardSwipe.position(index: 0, count: 3, translation: 230, width: width) + 0.15) < 1e-9)
+    }
+
+    @Test func switchesAtThirtyPercent() {
+        #expect(CardSwipe.target(index: 1, count: 3, translation: -138, velocity: 0, width: width) == 2)
+        #expect(CardSwipe.target(index: 1, count: 3, translation: -137, velocity: 0, width: width) == 1)
+        #expect(CardSwipe.target(index: 1, count: 3, translation: 138, velocity: 0, width: width) == 0)
+    }
+
+    @Test func aFlickSwitchesAtThreeHundredPointsPerSecond() {
+        #expect(CardSwipe.target(index: 1, count: 3, translation: -20, velocity: -300, width: width) == 2)
+        #expect(CardSwipe.target(index: 1, count: 3, translation: -20, velocity: -299, width: width) == 1)
+        // Flicked back against the distance: the flick wins.
+        #expect(CardSwipe.target(index: 1, count: 3, translation: -200, velocity: 400, width: width) == 0)
+    }
+
+    @Test func neverPastTheEnds() {
+        #expect(CardSwipe.target(index: 2, count: 3, translation: -400, velocity: -900, width: width) == 2)
+        #expect(CardSwipe.target(index: 0, count: 3, translation: 400, velocity: 900, width: width) == 0)
+    }
+
+    @Test func velocityIsRelativeToTheDistanceLeft() {
+        // 0.4 of a card to go, fingers at one card per second leftwards.
+        #expect(abs(CardSwipe.relativeVelocity(-460, width: width, from: 1.6, to: 2) - 2.5) < 1e-9)
+        #expect(CardSwipe.relativeVelocity(-460, width: width, from: 2, to: 2) == 0)
+    }
+}
+
+@Suite struct CardSwipeTrackerTests {
+    func sample(_ dx: CGFloat, _ dy: CGFloat, _ phase: ScrollSample.Phase = .changed, at time: TimeInterval, momentum: Bool = false) -> ScrollSample {
+        ScrollSample(deltaX: dx, deltaY: dy, isPrecise: true, phase: phase, isMomentum: momentum, isDirectionInverted: true, time: time)
+    }
+
+    @Test func tracksSidewaysOnceLocked() {
+        var tracker = CardSwipeTracker()
+        #expect(tracker.handle(sample(-4, 0, .began, at: 0)) == nil)
+        #expect(tracker.handle(sample(-4, 1, at: 0.01)) == .changed(translation: -8))
+        #expect(tracker.isTracking)
+        #expect(tracker.handle(sample(-10, 0, at: 0.02)) == .changed(translation: -18))
+    }
+
+    @Test func leavesVerticalSwipesAlone() {
+        var tracker = CardSwipeTracker()
+        _ = tracker.handle(sample(0, 8, .began, at: 0))
+        #expect(tracker.handle(sample(20, 0, at: 0.01)) == nil)
+        #expect(tracker.handle(sample(0, 0, .ended, at: 0.02)) == nil)
+    }
+
+    @Test func endsWithTheLiftOffSpeed() {
+        var tracker = CardSwipeTracker()
+        _ = tracker.handle(sample(-10, 0, .began, at: 0))
+        _ = tracker.handle(sample(-10, 0, at: 0.02))
+        _ = tracker.handle(sample(-10, 0, at: 0.04))
+        // 20 pt in 40 ms = 500 pt/s to the left.
+        let end = tracker.handle(sample(0, 0, .ended, at: 0.04))
+        guard case .ended(let translation, let velocity)? = end else {
+            Issue.record("no end event")
+            return
+        }
+        #expect(translation == -30)
+        #expect(abs(velocity + 500) < 1e-6)
+        #expect(!tracker.isTracking)
+    }
+
+    @Test func restingFingersLiftWithoutSpeed() {
+        var tracker = CardSwipeTracker()
+        _ = tracker.handle(sample(-10, 0, .began, at: 0))
+        _ = tracker.handle(sample(-10, 0, at: 0.02))
+        #expect(tracker.handle(sample(0, 0, .ended, at: 0.5)) == .ended(translation: -20, velocity: 0))
+    }
+
+    @Test func momentumIsIgnored() {
+        var tracker = CardSwipeTracker()
+        _ = tracker.handle(sample(-10, 0, .began, at: 0))
+        _ = tracker.handle(sample(0, 0, .ended, at: 0.01))
+        #expect(tracker.handle(sample(-40, 0, .other, at: 0.02, momentum: true)) == nil)
     }
 }
