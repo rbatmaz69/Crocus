@@ -14,6 +14,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     lazy var privacy = PrivacyManager(store: store)
     lazy var downloads = DownloadsManager(store: store)
     lazy var bluetooth = BluetoothManager(store: store)
+    lazy var onboarding = OnboardingWindowController { [unowned self] in
+        OnboardingModel(calendar: calendar, nowPlaying: nowPlaying, downloads: downloads, bluetooth: bluetooth)
+    }
 
     /// The app that was frontmost before Crocus; `open crocus://…` activates
     /// Crocus, and focus goes back there afterwards.
@@ -42,6 +45,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         downloads.start()
         bluetooth.start()
         trackFrontmostApp()
+        // First launch: set up with an explainer before every permission.
+        if !AppSettings.onboardingCompleted() { onboarding.show() }
     }
 
     func applicationWillTerminate(_ notification: Notification) {

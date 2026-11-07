@@ -12,6 +12,7 @@ struct CrocusApp: App {
                 Text("Settings…")
             }
             .keyboardShortcut(",")
+            Button("Set Up Crocus…") { appDelegate.onboarding.show() }
 
             Divider()
             TimerMenu(timers: appDelegate.timers)
@@ -133,10 +134,18 @@ private struct NowPlayingPermissionHint: View {
 
     var body: some View {
         let denied = MusicPlayer.allCases.filter { nowPlaying.permissions[$0] == .denied }
+        let undecided = MusicPlayer.allCases.filter { nowPlaying.permissions[$0] == .notDetermined }
         if !denied.isEmpty {
             Divider()
             Text("Now Playing is off for \(denied.map(\.displayName).joined(separator: " and "))")
             Button("Allow in System Settings…") { NSWorkspace.shared.open(NowPlayingManager.automationSettingsURL) }
+        }
+        // Skipped in the onboarding (or not asked yet): allow from here.
+        ForEach(undecided, id: \.self) { player in
+            Button("Allow \(player.displayName)…") {
+                NSApp.activate()
+                Task { await nowPlaying.requestPermission(player) }
+            }
         }
     }
 }

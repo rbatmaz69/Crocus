@@ -14,6 +14,8 @@ enum AppSettings {
         static let timers = "timers"
         /// Security-scoped bookmark of the downloads folder (#18).
         static let downloadsBookmark = "downloadsBookmark"
+        /// The first-launch onboarding (#26) was finished or closed.
+        static let onboardingCompleted = "onboardingCompleted"
         /// Standard / Subtle / Lively (#25, UI in #27).
         static let animationStrength = "animationStrength"
         /// C5: the island flies to the other screen (UI in #27).
@@ -52,6 +54,14 @@ enum AppSettings {
 
     static func hoverStyle(in defaults: UserDefaults = .standard) -> HoverStyle {
         defaults.string(forKey: Key.hoverStyle).flatMap(HoverStyle.init(rawValue:)) ?? .breathe
+    }
+
+    static func onboardingCompleted(in defaults: UserDefaults = .standard) -> Bool {
+        defaults.bool(forKey: Key.onboardingCompleted)
+    }
+
+    static func setOnboardingCompleted(in defaults: UserDefaults = .standard) {
+        defaults.set(true, forKey: Key.onboardingCompleted)
     }
 
     static func animationStrength(in defaults: UserDefaults = .standard) -> MotionStrength {
