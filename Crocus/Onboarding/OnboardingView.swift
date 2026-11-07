@@ -68,7 +68,7 @@ struct OnboardingView: View {
                 title: "Your own Live Activities",
                 text: "Apps, scripts and shortcuts can send their own activities to the island: a title, symbol, progress, status and an action.",
                 checks: [],
-                footer: { CommandBox(command: #"open "crocus://start?id=build&title=Build&progress=0.4""#) }
+                footer: { CopyableCommand(command: #"open "crocus://start?id=build&title=Build&progress=0.4""#).frame(maxWidth: 440) }
             ) {
                 OnboardingIcon(systemName: "square.stack.3d.up.fill", color: .indigo)
             }
@@ -293,33 +293,6 @@ private struct PermissionStatus: View {
                 .font(.system(size: 12))
                 .foregroundStyle(.secondary)
         }
-    }
-}
-
-/// The URL scheme example, with a copy button.
-private struct CommandBox: View {
-    let command: String
-    @State private var copied = false
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Text(command)
-                .font(.system(size: 11, design: .monospaced))
-                .textSelection(.enabled)
-                .lineLimit(1)
-                .truncationMode(.middle)
-            Spacer(minLength: 0)
-            Button(copied ? "Copied" : "Copy") {
-                NSPasteboard.general.clearContents()
-                NSPasteboard.general.setString(command, forType: .string)
-                copied = true
-            }
-            .controlSize(.small)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 9)
-        .background(.quaternary.opacity(0.6), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-        .frame(maxWidth: 440)
     }
 }
 

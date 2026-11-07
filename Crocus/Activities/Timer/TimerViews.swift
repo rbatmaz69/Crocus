@@ -77,11 +77,11 @@ struct TimerCard: View {
                 HStack(alignment: .center, spacing: 10) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(TimerFormat.readout(state, now: date))
-                            .font(CrocusTypography.display.font())
+                            .islandFont(CrocusTypography.display)
                             .foregroundStyle(state.isPaused ? CrocusColors.secondary : CrocusColors.primary)
                             .lineLimit(1)
                         Text(TimerFormat.subtitle(state, now: date))
-                            .font(CrocusTypography.status.font())
+                            .islandFont(CrocusTypography.status)
                             .foregroundStyle(CrocusColors.secondary)
                             .lineLimit(1)
                     }

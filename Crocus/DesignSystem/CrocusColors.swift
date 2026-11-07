@@ -50,8 +50,9 @@ enum CrocusColors {
 
 extension View {
     /// Forces the dark appearance used everywhere on the black island.
+    /// Dark (the island is always black) and the user's text size.
     func islandEnvironment() -> some View {
-        environment(\.colorScheme, .dark)
+        modifier(IslandEnvironment())
     }
 }
 
@@ -69,5 +70,15 @@ enum PillOutline {
     static func color(menuBarIsDark: Bool) -> Color {
         let spec = spec(menuBarIsDark: menuBarIsDark)
         return spec.token.color.opacity(spec.opacity)
+    }
+}
+
+private struct IslandEnvironment: ViewModifier {
+    @AppStorage(AppSettings.Key.textSize) private var textSize = TextSizeAdjustment.standard
+
+    func body(content: Content) -> some View {
+        content
+            .environment(\.colorScheme, .dark)
+            .environment(\.islandTextSize, textSize)
     }
 }

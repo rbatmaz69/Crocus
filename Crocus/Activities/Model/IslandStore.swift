@@ -29,10 +29,12 @@ final class IslandStore {
         self.defaults = defaults
         self.now = now
         self.state = IslandState(priority: AppSettings.activityPriority(in: defaults))
+        self.disabledKinds = AppSettings.disabledActivities(in: defaults)
+        self.disabledEvents = AppSettings.disabledEvents(in: defaults)
         defaultsObserver = NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification, object: defaults, queue: .main
         ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.reloadPriority() }
+            MainActor.assumeIsolated { self?.reloadSettings() }
         }
     }
 
@@ -78,8 +80,15 @@ final class IslandStore {
 
     // MARK: - Sources
 
+    /// Types switched off in Settings: their activities are kept (so they
+    /// are back at once when switched on again) but not shown.
+    private(set) var disabledKinds: Set<ActivityKind>
+    /// Events switched off in Settings are dropped.
+    private(set) var disabledEvents: Set<EventKind>
+
     func upsert(_ activity: any IslandActivity) {
         activities[activity.id] = activity
+        guard !disabledKinds.contains(activity.kind) else { return }
         update { $0.upsert(activity.entry) }
     }
 
@@ -95,6 +104,7 @@ final class IslandStore {
     }
 
     func post(_ event: IslandEvent) {
+        guard !disabledEvents.contains(event.kind) else { return }
         events[event.id] = event
         let time = now()
         update { $0.post(event.entry, now: time) }
@@ -145,10 +155,25 @@ final class IslandStore {
 
     // MARK: - Internals
 
-    private func reloadPriority() {
+    private func reloadSettings() {
         let priority = AppSettings.activityPriority(in: defaults)
-        guard priority != state.priority else { return }
-        update { $0.setPriority(priority) }
+        if priority != state.priority {
+            update { $0.setPriority(priority) }
+        }
+        disabledEvents = AppSettings.disabledEvents(in: defaults)
+        let disabled = AppSettings.disabledActivities(in: defaults)
+        guard disabled != disabledKinds else { return }
+        let switchedOff = disabled.subtracting(disabledKinds)
+        let switchedOn = disabledKinds.subtracting(disabled)
+        disabledKinds = disabled
+        let time = now()
+        for activity in activities.values {
+            if switchedOff.contains(activity.kind) {
+                update { $0.remove(id: activity.id, now: time) }
+            } else if switchedOn.contains(activity.kind) {
+                update { $0.upsert(activity.entry) }
+            }
+        }
     }
 
     private func update(_ change: (inout IslandState) -> Void) {

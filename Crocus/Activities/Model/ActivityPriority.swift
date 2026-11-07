@@ -27,6 +27,19 @@ struct ActivityPriority: Equatable, Sendable {
         order.filter { !$0.isFixedOnTop }.map(\.rawValue)
     }
 
+    /// The kinds the user can reorder (all but camera/microphone).
+    var movable: [ActivityKind] { order.filter { !$0.isFixedOnTop } }
+
+    /// Settings: rows dragged within the movable part (`List.onMove` offsets).
+    func moving(fromOffsets source: IndexSet, toOffset destination: Int) -> ActivityPriority {
+        var rest = movable
+        let moved = source.sorted().map { rest[$0] }
+        let insertAt = destination - source.filter { $0 < destination }.count
+        rest.removeAll { moved.contains($0) }
+        rest.insert(contentsOf: moved, at: min(max(insertAt, 0), rest.count))
+        return ActivityPriority(storedOrder: rest.map(\.rawValue))
+    }
+
     func rank(of kind: ActivityKind) -> Int {
         order.firstIndex(of: kind) ?? order.count
     }

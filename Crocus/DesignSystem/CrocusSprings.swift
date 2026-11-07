@@ -51,6 +51,23 @@ enum MotionStrength: String, CaseIterable, Identifiable, Sendable {
 
     static var current: MotionStrength { AppSettings.animationStrength() }
 
+    /// Settings slider: Subtle 0 · Standard 1 · Lively 2.
+    var sliderValue: Double {
+        switch self {
+        case .subtle: 0
+        case .standard: 1
+        case .lively: 2
+        }
+    }
+
+    init(sliderValue: Double) {
+        switch sliderValue.rounded() {
+        case ..<0.5: self = .subtle
+        case 1.5...: self = .lively
+        default: self = .standard
+        }
+    }
+
     func dampingFraction(for damping: Double) -> Double {
         switch self {
         case .standard: damping

@@ -64,9 +64,9 @@ enum SampleActivities {
         ) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("04:32").font(CrocusTypography.display.font())
+                    Text("04:32").islandFont(CrocusTypography.display)
                     Text("Timer · 10:00 · ends 14:37")
-                        .font(CrocusTypography.status.font())
+                        .islandFont(CrocusTypography.status)
                         .foregroundStyle(CrocusColors.secondary)
                 }
                 Spacer()
@@ -87,8 +87,8 @@ enum SampleActivities {
             HStack(spacing: 14) {
                 Cover(size: 60, radius: 14)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Midnight Avenue").font(CrocusTypography.title.font())
-                    Text("Lumen Park").font(CrocusTypography.status.font()).foregroundStyle(CrocusColors.secondary)
+                    Text("Midnight Avenue").islandFont(CrocusTypography.title)
+                    Text("Lumen Park").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
                 }
                 Spacer()
                 Visualizer()
@@ -108,8 +108,8 @@ enum SampleActivities {
             HStack(spacing: 12) {
                 IslandCompactSymbol(systemName: "video.fill", color: CrocusColors.positive)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Camera active").font(CrocusTypography.title.font())
-                    Text("For 12 min · used by an app").font(CrocusTypography.status.font()).foregroundStyle(CrocusColors.secondary)
+                    Text("Camera active").islandFont(CrocusTypography.title)
+                    Text("For 12 min · used by an app").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
                 }
                 Spacer()
                 Circle().fill(CrocusColors.positive).frame(width: 6, height: 6)
@@ -129,11 +129,11 @@ enum SampleActivities {
             HStack(spacing: 12) {
                 TerminalIcon(size: 34)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Build running").font(CrocusTypography.title.font())
-                    Text("Compiling 128 of 320 files").font(CrocusTypography.status.font()).foregroundStyle(CrocusColors.secondary)
+                    Text("Build running").islandFont(CrocusTypography.title)
+                    Text("Compiling 128 of 320 files").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
                 }
                 Spacer()
-                Text("40 %").font(CrocusTypography.value.font())
+                Text("40 %").islandFont(CrocusTypography.value)
             }
             IslandProgressBar(progress: 0.4)
             HStack(spacing: 8) {
@@ -155,8 +155,8 @@ enum SampleActivities {
             HStack(spacing: 10) {
                 RoundedRectangle(cornerRadius: 2).fill(Color.purple).frame(width: 4, height: 36)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Sprint Review").font(CrocusTypography.title.font())
-                    Text("14:30–15:00 · Video call").font(CrocusTypography.status.font()).foregroundStyle(CrocusColors.secondary)
+                    Text("Sprint Review").islandFont(CrocusTypography.title)
+                    Text("14:30–15:00 · Video call").islandFont(CrocusTypography.status).foregroundStyle(CrocusColors.secondary)
                 }
                 Spacer()
                 IslandButton(title: "Join", primary: true)
@@ -173,9 +173,9 @@ enum SampleActivities {
             expandedSource: "Downloads", expandedStatus: "1 file"
         ) {
             HStack {
-                Text("Xcode.xip").font(CrocusTypography.title.font())
+                Text("Xcode.xip").islandFont(CrocusTypography.title)
                 Spacer()
-                Text("62 %").font(CrocusTypography.value.font())
+                Text("62 %").islandFont(CrocusTypography.value)
             }
             IslandProgressBar(progress: 0.62)
         }

@@ -97,11 +97,11 @@ struct LiveActivityCard: View {
             LiveActivitySymbol(symbol: state.symbol, size: 34)
             VStack(alignment: .leading, spacing: 2) {
                 Text(state.title)
-                    .font(CrocusTypography.title.font())
+                    .islandFont(CrocusTypography.title)
                     .lineLimit(1)
                 if let status = statusText {
                     Text(status)
-                        .font(CrocusTypography.status.font())
+                        .islandFont(CrocusTypography.status)
                         .foregroundStyle(CrocusColors.secondary)
                         .lineLimit(2)
                 }
@@ -139,7 +139,7 @@ struct LiveActivityCard: View {
             switch activity.state.progress {
             case .value(let value):
                 Text("\(Int((value * 100).rounded())) %")
-                    .font(CrocusTypography.value.font())
+                    .islandFont(CrocusTypography.value)
             case .indeterminate:
                 IslandSpinner()
             }

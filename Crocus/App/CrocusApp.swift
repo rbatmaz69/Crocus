@@ -35,8 +35,9 @@ struct CrocusApp: App {
         }
 
         Settings {
-            SettingsPlaceholderView()
+            SettingsView(app: appDelegate)
         }
+        .windowResizability(.contentSize)
     }
 }
 
@@ -46,31 +47,11 @@ private struct DebugMenu: View {
     let store: IslandStore
     let power: PowerManager
     let bluetooth: BluetoothManager
-    @AppStorage(AppSettings.Key.targetScreen) private var targetScreen = TargetScreenOption.automatic
-    @AppStorage(AppSettings.Key.hoverStyle) private var hoverStyle = HoverStyle.breathe
     @AppStorage(AppSettings.Key.debugSlowAnimations) private var slowAnimations = false
-    @AppStorage(AppSettings.Key.animateScreenChange) private var animateScreenChange = true
-    @AppStorage(AppSettings.Key.animationStrength) private var animationStrength = MotionStrength.standard
 
     var body: some View {
         Toggle("Show Overlay Frames", isOn: $overlay.showsDebugFrame)
         Toggle("Slow Animations (5×)", isOn: $slowAnimations)
-        Toggle("Animate Screen Change", isOn: $animateScreenChange)
-        Picker("Animation Strength", selection: $animationStrength) {
-            ForEach(MotionStrength.allCases) { strength in
-                Text(strength.title).tag(strength)
-            }
-        }
-        Picker("Hover Style", selection: $hoverStyle) {
-            ForEach(HoverStyle.allCases) { style in
-                Text(style.title).tag(style)
-            }
-        }
-        Picker("Target Screen", selection: $targetScreen) {
-            ForEach(TargetScreenOption.allCases) { option in
-                Text(option.title).tag(option)
-            }
-        }
         Menu("Activities") {
             ForEach(ActivityKind.allCases, id: \.self) { kind in
                 Toggle(SampleActivities.make(kind).title, isOn: Binding(
@@ -210,19 +191,3 @@ private struct BluetoothAccessMenu: View {
     }
 }
 
-/// Placeholder until the real settings window lands (#27).
-private struct SettingsPlaceholderView: View {
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "capsule.fill")
-                .font(.largeTitle)
-                .foregroundStyle(.secondary)
-            Text("Crocus")
-                .font(.title2.weight(.semibold))
-            Text("Settings are coming soon.")
-                .foregroundStyle(.secondary)
-        }
-        .padding(32)
-        .frame(width: 360)
-    }
-}

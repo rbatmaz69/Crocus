@@ -73,7 +73,7 @@ struct IslandButton: View {
                 if let systemImage { Image(systemName: systemImage) }
                 Text(title)
             }
-            .font(.system(size: 13, weight: .semibold))
+            .islandFont(CrocusTypography.button)
             .foregroundStyle(primary ? CrocusColors.island : CrocusColors.primary)
             .padding(.horizontal, 14)
             .frame(minHeight: CrocusMetrics.Expanded.buttonHeight)
@@ -103,7 +103,7 @@ struct IslandCompactValue: View {
 
     var body: some View {
         Text(text)
-            .font(CrocusTypography.title.font(inCompactIsland: true))
+            .islandFont(CrocusTypography.title, inCompactIsland: true)
             .monospacedDigit()
             .foregroundStyle(color)
             .lineLimit(1)

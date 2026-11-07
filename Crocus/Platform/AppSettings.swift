@@ -14,6 +14,11 @@ enum AppSettings {
         static let timers = "timers"
         /// Security-scoped bookmark of the downloads folder (#18).
         static let downloadsBookmark = "downloadsBookmark"
+        /// Activity and event types switched off in Settings (#27).
+        static let disabledActivities = "disabledActivities"
+        static let disabledEvents = "disabledEvents"
+        /// Island text size: compact / standard / large (#27).
+        static let textSize = "textSize"
         /// The first-launch onboarding (#26) was finished or closed.
         static let onboardingCompleted = "onboardingCompleted"
         /// Standard / Subtle / Lively (#25, UI in #27).
@@ -54,6 +59,30 @@ enum AppSettings {
 
     static func hoverStyle(in defaults: UserDefaults = .standard) -> HoverStyle {
         defaults.string(forKey: Key.hoverStyle).flatMap(HoverStyle.init(rawValue:)) ?? .breathe
+    }
+
+    static func disabledActivities(in defaults: UserDefaults = .standard) -> Set<ActivityKind> {
+        Set((defaults.stringArray(forKey: Key.disabledActivities) ?? []).compactMap(ActivityKind.init(rawValue:)))
+    }
+
+    static func setActivity(_ kind: ActivityKind, enabled: Bool, in defaults: UserDefaults = .standard) {
+        var disabled = disabledActivities(in: defaults)
+        if enabled { disabled.remove(kind) } else { disabled.insert(kind) }
+        defaults.set(disabled.map(\.rawValue).sorted(), forKey: Key.disabledActivities)
+    }
+
+    static func disabledEvents(in defaults: UserDefaults = .standard) -> Set<EventKind> {
+        Set((defaults.stringArray(forKey: Key.disabledEvents) ?? []).compactMap(EventKind.init(rawValue:)))
+    }
+
+    static func setEvents(_ kinds: Set<EventKind>, enabled: Bool, in defaults: UserDefaults = .standard) {
+        var disabled = disabledEvents(in: defaults)
+        if enabled { disabled.subtract(kinds) } else { disabled.formUnion(kinds) }
+        defaults.set(disabled.map(\.rawValue).sorted(), forKey: Key.disabledEvents)
+    }
+
+    static func textSize(in defaults: UserDefaults = .standard) -> TextSizeAdjustment {
+        defaults.string(forKey: Key.textSize).flatMap(TextSizeAdjustment.init(rawValue:)) ?? .standard
     }
 
     static func onboardingCompleted(in defaults: UserDefaults = .standard) -> Bool {

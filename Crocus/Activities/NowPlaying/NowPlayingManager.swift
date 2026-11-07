@@ -135,6 +135,12 @@ final class NowPlayingManager {
 
     func isInstalled(_ player: MusicPlayer) -> Bool { bridge.isInstalled(player) }
 
+    /// Settings: looks the permission up again (without asking) and keeps it.
+    func refreshPermission(_ player: MusicPlayer) async {
+        let permission = await currentPermission(player)
+        if permission != .unavailable { permissions[player] = permission }
+    }
+
     private func isAllowed(_ player: MusicPlayer, asking: Bool) async -> Bool {
         switch permissions[player] {
         case .granted: return true

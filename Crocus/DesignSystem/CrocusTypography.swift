@@ -1,10 +1,20 @@
 import SwiftUI
 
-/// The user's text size setting ("Größe"); the setting UI lands in #27.
-enum TextSizeAdjustment: CaseIterable, Sendable {
+/// The user's text size setting (Settings › Appearance › Size).
+enum TextSizeAdjustment: String, CaseIterable, Identifiable, Sendable {
     case compact
     case standard
     case large
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .compact: "Compact"
+        case .standard: "Standard"
+        case .large: "Large"
+        }
+    }
 
     var points: CGFloat {
         switch self {
@@ -47,4 +57,30 @@ enum CrocusTypography {
     static let status = TypeStyle(size: 13, weight: .regular, monospacedDigits: false)
     /// Small times, e.g. "1:24 / −2:27".
     static let caption = TypeStyle(size: 11, weight: .regular, monospacedDigits: true)
+    /// Button titles, e.g. "Join".
+    static let button = TypeStyle(size: 13, weight: .semibold, monospacedDigits: false)
+    /// The expanded header, e.g. "Activities · 2 of 3".
+    static let header = TypeStyle(size: 11, weight: .regular, monospacedDigits: false)
+}
+
+extension EnvironmentValues {
+    /// The text size setting, set at the island's root.
+    @Entry var islandTextSize: TextSizeAdjustment = .standard
+}
+
+/// A spec type style at the user's text size.
+private struct IslandFont: ViewModifier {
+    let style: TypeStyle
+    let inCompactIsland: Bool
+    @Environment(\.islandTextSize) private var textSize
+
+    func body(content: Content) -> some View {
+        content.font(style.font(textSize, inCompactIsland: inCompactIsland))
+    }
+}
+
+extension View {
+    func islandFont(_ style: TypeStyle, inCompactIsland: Bool = false) -> some View {
+        modifier(IslandFont(style: style, inCompactIsland: inCompactIsland))
+    }
 }

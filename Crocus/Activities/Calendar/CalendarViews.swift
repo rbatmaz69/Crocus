@@ -65,10 +65,10 @@ struct CalendarCard: View {
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(event.title)
-                    .font(CrocusTypography.title.font())
+                    .islandFont(CrocusTypography.title)
                     .lineLimit(1)
                 Text(CalendarFormat.subtitle(event))
-                    .font(CrocusTypography.status.font())
+                    .islandFont(CrocusTypography.status)
                     .foregroundStyle(CrocusColors.secondary)
                     .lineLimit(1)
             }
