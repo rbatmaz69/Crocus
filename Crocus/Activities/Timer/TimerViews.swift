@@ -17,13 +17,20 @@ struct TimerTicking<Content: View>: View {
     }
 }
 
-/// `timer` / `stopwatch` symbol; bounces when the timer finishes.
+/// `timer` / `stopwatch` symbol; bounces when the timer finishes – not with
+/// Reduce Motion (the haptic and the finished state still tell).
 struct TimerSymbol: View {
     let activity: TimerActivity
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         IslandCompactSymbol(systemName: TimerFormat.symbol(activity.state.kind))
-            .symbolEffect(.bounce, options: .repeat(3), value: activity.finishCount)
+            .symbolEffect(.bounce, options: .repeat(3), value: Self.bounceTrigger(finishCount: activity.finishCount, reduceMotion: reduceMotion))
+    }
+
+    /// Changes – and so bounces the symbol – each time the timer finishes.
+    static func bounceTrigger(finishCount: Int, reduceMotion: Bool) -> Int {
+        reduceMotion ? 0 : finishCount
     }
 }
 

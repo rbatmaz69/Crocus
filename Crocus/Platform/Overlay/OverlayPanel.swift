@@ -125,7 +125,7 @@ final class OverlayPanelModel {
         let spec = CrocusSprings.cardSwipe
         let relative = CardSwipe.relativeVelocity(velocity, width: cardWidth, from: cardStripPosition, to: CGFloat(target))
         let animation = Animation.interpolatingSpring(
-            Spring(response: CrocusMotion.seconds(spec.response), dampingRatio: spec.dampingFraction),
+            spec.scaledSpring,
             initialVelocity: relative / CrocusMotion.slowFactor
         )
         withAnimation(animation) { cardStripPosition = CGFloat(target) }

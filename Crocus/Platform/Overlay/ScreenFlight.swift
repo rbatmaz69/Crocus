@@ -46,16 +46,10 @@ struct ScreenFlight: Sendable {
     /// destination, in global coordinates.
     let route: Route
 
-    /// Detach: shoulders retract, the shape rounds and drops. Calmer than
-    /// the spec's 0.3 / 0.9, which pulled the shoulders in within ≈ 50 ms.
-    static let detachSpring = SpringSpec(response: 0.40, dampingFraction: 1.00)
-    /// Flight along the arc. Critically damped, unlike the spec's 0.55 / 0.82:
-    /// over a screen's width that overshot ≈ 16 pt past the landing spot,
-    /// and holding it there made the island stop dead. Now it glides in.
-    static let flightSpring = SpringSpec(response: 0.50, dampingFraction: 1.00)
-    /// Into the notch: rise to the edge, flatten, grow the shoulders – no
-    /// overshoot, and calm enough that docking reads as one motion.
-    static let attachSpring = SpringSpec(response: 0.50, dampingFraction: 1.00)
+    /// The springs (`CrocusSprings`): detach, flight along the arc, attach.
+    static let detachSpring = CrocusSprings.screenDetach
+    static let flightSpring = CrocusSprings.screenChange
+    static let attachSpring = CrocusSprings.screenAttach
     /// Docking into the notch starts on the last stretch of the approach,
     /// not after it.
     static let attachStart = landingStart - 0.08
@@ -284,7 +278,7 @@ struct ScreenFlight: Sendable {
 
     static func value(_ spec: SpringSpec, _ time: Double) -> CGFloat {
         guard time > 0 else { return 0 }
-        return CGFloat(Spring(response: spec.response, dampingRatio: spec.dampingFraction).value(target: 1.0, time: time))
+        return CGFloat(spec.spring.value(target: 1.0, time: time))
     }
 
     /// Flight speed relative to its peak, 0…1 (0 once the arc is done).

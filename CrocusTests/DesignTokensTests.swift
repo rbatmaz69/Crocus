@@ -31,7 +31,10 @@ struct DesignTokensTests {
         #expect(CrocusSprings.collapse == SpringSpec(response: 0.40, dampingFraction: 1.00))
         #expect(CrocusSprings.dropDetach == SpringSpec(response: 0.35, dampingFraction: 0.70))
         #expect(CrocusSprings.cardSwipe == SpringSpec(response: 0.30, dampingFraction: 0.86))
-        #expect(CrocusSprings.screenChange == SpringSpec(response: 0.55, dampingFraction: 0.82))
+        // C5 springs, tuned from testing (spec: 0.55 / 0.82).
+        #expect(CrocusSprings.screenDetach == SpringSpec(response: 0.40, dampingFraction: 1.00))
+        #expect(CrocusSprings.screenChange == SpringSpec(response: 0.50, dampingFraction: 1.00))
+        #expect(CrocusSprings.screenAttach == SpringSpec(response: 0.50, dampingFraction: 1.00))
         #expect(CrocusSprings.hoverHint == SpringSpec(response: 0.30, dampingFraction: 0.90))
         #expect(CrocusSprings.hoverScale == 1.03)
     }
