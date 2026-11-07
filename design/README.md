@@ -20,6 +20,7 @@ Source of truth for the visual design of Crocus (designs were created under the 
 | D – onboarding | `boards/10-onboarding.png` |
 | E – settings | `boards/11-settings.png` |
 | F – Shortcuts integration | `boards/14-shortcuts.png` |
+| G – menu bar panel | `boards/15-menu-bar.png` |
 | App icon and menu bar icon (sources, asset sets) | `icon/` |
 
 ## Key tokens
